@@ -4524,7 +4524,7 @@
     var dates = Object.keys(all).sort().reverse();
     body.textContent = '';
 
-    if (btnText) btnText.textContent = dates.length ? '달성 기록 ' + dates.length : '달성 기록';
+    if (btnText) btnText.textContent = dates.length ? '달성 기록 ' + dates.length + '일' : '달성 기록';
 
     var shown = dates.slice(0, 60);
     if (sub) {
