@@ -835,26 +835,175 @@
     word-break: keep-all;
   }
 
-  /* ── 일정 ───────────────────────────────────────────── */
-  .sched-scroll { min-height: 0; }
+  /* ── 내 미니캘 (달력형) ─────────────────────────────── */
+  .mcal {
+    margin: 2px 0 8px;
+    padding: 9px 9px 8px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border: 1px solid var(--pink-line);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .9);
+  }
 
-  .group { margin-top: 11px; }
-  .group:first-of-type { margin-top: 0; }
+  .mcal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
 
-  .group-head {
+  .mcal-month {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--pink-deep);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .mcal-nav {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border: 1px solid var(--pink-line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--pink-deep);
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .mcal-nav:hover { background: var(--pink-soft); }
+
+  .mcal-week,
+  .mcal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .mcal-week {
+    margin-bottom: 3px;
+    font-size: 10px;
+    font-weight: 850;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  .mcal-week span:first-child { color: #dd8a9f; }
+  .mcal-week span:last-child { color: #7ba7d9; }
+
+  .mcal-day {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1px;
+    min-height: 34px;
+    padding: 2px 0 3px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    cursor: pointer;
+    transition: background-color .14s ease, box-shadow .14s ease, color .14s ease;
+  }
+
+  .mcal-day.sun { color: #d97d95; }
+  .mcal-day.sat { color: #6f9fd8; }
+  .mcal-day:hover { background: var(--pink-soft); }
+
+  .mcal-day.is-today {
+    box-shadow: inset 0 0 0 2px #ffcf7a;
+    color: var(--amber-deep);
+    font-weight: 900;
+  }
+
+  .mcal-day.is-off { background: linear-gradient(180deg, #f1fbf6, #e7f8f0); }
+
+  .mcal-day.is-selected {
+    background: linear-gradient(180deg, #ffdbe5, #ffc3d5);
+    color: #8d3554;
+    box-shadow: 0 3px 9px rgba(239, 139, 164, .3);
+  }
+
+  .mcal-day.is-selected.is-today {
+    box-shadow: inset 0 0 0 2px #ffcf7a, 0 3px 9px rgba(239, 139, 164, .26);
+  }
+
+  .mcal-day.is-pad {
+    background: transparent;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .mcal-num { display: block; }
+
+  .mcal-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 5px;
+    line-height: 0;
+  }
+
+  .mcal-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+
+  .mcal-dot.custom { background: var(--pink); }
+
+  .mcal-dot.more {
+    background: none;
+    color: var(--ink-faint);
+    font-size: 7px;
+    font-weight: 900;
+    width: auto;
+    height: auto;
+    line-height: 1;
+  }
+
+  .mcal-detail { min-width: 0; }
+
+  .mcal-detail-head {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 0 7px;
+    margin: 0 0 6px;
   }
 
-  .group-title {
-    margin: 0;
-    font-size: 11.5px;
+  .mcal-detail-date {
+    font-size: 12.5px;
     font-weight: 900;
-    letter-spacing: .03em;
-    color: var(--ink-faint);
+    letter-spacing: -.02em;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
   }
+
+  .mcal-add {
+    margin-left: auto;
+    flex: none;
+  }
+
+  .mcal-events { max-height: 138px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  .mcal-day-empty { margin: 0; }
 
   .badge.sage {
     padding: 3px 9px;
@@ -885,11 +1034,6 @@
     border: 1px solid var(--line-soft);
     border-radius: 14px;
     background: var(--row);
-  }
-
-  .event-list.today .row {
-    background: linear-gradient(180deg, #fffdf8, #fffaf0);
-    border-color: #ffeccd;
   }
 
   .row.is-past { opacity: .55; }
@@ -942,31 +1086,6 @@
   }
 
   .badge.muted { background: #f0ece2; color: var(--ink-faint); }
-
-  .day-group + .day-group { margin-top: 4px; }
-
-  .day-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin: 11px 0 6px;
-    font-size: 12px;
-    font-weight: 850;
-    color: var(--ink-soft);
-    letter-spacing: -.005em;
-  }
-
-  .day-group:first-child .day-head { margin-top: 2px; }
-
-  .day-meta { display: flex; align-items: center; gap: 7px; flex: none; }
-
-  .dday {
-    font-size: 10.5px;
-    font-weight: 800;
-    color: var(--ink-faint);
-    font-variant-numeric: tabular-nums;
-  }
 
   .empty {
     margin: 8px 0 0;
@@ -1364,14 +1483,29 @@
     .card.offdays .btn { min-height: 30px; padding: 0 9px; font-size: 11px; border-radius: 8px; }
     .card.offdays .hint { margin-top: 2px; font-size: 9px; }
 
-    /* 일정 */
-    .card.schedule { gap: 4px; }
+    /* 일정 (달력형) */
+    .card.schedule { gap: 3px; }
     .card.schedule .card-hint { display: none; }
-    .sched-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-    .group { margin-top: 4px; }
-    .group-head { margin: 0 0 3px; gap: 5px; }
-    .group-title { font-size: 8.5px; letter-spacing: .04em; }
-    .badge.sage { padding: 1px 5px; font-size: 8px; }
+    .mcal { margin: 0; padding: 2px 4px 2px; border-radius: 10px; flex: 1 1 auto; min-height: 0; }
+    .mcal-bar { margin-bottom: 0; }
+    .mcal-nav { width: 16px; height: 16px; font-size: 10px; border-radius: 5px; }
+    .mcal-month { font-size: 9.5px; }
+    .mcal-week { font-size: 7.5px; gap: 1px; margin-bottom: 0; line-height: 1.1; }
+    .mcal-grid { gap: 1px; flex: 1 1 auto; min-height: 0; grid-auto-rows: minmax(0, 1fr); }
+    .mcal-day { min-height: 0; gap: 0; padding: 0; justify-content: center; font-size: 9px; border-radius: 5px; }
+    .mcal-day.is-today { box-shadow: inset 0 0 0 1.5px #ffcf7a; }
+    .mcal-day.is-selected { box-shadow: 0 2px 6px rgba(239, 139, 164, .28); }
+    .mcal-day.is-selected.is-today { box-shadow: inset 0 0 0 1.5px #ffcf7a, 0 2px 6px rgba(239, 139, 164, .24); }
+    .mcal-dots { min-height: 4px; gap: 1px; }
+    .mcal-dot { width: 3px; height: 3px; }
+    .mcal-dot.more { font-size: 6px; }
+    .mcal-detail { display: flex; flex-direction: column; min-height: 0; flex: none; }
+    .mcal-detail-head { margin: 0; gap: 4px; }
+    .mcal-detail-date { font-size: 9px; }
+    .badge.sage { padding: 0 4px; font-size: 7.5px; }
+    .mcal-add { min-height: 16px; padding: 0 5px; font-size: 8px; border-radius: 5px; }
+    .mcal-events { gap: 2px; max-height: 40px; flex: none; min-height: 0; }
+    .mcal-day-empty { margin: 0; padding: 2px 5px; font-size: 8.5px; border-radius: 6px; }
     .event-list { gap: 3px; }
     .row { padding: 3px 6px; gap: 6px; border-radius: 8px; }
     .time { min-width: 28px; }
@@ -1380,12 +1514,19 @@
     .event-title { font-size: 10.5px; gap: 4px; line-height: 1.3; }
     .ev-dot { width: 5px; height: 5px; }
     .badge { margin-top: 1px; padding: 1px 4px; font-size: 8px; }
-    .day-head { margin: 5px 0 3px; font-size: 9.5px; }
-    .dday { font-size: 8.5px; }
-    #eventForm { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px; margin: 0; padding: 0; border: 0; }
-    #eventForm input[type="text"] { grid-column: 1 / -1; }
-    #eventForm input { min-height: 30px; padding: 2px 7px; border-radius: 8px; font-size: 16px; flex: none; width: 100%; }
-    #eventForm .btn { min-height: 30px; padding: 0 9px; font-size: 11px; border-radius: 8px; }
+    #eventForm { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px; margin: 0; padding: 0; border: 0; align-items: stretch; }
+    #eventForm input[type="text"] { grid-column: 1; grid-row: 1; }
+    #eventForm .btn { grid-column: 2; grid-row: 1; }
+    #eventForm input[type="datetime-local"] { grid-column: 1 / -1; grid-row: 2; }
+    #eventForm input { min-height: 26px; min-width: 0; padding: 2px 6px; border-radius: 8px; font-size: 16px; flex: none; width: 100%; }
+    #eventForm .btn { min-height: 26px; padding: 0 8px; font-size: 10.5px; border-radius: 8px; }
+    .mcal-events .row { padding: 1px 5px; gap: 5px; border-radius: 7px; }
+    .mcal-events .time { min-width: 26px; }
+    .mcal-events .time .s { font-size: 9.5px; }
+    .mcal-events .time .e { display: none; }
+    .mcal-events .event-title { font-size: 10px; line-height: 1.25; }
+    .mcal-events .icon-btn { width: 16px; height: 16px; font-size: 11px; }
+    .mcal-events .icon-btn::after { inset: -7px; }
 
     /* ④ 체크리스트 카드: 왼쪽 내용 + 오른쪽 버디 */
     .card.mission,
@@ -1455,17 +1596,26 @@
     .page-foot { display: none; }
 
     /* 내부 스크롤 영역의 얇은 스크롤바 */
-    .todo-list, .sched-scroll, .offday-list { scrollbar-width: thin; }
+    .todo-list, .mcal-events, .offday-list { scrollbar-width: thin; }
     .todo-list::-webkit-scrollbar,
-    .sched-scroll::-webkit-scrollbar,
+    .mcal-events::-webkit-scrollbar,
     .offday-list::-webkit-scrollbar { width: 5px; }
     .todo-list::-webkit-scrollbar-thumb,
-    .sched-scroll::-webkit-scrollbar-thumb,
+    .mcal-events::-webkit-scrollbar-thumb,
     .offday-list::-webkit-scrollbar-thumb { background: rgba(120, 104, 74, .18); border-radius: 999px; }
   }
 
-  /* 아이패드 가로라도 높이가 낮으면(사파리 툴바 등) 더 조인다 */
-  @media (min-width: 960px) and (max-height: 700px) {
+  /* 아이패드 프로처럼 높은 화면: 일정 상세를 두 줄까지 */
+  @media (min-width: 960px) and (min-height: 900px) {
+    .mcal-day { font-size: 10px; border-radius: 6px; }
+    .mcal-dot { width: 4px; height: 4px; }
+    .mcal-dots { min-height: 5px; }
+    .mcal-events { max-height: 64px; }
+    .mcal-detail-date { font-size: 10px; }
+    .mcal-week { font-size: 8.5px; }
+  }
+
+  /* 아이패드 가로라도 높이가 낮으면(사파리 툴바 등) 더 조인다 */  @media (min-width: 960px) and (max-height: 700px) {
     .page { padding: 7px 10px; gap: 6px; }
     .hero { padding: 4px 12px; }
     .hero-text h1 { font-size: 17px; }
@@ -1485,6 +1635,13 @@
     .st-label { font-size: 12px; }
     .cal-day { min-height: 0; font-size: 8px; line-height: 1.1; }
     .cal-pad { min-height: 0; }
+    .mcal-day { font-size: 8.5px; }
+    .mcal-dots { min-height: 3px; }
+    .mcal-events { max-height: 24px; }
+    .mcal-detail-date { font-size: 8.5px; }
+    .mcal-add { min-height: 15px; font-size: 7.5px; }
+    #eventForm input { min-height: 24px; }
+    #eventForm .btn { min-height: 24px; font-size: 10px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1825,7 +1982,7 @@
         </div>
       </section>
 
-      <!-- ── 미니캘 일정 ─────────────────────────────── -->
+      <!-- ── 미니캘 일정 (달력형) ─────────────────────── -->
       <section class="card schedule" id="scheduleCard" aria-labelledby="scheduleTitle">
         <div class="card-head">
           <h2 id="scheduleTitle">
@@ -1834,28 +1991,33 @@
           </h2>
           <span class="count" id="scheduleCount"></span>
         </div>
-        <p class="card-hint">미니캘 일정을 그대로 모았어요</p>
+        <p class="card-hint">미니캘 일정을 달력에서 한눈에 봐요</p>
 
-        <div class="sched-scroll">
-          <div class="group">
-            <div class="group-head">
-              <p class="group-title">오늘 일정</p>
-              <span class="badge sage" id="todayOffTag" hidden>아빠 휴무</span>
-            </div>
-            <ul class="event-list today" id="todayList"></ul>
-            <p class="empty" id="todayEmpty" hidden>오늘은 일정이 없어요. 편안한 하루 보내세요.</p>
+        <div class="mcal">
+          <div class="mcal-bar">
+            <button class="mcal-nav" id="mcalPrev" type="button" aria-label="이전 달">‹</button>
+            <span class="mcal-month" id="mcalMonthLabel" aria-live="polite"></span>
+            <button class="mcal-nav" id="mcalNext" type="button" aria-label="다음 달">›</button>
           </div>
+          <div class="mcal-week" aria-hidden="true">
+            <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+          </div>
+          <div class="mcal-grid" id="mcalGrid" role="group" aria-label="미니캘 월간 달력"></div>
+        </div>
 
-          <div class="group">
-            <p class="group-title">다가오는 일정</p>
-            <div id="upcomingGroups"></div>
-            <p class="empty" id="upcomingEmpty" hidden>다가오는 일정이 없어요.</p>
+        <div class="mcal-detail" id="mcalDetail">
+          <div class="mcal-detail-head">
+            <span class="mcal-detail-date" id="mcalDetailDate"></span>
+            <span class="badge sage" id="todayOffTag" hidden>아빠 휴무</span>
+            <button class="btn btn-ghost mcal-add" id="mcalAddBtn" type="button">+ 일정 추가</button>
           </div>
+          <ul class="event-list mcal-events" id="mcalDayList"></ul>
+          <p class="empty mcal-day-empty" id="mcalDayEmpty" hidden>이 날은 일정이 없어요.</p>
         </div>
 
         <form class="add-form" id="eventForm" autocomplete="off">
           <label class="sr-only" for="eventTitle">일정 이름</label>
-          <input type="text" id="eventTitle" name="eventTitle" placeholder="일정 이름 (예: 병원 예약)" maxlength="80">
+          <input type="text" id="eventTitle" name="eventTitle" placeholder="일정 이름" maxlength="80">
           <label class="sr-only" for="eventWhen">날짜와 시간</label>
           <input type="datetime-local" id="eventWhen" name="eventWhen" required>
           <button class="btn btn-primary" type="submit">추가</button>
@@ -2647,7 +2809,10 @@
     dadStatus: loadDadStatus(),
     offDays: loadOffDays(),
     calYear: new Date().getFullYear(),
-    calMonth: new Date().getMonth()
+    calMonth: new Date().getMonth(),
+    schedYear: new Date().getFullYear(),
+    schedMonth: new Date().getMonth(),
+    schedSelected: ''
   };
 
   /* ── 날짜 도우미 ────────────────────────────────────── */
@@ -3008,11 +3173,9 @@
     return li;
   }
 
-  function renderEvents() {
-    var now = new Date();
-    var today = startOfDay(now);
-
-    var events = INITIAL_EVENTS.concat(state.customEvents)
+  /* 미니캘(달력형) — 목록을 모두 모아 날짜별로 보여 줍니다. */
+  function allEvents() {
+    return INITIAL_EVENTS.concat(state.customEvents)
       .map(function (raw) {
         var start = parseLocal(raw.start);
         if (!start) return null;
@@ -3026,87 +3189,220 @@
         };
       })
       .filter(Boolean)
-      .sort(function (a, b) { return a.start - b.start; });
+      .sort(function (a, b) {
+        if (a.start.getTime() !== b.start.getTime()) return a.start - b.start;
+        return a.title < b.title ? -1 : (a.title > b.title ? 1 : 0);
+      });
+  }
 
-    var todayEvents = events.filter(function (ev) {
-      return dateKey(ev.start) === dateKey(today);
-    });
-    var upcomingEvents = events.filter(function (ev) {
-      return startOfDay(ev.start).getTime() > today.getTime();
-    });
-
-    var todayList = document.getElementById('todayList');
-    todayList.textContent = '';
-    todayEvents.forEach(function (ev) {
-      todayList.appendChild(makeEventRow(ev, now, true));
-    });
-    document.getElementById('todayEmpty').hidden = todayEvents.length > 0;
-    todayList.hidden = todayEvents.length === 0;
-
-    document.getElementById('todayOffTag').hidden = !isOffDay(now);
-
-    var groupsHost = document.getElementById('upcomingGroups');
-    groupsHost.textContent = '';
-
-    var groups = [];
-    var index = {};
-    upcomingEvents.forEach(function (ev) {
+  function eventsByDay(events) {
+    var map = {};
+    events.forEach(function (ev) {
       var key = dateKey(ev.start);
-      if (!index[key]) {
-        index[key] = { date: ev.start, items: [] };
-        groups.push(index[key]);
-      }
-      index[key].items.push(ev);
+      if (!map[key]) map[key] = [];
+      map[key].push(ev);
+    });
+    return map;
+  }
+
+  /* 처음 보는 날: 오늘에 일정이 있으면 오늘, 아니면 가장 가까운 다가오는 일정이 있는 날 */
+  function defaultSchedSelection(events) {
+    var today = startOfDay(new Date());
+    var todayStr = dateKey(today);
+    var byDay = eventsByDay(events);
+    if (byDay[todayStr]) return todayStr;
+    for (var i = 0; i < events.length; i++) {
+      if (startOfDay(events[i].start).getTime() >= today.getTime()) return dateKey(events[i].start);
+    }
+    return todayStr;
+  }
+
+  function makeEventDots(items) {
+    var dots = document.createElement('span');
+    dots.className = 'mcal-dots';
+    dots.setAttribute('aria-hidden', 'true');
+
+    var shown = items.slice(0, 3);
+    shown.forEach(function (ev) {
+      var dot = document.createElement('span');
+      dot.className = 'mcal-dot' + (ev.custom ? ' custom' : '');
+      dots.appendChild(dot);
     });
 
-    groups.forEach(function (group) {
-      var block = document.createElement('div');
-      block.className = 'day-group';
+    if (items.length > shown.length) {
+      var more = document.createElement('span');
+      more.className = 'mcal-dot more';
+      more.textContent = '+' + (items.length - shown.length);
+      dots.appendChild(more);
+    }
+    return dots;
+  }
 
-      var head = document.createElement('p');
-      head.className = 'day-head';
-      var name = document.createElement('span');
-      name.textContent = formatDayLabel(group.date);
+  function renderSchedCalendar(events, byDay, todayStr) {
+    var y = state.schedYear;
+    var m = state.schedMonth;
+    document.getElementById('mcalMonthLabel').textContent = y + '년 ' + (m + 1) + '월';
 
-      var meta = document.createElement('span');
-      meta.className = 'day-meta';
+    var grid = document.getElementById('mcalGrid');
+    grid.textContent = '';
 
-      var dd = document.createElement('span');
-      dd.className = 'dday';
-      dd.textContent = ddayLabel(dayDiff(group.date, today));
-      meta.appendChild(dd);
+    var first = new Date(y, m, 1);
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    var cells = [];
+    var i;
+    for (i = 0; i < first.getDay(); i++) cells.push(null);
+    for (i = 1; i <= daysInMonth; i++) cells.push(new Date(y, m, i));
+    /* 그 달에 필요한 만큼(5주/6주)만 그려서 칸을 최대한 크게 씁니다. */
+    while (cells.length % 7 !== 0) cells.push(null);
 
-      if (isOffDay(group.date)) {
-        var offTag = document.createElement('span');
-        offTag.className = 'badge sage';
-        offTag.textContent = '아빠 휴무';
-        meta.appendChild(offTag);
+    cells.forEach(function (date) {
+      if (!date) {
+        var pad = document.createElement('span');
+        pad.className = 'mcal-day is-pad';
+        pad.setAttribute('aria-hidden', 'true');
+        grid.appendChild(pad);
+        return;
       }
 
-      head.appendChild(name);
-      head.appendChild(meta);
+      var key = dateKey(date);
+      var dayEvents = byDay[key] || [];
+      var isToday = key === todayStr;
+      var selected = key === state.schedSelected;
+      var off = state.offDays.indexOf(key) >= 0;
 
-      var list = document.createElement('ul');
-      list.className = 'event-list';
-      group.items.forEach(function (ev) {
-        list.appendChild(makeEventRow(ev, now, false));
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mcal-day'
+        + (date.getDay() === 0 ? ' sun' : '')
+        + (date.getDay() === 6 ? ' sat' : '')
+        + (isToday ? ' is-today' : '')
+        + (selected ? ' is-selected' : '')
+        + (off ? ' is-off' : '');
+      btn.setAttribute('data-date', key);
+      btn.setAttribute('data-count', String(dayEvents.length));
+      btn.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      if (isToday) btn.setAttribute('aria-current', 'date');
+
+      var label = (m + 1) + '월 ' + date.getDate() + '일 ' + WEEKDAYS_SHORT[date.getDay()] + '요일';
+      if (dayEvents.length) label += ', 일정 ' + dayEvents.length + '개';
+      if (off) label += ', 아빠 휴무';
+      btn.setAttribute('aria-label', label);
+
+      var num = document.createElement('span');
+      num.className = 'mcal-num';
+      num.textContent = String(date.getDate());
+      btn.appendChild(num);
+      btn.appendChild(makeEventDots(dayEvents));
+
+      btn.addEventListener('click', function () {
+        selectSchedDay(key);
       });
 
-      block.appendChild(head);
-      block.appendChild(list);
-      groupsHost.appendChild(block);
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderSchedDetail(events, byDay, todayStr) {
+    var key = state.schedSelected;
+    var d = parseLocal(key);
+    var items = byDay[key] || [];
+    var now = new Date();
+
+    var dateEl = document.getElementById('mcalDetailDate');
+    if (d) {
+      var text = (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + WEEKDAYS[d.getDay()];
+      if (key === todayStr) text += ' · 오늘';
+      else if (isOffDay(d)) text += ' · 휴무';
+      dateEl.textContent = text;
+      dateEl.setAttribute('data-date', key);
+    } else {
+      dateEl.textContent = '날짜를 골라 주세요';
+      dateEl.setAttribute('data-date', '');
+    }
+
+    document.getElementById('todayOffTag').hidden = !(d && isOffDay(d));
+
+    var list = document.getElementById('mcalDayList');
+    list.textContent = '';
+    items.forEach(function (ev) {
+      list.appendChild(makeEventRow(ev, now, false));
     });
 
-    document.getElementById('upcomingEmpty').hidden = upcomingEvents.length > 0;
+    list.hidden = items.length === 0;
+    document.getElementById('mcalDayEmpty').hidden = items.length > 0;
+    document.getElementById('mcalDayEmpty').textContent =
+      d && isOffDay(d) ? '일정은 없어요. 아빠 쉬는 날이에요.' : '이 날은 일정이 없어요.';
+  }
+
+  function renderEvents() {
+    var today = startOfDay(new Date());
+    var todayStr = dateKey(today);
+    var events = allEvents();
+
+    if (!state.schedSelected) state.schedSelected = defaultSchedSelection(events);
+    if (!state.schedSelected) state.schedSelected = todayStr;
+
+    var byDay = eventsByDay(events);
+    renderSchedCalendar(events, byDay, todayStr);
+    renderSchedDetail(events, byDay, todayStr);
+
+    var todayCount = (byDay[todayStr] || []).length;
+    var monthKey = state.schedYear + '-' + pad2(state.schedMonth + 1);
+    var monthCount = 0;
+    events.forEach(function (ev) {
+      if (dateKey(ev.start).indexOf(monthKey) === 0) monthCount++;
+    });
 
     var scheduleCount = document.getElementById('scheduleCount');
-    if (todayEvents.length + upcomingEvents.length === 0) {
-      scheduleCount.textContent = '';
-    } else if (todayEvents.length === 0) {
-      scheduleCount.textContent = '다가오는 일정 ' + upcomingEvents.length + '개';
-    } else {
-      scheduleCount.textContent = '오늘 ' + todayEvents.length + '개 · 예정 ' + upcomingEvents.length + '개';
+    var parts = [];
+    if (monthKey === todayStr.slice(0, 7) && todayCount) parts.push('오늘 ' + todayCount + '개');
+    if (monthCount) parts.push((state.schedMonth + 1) + '월 ' + monthCount + '개');
+    scheduleCount.textContent = parts.join(' · ');
+  }
+
+  function selectSchedDay(key) {
+    state.schedSelected = key;
+    var d = parseLocal(key);
+    if (d) {
+      state.schedYear = d.getFullYear();
+      state.schedMonth = d.getMonth();
     }
+    renderEvents();
+  }
+
+  function shiftSchedMonth(months) {
+    var d = new Date(state.schedYear, state.schedMonth + months, 1);
+    state.schedYear = d.getFullYear();
+    state.schedMonth = d.getMonth();
+
+    /* 보이는 달에 고른 날짜가 없으면 그 달 1일(이번 달이면 오늘)로 옮깁니다. */
+    var sel = parseLocal(state.schedSelected);
+    if (!sel || sel.getFullYear() !== state.schedYear || sel.getMonth() !== state.schedMonth) {
+      var now = new Date();
+      var sameMonth = now.getFullYear() === state.schedYear && now.getMonth() === state.schedMonth;
+      state.schedSelected = dateKey(new Date(state.schedYear, state.schedMonth, sameMonth ? now.getDate() : 1));
+    }
+    renderEvents();
+  }
+
+  /* "+ 일정 추가" — 고른 날짜를 그대로 일정 날짜 칸에 넣어 줍니다. */
+  function startEventAdd() {
+    var whenInput = document.getElementById('eventWhen');
+    var d = parseLocal(state.schedSelected);
+    if (d) {
+      var isToday = dateKey(d) === dateKey(new Date());
+      if (isToday) {
+        var soon = new Date();
+        soon.setMinutes(0, 0, 0);
+        soon.setHours(soon.getHours() + 1);
+        d.setHours(soon.getHours(), 0, 0, 0);
+      } else {
+        d.setHours(9, 0, 0, 0);
+      }
+      whenInput.value = toInputValue(d);
+    }
+    var titleInput = document.getElementById('eventTitle');
+    if (titleInput && typeof titleInput.focus === 'function') titleInput.focus();
   }
 
   function removeEvent(id) {
@@ -3401,6 +3697,10 @@
   document.getElementById('calPrev').addEventListener('click', function () { shiftCalendar(-1); });
   document.getElementById('calNext').addEventListener('click', function () { shiftCalendar(1); });
 
+  document.getElementById('mcalPrev').addEventListener('click', function () { shiftSchedMonth(-1); });
+  document.getElementById('mcalNext').addEventListener('click', function () { shiftSchedMonth(1); });
+  document.getElementById('mcalAddBtn').addEventListener('click', startEventAdd);
+
   document.getElementById('offdayForm').addEventListener('submit', function (event) {
     event.preventDefault();
     var input = document.getElementById('offdayDate');
@@ -3431,6 +3731,11 @@
       end: toInputValue(new Date(start.getTime() + 60 * 60000))
     });
     writeJSON(STORE_KEYS.events, state.customEvents);
+
+    /* 더한 일정이 바로 보이도록 그 날짜로 달력을 맞춥니다. */
+    state.schedSelected = dateKey(start);
+    state.schedYear = start.getFullYear();
+    state.schedMonth = start.getMonth();
 
     titleInput.value = '';
     whenInput.value = defaultWhen();
