@@ -1,0 +1,2982 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fff7e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="용우네 대시보드">
+<title>용우네 대시보드</title>
+<style>
+  :root {
+    --ink: #3f3a4d;
+    --ink-soft: #6f6880;
+    --ink-faint: #a09aad;
+    --card: #ffffff;
+    --line: #efe9df;
+    --line-soft: #f6f1e8;
+    --row: #fdfbf6;
+
+    --amber: #e3a83e;
+    --amber-deep: #a9721a;
+    --amber-soft: #fff7e3;
+    --amber-line: #ffe6b4;
+
+    --mint: #4fb894;
+    --mint-deep: #24795f;
+    --mint-soft: #eefaf4;
+    --mint-line: #d2efe3;
+
+    --pink: #ef8ba4;
+    --pink-deep: #bf5878;
+    --pink-soft: #fff1f5;
+    --pink-line: #ffd9e3;
+
+    --sky: #6aa8e8;
+    --sky-deep: #3574b6;
+    --sky-soft: #eef6ff;
+    --sky-line: #d6e8fb;
+
+    --slate: #7f9ec9;
+    --slate-deep: #4a628a;
+    --slate-soft: #f2f6fd;
+    --slate-line: #e2eaf6;
+
+    --radius-card: 24px;
+    --shadow: 0 12px 30px rgba(120, 104, 74, .08), 0 2px 5px rgba(120, 104, 74, .05);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background:
+      radial-gradient(900px 460px at 8% 0%, #fff2d9 0%, rgba(255, 242, 217, 0) 62%),
+      radial-gradient(820px 420px at 94% 2%, #e7f7ff 0%, rgba(231, 247, 255, 0) 58%),
+      linear-gradient(180deg, #fffaf0 0%, #fffdf8 30%, #f7fbff 100%);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  [hidden] { display: none !important; }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px 26px calc(44px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+  /* ── 머리글 ─────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 24px 20px;
+    border: 1px solid #ffe7c2;
+    border-radius: 30px;
+    background: linear-gradient(180deg, #fffdf6 0%, #fffdf8 44%, #eefaf0 100%);
+    box-shadow: var(--shadow);
+  }
+
+  .hill {
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    bottom: -56px;
+    height: 132px;
+    border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+    background: linear-gradient(180deg, #d6f0dd 0%, #b7e6c6 100%);
+    opacity: .75;
+    pointer-events: none;
+  }
+
+  .cloud {
+    position: absolute;
+    border-radius: 999px;
+    background: #fff;
+    opacity: .85;
+    pointer-events: none;
+  }
+
+  .cloud.c1 { width: 88px; height: 26px; top: 20px; left: 34%; }
+  .cloud.c2 { width: 60px; height: 20px; top: 44px; right: 34%; opacity: .7; }
+
+  .spark {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    color: #ffd77a;
+    pointer-events: none;
+    animation: twinkle 3.6s ease-in-out infinite;
+  }
+
+  .spark.s1 { top: 26px; left: 30%; }
+  .spark.s2 { top: 66px; left: 62%; width: 13px; height: 13px; color: #a9dcbe; animation-delay: .9s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: .3; transform: scale(.86); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  .hero-text { position: relative; z-index: 1; min-width: 0; }
+
+  .hero-text h1 {
+    margin: 0;
+    font-size: clamp(27px, 4vw, 42px);
+    line-height: 1.12;
+    font-weight: 900;
+    letter-spacing: -.045em;
+    color: #7a5231;
+    text-shadow: 0 2px 0 #fff;
+  }
+
+  .hero-sub {
+    margin: 6px 0 0;
+    font-size: clamp(13px, 1.5vw, 15px);
+    font-weight: 750;
+    letter-spacing: -.01em;
+    color: #a5805a;
+  }
+
+  .hero-when {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin: 10px 0 0;
+    padding: 6px 14px;
+    border: 1px solid #ffe4bd;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .9);
+    font-size: 13px;
+    font-weight: 800;
+    color: #7a5231;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 2px 6px rgba(160, 120, 60, .07);
+  }
+
+  .hero-clock { color: #b59a78; font-weight: 700; }
+  .hero-date { font-weight: 900; }
+
+  .hero-side {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .hero-score {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 5px;
+  }
+
+  .hero-score .qs {
+    padding: 3px 9px;
+    border: 1px solid #ffe7c2;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .92);
+    color: var(--amber-deep);
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .hero-buddies {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+  }
+
+  .hb { width: 84px; height: auto; aspect-ratio: 1 / 1; filter: drop-shadow(0 8px 12px rgba(120, 100, 60, .14)); }
+  .hb-mouse { animation: bob 5.6s ease-in-out infinite; }
+  .hb-seed { width: 78px; animation: bob 6.4s ease-in-out infinite .5s; }
+  .hb-fin { width: 80px; animation: bob 6s ease-in-out infinite 1s; }
+
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  /* ── 보드 골격 ──────────────────────────────────────── */
+  .board { display: grid; gap: 12px; }
+  .col { display: grid; gap: 12px; min-width: 0; }
+
+  .col-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 4px 4px 0;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .04em;
+    color: var(--ink-faint);
+  }
+
+  .col-label::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--col-dot, #ccc);
+  }
+
+  .col-yongwoo .col-label { color: var(--amber-deep); --col-dot: #e3a83e; }
+  .col-mom .col-label { color: var(--pink-deep); --col-dot: #ef8ba4; }
+  .col-dad .col-label { color: var(--sky-deep); --col-dot: #6aa8e8; }
+
+  .card {
+    position: relative;
+    padding: 20px 20px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    --accent: var(--slate);
+    --accent-deep: var(--slate-deep);
+    --accent-soft: var(--slate-soft);
+    --accent-line: var(--slate-line);
+    min-width: 0;
+  }
+
+  /* 카드별 파스텔 색 */
+  .card.status {
+    background: linear-gradient(180deg, #fffdf6 0%, #ffffff 100%);
+    border-color: #f4e8d3;
+    --accent: var(--amber);
+    --accent-deep: var(--amber-deep);
+    --accent-soft: var(--amber-soft);
+    --accent-line: var(--amber-line);
+  }
+
+  .card.offdays {
+    background: linear-gradient(180deg, #fbfdff 0%, #ffffff 100%);
+    border-color: #e7eef8;
+  }
+
+  .card.schedule {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    border-color: #ede8de;
+  }
+
+  .card.mission {
+    background: linear-gradient(180deg, #edfbf4 0%, #fbfffd 100%);
+    border-color: #d3f0e3;
+    --accent: var(--mint);
+    --accent-deep: var(--mint-deep);
+    --accent-soft: var(--mint-soft);
+    --accent-line: var(--mint-line);
+  }
+
+  .card.todo[data-who="yongwoo"] {
+    background: linear-gradient(180deg, #fffaea 0%, #fffdf7 100%);
+    border-color: #ffe8b6;
+    --accent: var(--amber);
+    --accent-deep: var(--amber-deep);
+    --accent-soft: var(--amber-soft);
+    --accent-line: var(--amber-line);
+  }
+
+  .card.todo[data-who="mom"] {
+    background: linear-gradient(180deg, #fff2f6 0%, #fffbfc 100%);
+    border-color: #ffdde6;
+    --accent: var(--pink);
+    --accent-deep: var(--pink-deep);
+    --accent-soft: var(--pink-soft);
+    --accent-line: var(--pink-line);
+  }
+
+  .card.todo[data-who="dad"] {
+    background: linear-gradient(180deg, #eff7ff 0%, #fbfdff 100%);
+    border-color: #d8e9fb;
+    --accent: var(--sky);
+    --accent-deep: var(--sky-deep);
+    --accent-soft: var(--sky-soft);
+    --accent-line: var(--sky-line);
+  }
+
+  /* ── 카드 머리 ──────────────────────────────────────── */
+  .card-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-bottom: 5px;
+  }
+
+  .card-head h2 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+    min-width: 0;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -.03em;
+    white-space: nowrap;
+    color: var(--accent-deep);
+  }
+
+  .icon-chip {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--accent-line);
+    color: var(--accent-deep);
+    box-shadow: 0 2px 5px rgba(120, 104, 74, .08);
+  }
+
+  .icon-chip svg { width: 17px; height: 17px; }
+
+  .card-hint {
+    margin: 0 0 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    color: var(--ink-faint);
+    word-break: keep-all;
+  }
+
+  .count:empty { display: none; }
+
+  .count {
+    flex: none;
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-line);
+    background: #fff;
+    color: var(--accent-deep);
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* ── 버디 캐릭터 ────────────────────────────────────── */
+  .buddy {
+    position: absolute;
+    top: -8px;
+    right: 8px;
+    width: 78px;
+    pointer-events: none;
+  }
+
+  .buddy-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform-origin: 50% 92%;
+    transition: transform .5s cubic-bezier(.22, .9, .3, 1.35), filter .4s ease;
+    filter: drop-shadow(0 8px 12px rgba(120, 104, 74, .16));
+  }
+
+  .evo-label {
+    flex: none;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-line);
+    background: #fff;
+    color: var(--accent-deep);
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+    white-space: nowrap;
+  }
+
+  .card.mission .card-head,
+  .card.todo[data-who] .card-head { padding-right: 92px; }
+
+  /* 단계별 진화 */
+  .evo2, .evo3 { display: none; }
+
+  .card[data-stage="2"] .evo2 { display: inline; }
+  .card[data-stage="3"] .evo2,
+  .card[data-stage="3"] .evo3 { display: inline; }
+
+  .card[data-stage="2"] .buddy-svg { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(255, 214, 120, .75)); }
+  .card[data-stage="3"] .buddy-svg { transform: scale(1.1); filter: drop-shadow(0 0 16px rgba(255, 202, 84, .9)); }
+
+  .card[data-stage="3"] .evo-label {
+    background: linear-gradient(180deg, #ffeaaa, #ffd05e);
+    border-color: #f0bb45;
+    color: #6d4a08;
+  }
+
+  /* 퀘스트 클리어 연출 */
+  .card.is-cleared {
+    box-shadow: 0 0 0 3px rgba(255, 208, 94, .55), 0 16px 34px rgba(226, 168, 62, .22);
+  }
+
+  .confetti { display: none; }
+
+  .card.is-cleared .confetti {
+    display: block;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+  }
+
+  .cf {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    color: #ffd05e;
+    animation: pop 2.4s ease-in-out infinite;
+  }
+
+  .cf.c1 { top: 6%; left: 8%; }
+  .cf.c2 { top: 12%; right: 12%; width: 12px; height: 12px; color: #a9dcbe; animation-delay: .5s; }
+  .cf.c3 { bottom: 14%; left: 14%; width: 11px; height: 11px; color: #ffb3c7; animation-delay: 1s; }
+  .cf.c4 { bottom: 8%; right: 8%; width: 13px; height: 13px; color: #a9d6f7; animation-delay: 1.4s; }
+
+  @keyframes pop {
+    0%, 100% { opacity: .35; transform: scale(.8) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.15) rotate(18deg); }
+  }
+
+  /* ── 퀘스트 진행 바 ─────────────────────────────────── */
+  .quest {
+    margin-top: 10px;
+    padding: 9px 11px;
+    border: 1px solid var(--accent-line);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, .85);
+  }
+
+  .quest-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+
+  .quest-badge {
+    padding: 3px 9px;
+    border: 1px solid var(--accent-line);
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+    white-space: nowrap;
+  }
+
+  .card.is-cleared .quest-badge {
+    background: linear-gradient(180deg, #ffeaaa, #ffd05e);
+    border-color: #f0bb45;
+    color: #6d4a08;
+  }
+
+  .quest-count {
+    font-size: 11px;
+    font-weight: 850;
+    color: var(--accent-deep);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .quest-bar {
+    display: block;
+    height: 9px;
+    border-radius: 999px;
+    background: #f1efe6;
+    overflow: hidden;
+  }
+
+  .quest-fill {
+    display: block;
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #9fe6c8, var(--mint));
+    transition: width .45s ease;
+  }
+
+  .card.todo[data-who="yongwoo"] .quest-fill { background: linear-gradient(90deg, #ffe19a, #f0b93f); }
+  .card.todo[data-who="mom"] .quest-fill { background: linear-gradient(90deg, #ffc9d8, #ef8ba4); }
+  .card.todo[data-who="dad"] .quest-fill { background: linear-gradient(90deg, #bcdefa, #6aa8e8); }
+
+  .card.is-cleared .quest-fill { background: linear-gradient(90deg, #ffe08f, #ffbf3c); }
+
+  /* ── 아빠는 지금 ────────────────────────────────────── */
+  .status-now {
+    margin: 4px 0 0;
+    font-size: clamp(30px, 3.8vw, 40px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -.035em;
+    color: var(--amber-deep);
+  }
+
+  .status-now.is-empty { color: var(--ink-faint); letter-spacing: 0; }
+
+  .card.status[data-current="집"] .status-now { color: var(--mint-deep); }
+  .card.status[data-current="도크"] .status-now { color: var(--sky-deep); }
+
+  .status-sub {
+    margin: 5px 0 0;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    word-break: keep-all;
+  }
+
+  .status-picker {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 13px;
+  }
+
+  .status-btn {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    min-height: 78px;
+    padding: 9px 6px 8px;
+    border: 1.5px solid #f0e6d4;
+    border-radius: 18px;
+    background: #fff;
+    color: var(--ink-soft);
+    font: inherit;
+    cursor: pointer;
+    transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .12s ease;
+  }
+
+  .status-btn svg { width: 25px; height: 25px; color: #bfae94; }
+
+  .st-label {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: -.02em;
+    color: var(--ink);
+  }
+
+  .st-sub {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-faint);
+    letter-spacing: -.01em;
+  }
+
+  .status-btn:hover { background: #fffdf7; border-color: #ffe0ac; }
+  .status-btn:active { transform: translateY(1px); }
+
+  .status-btn[data-status="일"][aria-pressed="true"] {
+    border-color: var(--amber);
+    background: linear-gradient(180deg, #fff9e8, #fff1ce);
+    box-shadow: 0 8px 18px rgba(227, 168, 62, .22);
+  }
+
+  .status-btn[data-status="일"][aria-pressed="true"] svg,
+  .status-btn[data-status="일"][aria-pressed="true"] .st-label { color: var(--amber-deep); }
+
+  .status-btn[data-status="집"][aria-pressed="true"] {
+    border-color: var(--mint);
+    background: linear-gradient(180deg, #f1fcf7, #e2f8ee);
+    box-shadow: 0 8px 18px rgba(79, 184, 148, .22);
+  }
+
+  .status-btn[data-status="집"][aria-pressed="true"] svg,
+  .status-btn[data-status="집"][aria-pressed="true"] .st-label { color: var(--mint-deep); }
+
+  .status-btn[data-status="도크"][aria-pressed="true"] {
+    border-color: var(--sky);
+    background: linear-gradient(180deg, #f2f9ff, #e3f1ff);
+    box-shadow: 0 8px 18px rgba(106, 168, 232, .22);
+  }
+
+  .status-btn[data-status="도크"][aria-pressed="true"] svg,
+  .status-btn[data-status="도크"][aria-pressed="true"] .st-label { color: var(--sky-deep); }
+
+  /* ── 아빠 휴무일 + 미니 달력 ────────────────────────── */
+  .offday-body { display: flex; flex-direction: column; min-height: 0; }
+
+  .cal {
+    margin: 2px 0;
+    padding: 9px 9px 7px;
+    border: 1px solid var(--slate-line);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .85);
+  }
+
+  .cal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+
+  .cal-month {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--slate-deep);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cal-nav {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--slate-line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--slate-deep);
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .cal-nav:hover { background: var(--slate-soft); }
+
+  .cal-week,
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .cal-week {
+    margin-bottom: 3px;
+    font-size: 10px;
+    font-weight: 850;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  .cal-week span:first-child { color: #dd8a9f; }
+  .cal-week span:last-child { color: #7ba7d9; }
+
+  .cal-day {
+    display: grid;
+    place-items: center;
+    min-height: 33px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: #fff;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: background-color .14s ease, color .14s ease, box-shadow .14s ease;
+  }
+
+  .cal-day.sun { color: #d97d95; }
+  .cal-day.sat { color: #6f9fd8; }
+  .cal-day:hover { background: var(--slate-soft); }
+
+  .cal-day.is-today {
+    box-shadow: inset 0 0 0 2px #ffcf7a;
+    color: var(--amber-deep);
+    font-weight: 900;
+  }
+
+  .cal-day.is-off {
+    background: linear-gradient(180deg, #8fe0bf, #4fb894);
+    color: #fff;
+    font-weight: 900;
+    box-shadow: 0 4px 10px rgba(79, 184, 148, .26);
+  }
+
+  .cal-day.is-off.is-today {
+    background: linear-gradient(180deg, #ffd573, #f0b13f);
+    color: #6d4a08;
+    box-shadow: 0 4px 10px rgba(227, 168, 62, .3);
+  }
+
+  .cal-day.is-past { color: #d4cec2; cursor: default; background: transparent; }
+  .cal-day.is-past:hover { background: transparent; }
+
+  .cal-pad { min-height: 33px; }
+
+  .cal-legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 2px 0;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--ink-faint);
+  }
+
+  .cal-legend .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: #4fb894;
+  }
+
+  .cal-legend .dot.today { background: #ffcf7a; }
+
+  .offday-side { display: flex; flex-direction: column; min-height: 0; }
+
+  .offday-list {
+    list-style: none;
+    margin: 9px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 178px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dday-chip {
+    display: inline-grid;
+    place-items: center;
+    min-width: 50px;
+    height: 26px;
+    padding: 0 9px;
+    border: 1px solid var(--mint-line);
+    border-radius: 9px;
+    background: var(--mint-soft);
+    color: var(--mint-deep);
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dday-chip.today {
+    border-color: #4fb894;
+    background: linear-gradient(180deg, #8fe0bf, #4fb894);
+    color: #fff;
+  }
+
+  .dday-chip.tomorrow { border-color: #cbe6da; background: #f2fbf7; }
+
+  .hint {
+    margin: 7px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 750;
+    color: var(--pink-deep);
+    word-break: keep-all;
+  }
+
+  /* ── 일정 ───────────────────────────────────────────── */
+  .sched-scroll { min-height: 0; }
+
+  .group { margin-top: 11px; }
+  .group:first-of-type { margin-top: 0; }
+
+  .group-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 7px;
+  }
+
+  .group-title {
+    margin: 0;
+    font-size: 11.5px;
+    font-weight: 900;
+    letter-spacing: .03em;
+    color: var(--ink-faint);
+  }
+
+  .badge.sage {
+    padding: 3px 9px;
+    border: 1px solid var(--mint-line);
+    border-radius: 999px;
+    background: var(--mint-soft);
+    color: var(--mint-deep);
+    font-size: 10px;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  .event-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 11px;
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    background: var(--row);
+  }
+
+  .event-list.today .row {
+    background: linear-gradient(180deg, #fffdf8, #fffaf0);
+    border-color: #ffeccd;
+  }
+
+  .row.is-past { opacity: .55; }
+
+  .time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 42px;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .time .s { font-size: 13.5px; font-weight: 900; letter-spacing: -.01em; color: #7a5231; }
+  .time .e { font-size: 10px; font-weight: 700; color: var(--ink-faint); }
+
+  .event-body { min-width: 0; }
+
+  .event-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 800;
+    letter-spacing: -.015em;
+    line-height: 1.4;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    color: var(--ink);
+  }
+
+  .ev-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--amber); }
+  .ev-dot.c1 { background: #e3a83e; }
+  .ev-dot.c2 { background: #4fb894; }
+  .ev-dot.c3 { background: #ef8ba4; }
+  .ev-dot.c4 { background: #6aa8e8; }
+  .ev-dot.c5 { background: #b79ceb; }
+
+  .badge {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--amber);
+    color: #fff;
+    font-size: 9.5px;
+    font-weight: 850;
+    letter-spacing: .02em;
+  }
+
+  .badge.muted { background: #f0ece2; color: var(--ink-faint); }
+
+  .day-group + .day-group { margin-top: 4px; }
+
+  .day-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 11px 0 6px;
+    font-size: 12px;
+    font-weight: 850;
+    color: var(--ink-soft);
+    letter-spacing: -.005em;
+  }
+
+  .day-group:first-child .day-head { margin-top: 2px; }
+
+  .day-meta { display: flex; align-items: center; gap: 7px; flex: none; }
+
+  .dday {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .empty {
+    margin: 8px 0 0;
+    padding: 15px 13px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-faint);
+    background: rgba(255, 255, 255, .75);
+    border: 1px dashed #e9e2d6;
+    border-radius: 14px;
+  }
+
+  /* ── 체크리스트 ─────────────────────────────────────── */
+  .todo-list { list-style: none; margin: 2px 0 0; padding: 0; }
+
+  .todo-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 6px;
+    padding: 2px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .todo-item:last-child { border-bottom: none; }
+
+  .todo-main {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 6px 2px;
+    cursor: pointer;
+  }
+
+  .todo-main input[type="checkbox"] {
+    width: 21px;
+    height: 21px;
+    margin: 0;
+    flex: none;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .todo-text {
+    font-size: 15px;
+    line-height: 1.45;
+    letter-spacing: -.012em;
+    font-weight: 650;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    color: var(--ink);
+    transition: color .15s ease;
+  }
+
+  .todo-item.done .todo-text {
+    color: var(--ink-faint);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #d9d2c6;
+  }
+
+  .star-chip {
+    flex: none;
+    padding: 2px 7px;
+    border-radius: 8px;
+    background: #fff8e2;
+    border: 1px solid #ffe6a8;
+    color: #b0821a;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .todo-item .icon-btn { margin-top: 9px; opacity: .5; }
+  .todo-item .icon-btn:hover { opacity: 1; }
+
+  .todo-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 11px;
+    padding-top: 11px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .foot-note {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--ink-faint);
+  }
+
+  /* ── 폼 · 버튼 ──────────────────────────────────────── */
+  .add-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .add-form.flush { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .add-form input[type="text"],
+  .add-form input[type="date"],
+  .add-form input[type="datetime-local"] {
+    flex: 1 1 140px;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 13px;
+    border: 1.5px solid var(--accent-line);
+    border-radius: 14px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 16px; /* iOS에서 입력할 때 화면이 확대되지 않도록 16px 이상 유지 */
+    letter-spacing: -.01em;
+  }
+
+  .add-form input[type="datetime-local"] { flex: 1 1 180px; font-variant-numeric: tabular-nums; }
+  .add-form input[type="date"] { font-variant-numeric: tabular-nums; color-scheme: light; }
+  .add-form input::placeholder { color: #b9b1a4; }
+
+  .add-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(227, 168, 62, .14);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+    cursor: pointer;
+    transition: filter .15s ease, background-color .15s ease, transform .12s ease;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(120, 104, 74, .16);
+  }
+
+  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-primary:active { transform: translateY(1px); }
+
+  .btn-ghost {
+    min-height: 38px;
+    padding: 0 13px;
+    border-color: var(--accent-line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--accent-deep);
+    font-size: 12px;
+    font-weight: 850;
+  }
+
+  .btn-ghost:not(:disabled):hover { background: var(--accent-soft); }
+  .btn-ghost:disabled { opacity: .45; cursor: default; }
+
+  .icon-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 9px;
+    background: none;
+    color: #bcb3a4;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+  }
+
+  /* 손가락으로 누르기 편하도록 아이콘 버튼의 터치 영역을 44px로 넓힙니다. */
+  .icon-btn::after { content: ""; position: absolute; inset: -7px; border-radius: 12px; }
+
+  .icon-btn:hover { background: rgba(120, 100, 70, .09); color: var(--ink); }
+
+  /* ── Footer ─────────────────────────────────────────── */
+  .page-foot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 2px 4px 0;
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: center;
+    color: #b3aa9b;
+  }
+
+  .page-foot svg { width: 14px; height: 14px; flex: none; color: #ffd05e; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 10px; }
+
+  /* ── 좁은 화면(휴대폰) ──────────────────────────────── */
+  @media (max-width: 719px) {
+    .page { padding: 14px 13px calc(30px + env(safe-area-inset-bottom)); gap: 12px; }
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      text-align: center;
+      padding: 18px 16px 16px;
+      border-radius: 24px;
+      gap: 8px;
+    }
+    .hero-text { text-align: center; }
+    .hero-side { align-items: center; }
+    .hero-buddies { gap: 0; }
+    .hb { width: 74px; }
+    .hb-seed { width: 70px; }
+    .hb-fin { width: 72px; }
+    .hero-when { font-size: 12px; padding: 5px 11px; }
+    .cloud { display: none; }
+    .spark { display: none; }
+    .card { padding: 16px 14px 14px; border-radius: 20px; }
+    .card-hint { font-size: 12px; }
+    .add-form .btn-primary { flex: 1 1 100%; }
+    .status-btn { min-height: 72px; }
+    .st-sub { display: none; }
+    .buddy { width: 68px; top: -6px; }
+    .card.mission .card-head,
+    .card.todo[data-who] .card-head { padding-right: 78px; }
+    .card.mission .card-hint,
+    .card.todo[data-who] .card-hint { padding-right: 62px; }
+    .evo-label { font-size: 9px; padding: 2px 6px; }
+    .card-head h2 { font-size: 16.5px; gap: 7px; }
+    .icon-chip { width: 26px; height: 26px; border-radius: 8px; }
+    .icon-chip svg { width: 15px; height: 15px; }
+    .count { font-size: 10px; padding: 3px 8px; }
+  }
+
+  /* ══ 아이패드 한 화면 (가로, ≥960px) ═══════════════════ */
+  @media (min-width: 960px) {
+    html, body { height: 100%; }
+    body { height: 100dvh; overflow: hidden; font-size: 15px; }
+
+    .page {
+      height: 100dvh;
+      max-width: 1600px;
+      padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    /* ① 머리글 한 줄 띠 */
+    .hero {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 14px;
+      border-radius: 16px;
+      grid-template-columns: none;
+    }
+    .hero-text { display: flex; align-items: center; gap: 10px; }
+    .hero-text h1 { font-size: 20px; letter-spacing: -.05em; white-space: nowrap; }
+    .hero-sub { display: none; }
+    .hero-when { margin: 0; padding: 3px 10px; font-size: 10.5px; gap: 6px; }
+    .hero-side { flex-direction: row; align-items: center; gap: 10px; }
+    .hero-score { align-items: center; }
+    .hero-score .qs { padding: 3px 8px; font-size: 10px; }
+    .hero-buddies { gap: 1px; }
+    .hb { width: 42px; }
+    .hb-seed { width: 40px; }
+    .hb-fin { width: 41px; }
+    .hill { height: 44px; bottom: -26px; }
+    .cloud, .spark { display: none; }
+
+    /* ② 보드: 세 단락(용우 | 엄마 | 아빠)이 나란히 */
+    .board {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .col { gap: 8px; min-height: 0; }
+    /* 1·2단락: 위 카드 + 아래 카드를 정확히 반씩 */
+    .col-yongwoo, .col-mom { grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr); }
+    /* 3단락: 아빠 할 일 + (아빠는 지금 · 아빠 휴무일) */
+    .col-dad { grid-template-rows: auto minmax(0, 1fr) auto minmax(0, .8fr); }
+
+    .col-label {
+      height: 13px;
+      margin: 0;
+      padding-left: 3px;
+      font-size: 9.5px;
+      letter-spacing: .1em;
+    }
+    .col-label::before { width: 5px; height: 5px; }
+
+    /* ③ 카드 공통 콤팩트 */
+    .card {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 8px 10px;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .card-head { margin-bottom: 2px; gap: 3px 6px; flex-wrap: nowrap; }
+    .card-head h2 { font-size: 13px; gap: 6px; }
+    .icon-chip { width: 20px; height: 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(120, 104, 74, .08); }
+    .icon-chip svg { width: 12px; height: 12px; }
+    .count { padding: 2px 6px; font-size: 9px; }
+    .evo-label { padding: 1px 5px; font-size: 8.5px; }
+    .card-hint { margin: 0 0 3px; font-size: 9.5px; line-height: 1.3; }
+    .empty { margin: 2px 0 0; padding: 5px 7px; font-size: 9.5px; line-height: 1.4; border-radius: 8px; }
+
+    /* 아빠는 지금 */
+    .card.status { justify-content: flex-start; gap: 0; }
+    .card.status .card-hint { display: none; }
+    .status-now { margin: auto 0 0; font-size: 31px; }
+    .status-sub { margin: 2px 0 0; font-size: 11px; }
+    .status-picker { margin: 7px 0 auto; gap: 7px; }
+    .status-btn { min-height: 56px; padding: 5px 4px 4px; border-radius: 14px; gap: 0; }
+    .status-btn svg { width: 20px; height: 20px; }
+    .st-label { font-size: 13.5px; }
+    .st-sub { font-size: 8.5px; }
+
+    /* 아빠 휴무일 */
+    .card.offdays { gap: 5px; }
+    .card.offdays .card-hint { display: none; }
+    .offday-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      gap: 6px;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .cal { margin: 0; padding: 4px 4px 3px; border-radius: 10px; display: flex; flex-direction: column; min-height: 0; }
+    .cal-bar { margin-bottom: 1px; }
+    .cal-nav { width: 18px; height: 18px; font-size: 11px; border-radius: 5px; }
+    .cal-month { font-size: 9.5px; }
+    .cal-week { font-size: 7.5px; gap: 1px; margin-bottom: 1px; }
+    .cal-grid { gap: 1px; flex: 1 1 auto; min-height: 0; grid-auto-rows: minmax(0, 1fr); }
+    .cal-day { min-height: 0; padding: 0; line-height: 1.2; font-size: 9px; border-radius: 5px; }
+    .cal-pad { min-height: 0; }
+    .cal-day.is-today { box-shadow: inset 0 0 0 1.5px #ffcf7a; }
+    .cal-legend { display: none; }
+    .offday-side { gap: 3px; }
+    .offday-list { margin: 0; padding: 0 2px 0 0; gap: 3px; max-height: none; flex: 1 1 auto; }
+    .offday-list .row { padding: 2px 3px; gap: 3px; border-radius: 7px; }
+    .offday-list .event-title { font-size: 8.5px; }
+    .dday-chip { min-width: 25px; height: 15px; padding: 0 3px; border-radius: 5px; font-size: 8.5px; }
+    .card.offdays .todo-item .icon-btn { width: 14px; height: 14px; font-size: 11px; }
+    .offday-list .icon-btn { width: 14px; height: 14px; font-size: 11px; }
+    .offday-list .icon-btn::after { inset: -10px; }
+    .card.offdays .add-form { margin: 0; padding: 0; border: 0; gap: 4px; flex-wrap: nowrap; }
+    .card.offdays .add-form input[type="date"] {
+      flex: 1 1 0;
+      min-height: 30px;
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+    .card.offdays .btn { min-height: 30px; padding: 0 9px; font-size: 11px; border-radius: 8px; }
+    .card.offdays .hint { margin-top: 2px; font-size: 9px; }
+
+    /* 일정 */
+    .card.schedule { gap: 4px; }
+    .card.schedule .card-hint { display: none; }
+    .sched-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .group { margin-top: 4px; }
+    .group-head { margin: 0 0 3px; gap: 5px; }
+    .group-title { font-size: 8.5px; letter-spacing: .04em; }
+    .badge.sage { padding: 1px 5px; font-size: 8px; }
+    .event-list { gap: 3px; }
+    .row { padding: 3px 6px; gap: 6px; border-radius: 8px; }
+    .time { min-width: 28px; }
+    .time .s { font-size: 10px; }
+    .time .e { font-size: 8px; }
+    .event-title { font-size: 10.5px; gap: 4px; line-height: 1.3; }
+    .ev-dot { width: 5px; height: 5px; }
+    .badge { margin-top: 1px; padding: 1px 4px; font-size: 8px; }
+    .day-head { margin: 5px 0 3px; font-size: 9.5px; }
+    .dday { font-size: 8.5px; }
+    #eventForm { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px; margin: 0; padding: 0; border: 0; }
+    #eventForm input[type="text"] { grid-column: 1 / -1; }
+    #eventForm input { min-height: 30px; padding: 2px 7px; border-radius: 8px; font-size: 16px; flex: none; width: 100%; }
+    #eventForm .btn { min-height: 30px; padding: 0 9px; font-size: 11px; border-radius: 8px; }
+
+    /* ④ 체크리스트 카드: 왼쪽 내용 + 오른쪽 버디 */
+    .card.mission,
+    .card.todo[data-who] {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 60px;
+      grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+      grid-template-areas:
+        "head  head"
+        "form  buddy"
+        "list  buddy"
+        "quest quest"
+        "foot  foot";
+      gap: 3px 5px;
+      align-content: stretch;
+    }
+    .card.mission .card-head,
+    .card.todo[data-who] .card-head { grid-area: head; padding-right: 0; margin: 0; }
+    .card.mission .card-hint,
+    .card.todo[data-who] .card-hint { display: none; }
+    .card.mission .add-form,
+    .card.todo[data-who] .add-form { grid-area: form; margin: 0; padding: 0; border: 0; gap: 4px; flex-wrap: nowrap; }
+    .card.mission .add-form input,
+    .card.todo[data-who] .add-form input { flex: 1 1 0; min-height: 30px; padding: 2px 8px; border-radius: 8px; }
+    .card.mission .add-form .btn,
+    .card.todo[data-who] .add-form .btn { min-height: 30px; padding: 0 9px; font-size: 11px; border-radius: 8px; }
+    .card.mission .todo-list,
+    .card.todo[data-who] .todo-list {
+      grid-area: list;
+      margin: 0;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .card.mission .empty,
+    .card.todo[data-who] .empty { grid-area: list; align-self: start; margin: 0; }
+    .todo-item { padding: 1px 0; gap: 2px; }
+    .todo-main { min-height: 30px; padding: 3px 0; gap: 6px; }
+    .todo-main input[type="checkbox"] { width: 17px; height: 17px; }
+    .todo-text { font-size: 11.5px; line-height: 1.35; }
+    .star-chip { padding: 1px 4px; font-size: 8px; border-radius: 5px; }
+    .todo-item .icon-btn { width: 18px; height: 18px; font-size: 12px; margin-top: 6px; }
+    .todo-item .icon-btn::after { inset: -6px; }
+    .card.mission .quest,
+    .card.todo[data-who] .quest { grid-area: quest; margin: 0; padding: 3px 6px 4px; border-radius: 9px; }
+    .quest-top { margin-bottom: 3px; gap: 5px; }
+    .quest-badge { padding: 1px 6px; font-size: 8.5px; }
+    .quest-count { font-size: 8.5px; }
+    .quest-bar { height: 5px; }
+    .card.mission .todo-foot,
+    .card.todo[data-who] .todo-foot { grid-area: foot; margin: 0; padding: 0; border: 0; gap: 4px; flex-wrap: nowrap; }
+    .foot-note { font-size: 8.5px; }
+    .card.mission .btn-ghost,
+    .card.todo[data-who] .btn-ghost { min-height: 20px; padding: 0 7px; font-size: 8.5px; border-radius: 6px; }
+    .card.mission .buddy,
+    .card.todo[data-who] .buddy {
+      position: static;
+      grid-area: buddy;
+      width: 100%;
+      align-self: center;
+      justify-self: center;
+      margin-bottom: 2px;
+    }
+    .card.mission .buddy-svg,
+    .card.todo[data-who] .buddy-svg { filter: drop-shadow(0 4px 7px rgba(120, 104, 74, .14)); }
+
+    .page-foot { display: none; }
+
+    /* 내부 스크롤 영역의 얇은 스크롤바 */
+    .todo-list, .sched-scroll, .offday-list { scrollbar-width: thin; }
+    .todo-list::-webkit-scrollbar,
+    .sched-scroll::-webkit-scrollbar,
+    .offday-list::-webkit-scrollbar { width: 5px; }
+    .todo-list::-webkit-scrollbar-thumb,
+    .sched-scroll::-webkit-scrollbar-thumb,
+    .offday-list::-webkit-scrollbar-thumb { background: rgba(120, 104, 74, .18); border-radius: 999px; }
+  }
+
+  /* 아이패드 가로라도 높이가 낮으면(사파리 툴바 등) 더 조인다 */
+  @media (min-width: 960px) and (max-height: 700px) {
+    .page { padding: 7px 10px; gap: 6px; }
+    .hero { padding: 4px 12px; }
+    .hero-text h1 { font-size: 17px; }
+    .hb { width: 30px; }
+    .hb-seed, .hb-fin { width: 29px; }
+    .board { gap: 6px; }
+    .col { gap: 6px; }
+    .col-label { display: none; }
+    .col-yongwoo, .col-mom { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+    .col-dad { grid-template-rows: minmax(0, 1fr) auto minmax(0, .72fr); }
+    .card { padding: 6px 8px; border-radius: 12px; }
+    .status-now { font-size: 23px; }
+    .status-sub { font-size: 10px; }
+    .status-picker { margin: 5px 0 auto; gap: 5px; }
+    .status-btn { min-height: 42px; }
+    .status-btn svg { width: 17px; height: 17px; }
+    .st-label { font-size: 12px; }
+    .cal-day { min-height: 0; font-size: 8px; line-height: 1.1; }
+    .cal-pad { min-height: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ 버디 캐릭터 (클래식 포켓몬 느낌, 인라인 SVG 심볼) ══════════ -->
+<svg class="svg-defs" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- ⚡ 노란 전기 쥐 버디 (기본 단계 몸통) -->
+    <symbol id="buddy-mouse" viewBox="0 0 120 120">
+      <path d="M84 82c9-1 12-7 10-13" fill="none" stroke="#f2c451" stroke-width="6" stroke-linecap="round"/>
+      <path d="M92 62l14-5-2 9 10 4-17 14-1-12-9-3z" fill="#ffd869" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
+      <ellipse cx="60" cy="79" rx="25" ry="23" fill="#ffe07f" stroke="#e2ad33" stroke-width="2"/>
+      <ellipse cx="60" cy="86" rx="14" ry="11" fill="#fff7d8" opacity=".95"/>
+      <ellipse cx="46" cy="100" rx="10" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
+      <ellipse cx="74" cy="100" rx="10" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
+      <ellipse cx="35" cy="74" rx="7.5" ry="10.5" transform="rotate(-22 35 74)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
+      <ellipse cx="85" cy="74" rx="7.5" ry="10.5" transform="rotate(22 85 74)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
+      <ellipse cx="44" cy="20" rx="6" ry="14" transform="rotate(-30 44 20)" fill="#ffe07f" stroke="#e2ad33" stroke-width="2"/>
+      <ellipse cx="76" cy="20" rx="6" ry="14" transform="rotate(30 76 20)" fill="#ffe07f" stroke="#e2ad33" stroke-width="2"/>
+      <ellipse cx="37.5" cy="10" rx="4.4" ry="7.4" transform="rotate(-30 37.5 10)" fill="#4a3a2c"/>
+      <ellipse cx="82.5" cy="10" rx="4.4" ry="7.4" transform="rotate(30 82.5 10)" fill="#4a3a2c"/>
+      <circle cx="60" cy="50" r="24" fill="#ffe07f" stroke="#e2ad33" stroke-width="2"/>
+      <circle cx="41" cy="58" r="5.6" fill="#ff9a86"/>
+      <circle cx="79" cy="58" r="5.6" fill="#ff9a86"/>
+      <circle cx="51" cy="47" r="5" fill="#3d2f26"/>
+      <circle cx="69" cy="47" r="5" fill="#3d2f26"/>
+      <circle cx="52.4" cy="45.4" r="1.7" fill="#fff"/>
+      <circle cx="70.4" cy="45.4" r="1.7" fill="#fff"/>
+      <path d="M58 53h4l-2 2.6z" fill="#8a6236"/>
+      <path d="M54.5 59c3 3.4 8 3.4 11 0" fill="none" stroke="#8a6236" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- 🌿 민트 새싹 버디 (기본 단계 몸통) -->
+    <symbol id="buddy-seed" viewBox="0 0 120 120">
+      <path d="M86 84c11 2 17-6 14-14-8 1-13 7-14 14z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.6" stroke-linejoin="round"/>
+      <ellipse cx="60" cy="82" rx="28" ry="21" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
+      <ellipse cx="60" cy="88" rx="16" ry="11" fill="#eafbf2" opacity=".8"/>
+      <circle cx="36" cy="86" r="3.4" fill="#9fe3bd"/>
+      <circle cx="84" cy="86" r="3.4" fill="#9fe3bd"/>
+      <ellipse cx="43" cy="99" rx="9.5" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
+      <ellipse cx="77" cy="99" rx="9.5" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
+      <ellipse cx="34" cy="78" rx="7" ry="9.5" transform="rotate(-25 34 78)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
+      <ellipse cx="86" cy="78" rx="7" ry="9.5" transform="rotate(25 86 78)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
+      <circle cx="60" cy="50" r="25" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
+      <path d="M40 34l-5-10 11 5z" fill="#b3eaca" stroke="#57b083" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M80 34l5-10-11 5z" fill="#b3eaca" stroke="#57b083" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M58 28c-1-11 7-18 18-18 0 11-8 17-18 18z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M61 25c2-6 7-10 12-12" fill="none" stroke="#4f9b6e" stroke-width="1.3" stroke-linecap="round" opacity=".75"/>
+      <ellipse cx="38" cy="57" rx="4.5" ry="3" fill="#ffc0c6" opacity=".85"/>
+      <ellipse cx="82" cy="57" rx="4.5" ry="3" fill="#ffc0c6" opacity=".85"/>
+      <circle cx="51" cy="48" r="4.8" fill="#d9645c"/>
+      <circle cx="69" cy="48" r="4.8" fill="#d9645c"/>
+      <circle cx="52.4" cy="46.4" r="1.6" fill="#fff"/>
+      <circle cx="70.4" cy="46.4" r="1.6" fill="#fff"/>
+      <path d="M53 58c3 4 11 4 14 0" fill="none" stroke="#3f7f5c" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- 💧 하늘빛 물 버디 (기본 단계 몸통) -->
+    <symbol id="buddy-fin" viewBox="0 0 120 120">
+      <path d="M86 86c12 3 19-5 16-14-6 5-11 7-16 7z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
+      <ellipse cx="60" cy="81" rx="27" ry="22" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
+      <ellipse cx="60" cy="88" rx="17" ry="12" fill="#fff4dd" stroke="#e6cd9c" stroke-width="1.6"/>
+      <path d="M52 84h16M55 90h10" fill="none" stroke="#e6cd9c" stroke-width="1.4" stroke-linecap="round"/>
+      <ellipse cx="45" cy="100" rx="10" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
+      <ellipse cx="75" cy="100" rx="10" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
+      <ellipse cx="33" cy="76" rx="7" ry="10" transform="rotate(-20 33 76)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
+      <ellipse cx="87" cy="76" rx="7" ry="10" transform="rotate(20 87 76)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
+      <circle cx="60" cy="50" r="25" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
+      <path d="M60 26c2-9 8-13 14-13-1 8-6 12-14 13z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="41" cy="57" r="4.6" fill="#ffb59b" opacity=".9"/>
+      <circle cx="79" cy="57" r="4.6" fill="#ffb59b" opacity=".9"/>
+      <circle cx="51" cy="48" r="5.2" fill="#33506e"/>
+      <circle cx="69" cy="48" r="5.2" fill="#33506e"/>
+      <circle cx="52.4" cy="46.2" r="1.8" fill="#fff"/>
+      <circle cx="70.4" cy="46.2" r="1.8" fill="#fff"/>
+      <path d="M53 59c3 4 11 4 14 0" fill="none" stroke="#2f5578" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="spark" viewBox="0 0 24 24">
+      <path d="M12 1.6l2.3 6.3 6.3 2.3-6.3 2.3-2.3 6.3-2.3-6.3L3.4 10.2l6.3-2.3z" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="icon-brief" viewBox="0 0 24 24">
+      <rect x="3" y="7.5" width="18" height="12.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3 12.5h18" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".55"/>
+    </symbol>
+
+    <symbol id="icon-home" viewBox="0 0 24 24">
+      <path d="M4 10.5 12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5H15v-5.5h-6v5.5H5.5A1.5 1.5 0 0 1 4 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </symbol>
+
+    <symbol id="icon-boat" viewBox="0 0 24 24">
+      <path d="M3.5 14h17l-1.6 4.2a2 2 0 0 1-1.9 1.3H7a2 2 0 0 1-1.9-1.3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M12 13.5V4.5l5.5 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <rect x="3.5" y="5.5" width="17" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M3.5 10h17M8 3.5v4M16 3.5v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="icon-checklist" viewBox="0 0 24 24">
+      <path d="M4 6.5 6 8.5 9.5 5M4 14.5 6 16.5 9.5 13" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12.5 7h7M12.5 15h7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="icon-star" viewBox="0 0 24 24">
+      <path d="M12 3.4l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9-5.3-2.9-5.3 2.9 1.1-5.9L3.5 9.6l5.9-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="page">
+
+  <!-- ══ 머리글 ═════════════════════════════════════════ -->
+  <header class="hero">
+    <span class="hill"></span>
+    <span class="cloud c1"></span>
+    <span class="cloud c2"></span>
+    <svg class="spark s1" aria-hidden="true"><use href="#spark"></use></svg>
+    <svg class="spark s2" aria-hidden="true"><use href="#spark"></use></svg>
+
+    <div class="hero-text">
+      <h1>용우네 대시보드</h1>
+      <p class="hero-sub">오늘도 우리 가족 모두 화이팅!</p>
+      <p class="hero-when"><span class="hero-date" id="todayDate">—</span><span class="hero-clock" id="todayClock"></span></p>
+    </div>
+
+    <div class="hero-side">
+      <div class="hero-score" aria-live="polite">
+        <span class="qs" id="questStars">⭐ 별 0개</span>
+        <span class="qs" id="questCleared">🎉 0 / 4 클리어</span>
+      </div>
+      <div class="hero-buddies" aria-hidden="true">
+        <svg class="hb hb-mouse" viewBox="0 0 120 120"><use href="#buddy-mouse"></use></svg>
+        <svg class="hb hb-seed" viewBox="0 0 120 120"><use href="#buddy-seed"></use></svg>
+        <svg class="hb hb-fin" viewBox="0 0 120 120"><use href="#buddy-fin"></use></svg>
+      </div>
+    </div>
+  </header>
+
+  <main class="board">
+
+    <!-- ══ 1단락 · 용우 ═══════════════════════════════ -->
+    <div class="col col-yongwoo">
+      <p class="col-label">용우</p>
+
+      <!-- 용우 할 일 (퀘스트 + 진화) -->
+      <section class="card todo" id="todoCard-yongwoo" data-who="yongwoo" data-stage="1" aria-labelledby="todoTitle-yongwoo">
+        <span class="confetti" aria-hidden="true">
+          <svg class="cf c1"><use href="#spark"></use></svg>
+          <svg class="cf c2"><use href="#spark"></use></svg>
+          <svg class="cf c3"><use href="#spark"></use></svg>
+          <svg class="cf c4"><use href="#spark"></use></svg>
+        </span>
+
+        <div class="card-head">
+          <h2 id="todoTitle-yongwoo">
+            <span class="icon-chip"><svg aria-hidden="true"><use href="#icon-checklist"></use></svg></span>
+            용우 할 일
+          </h2>
+          <span class="evo-label" id="evoLabel-yongwoo">Lv.1 파트너</span>
+          <span class="count" id="todoCount-yongwoo" aria-live="polite">남은 할 일 0개</span>
+        </div>
+        <p class="card-hint">체크할수록 버디가 자라요!</p>
+
+        <div class="buddy" id="buddy-yongwoo" aria-hidden="true">
+          <svg class="buddy-svg" viewBox="0 0 120 120">
+            <use href="#buddy-mouse"></use>
+            <g class="evo2">
+              <path d="M55 36l-3-8 7 3 1-7 3 7 6-3-3 8z" fill="#fff3bf" stroke="#d9a526" stroke-width="1.2" stroke-linejoin="round"/>
+              <path d="M24 42l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#ffe58f"/>
+              <path d="M96 42l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#ffe58f"/>
+              <ellipse cx="60" cy="108" rx="30" ry="7" fill="#fff1c0" opacity=".85"/>
+            </g>
+            <g class="evo3">
+              <circle cx="60" cy="60" r="57" fill="none" stroke="#ffd76a" stroke-width="2" opacity=".5"/>
+              <path d="M47 24l4 8h18l4-8-7 4-6-9-6 9z" fill="#ffd76a" stroke="#d99a1f" stroke-width="1.6" stroke-linejoin="round"/>
+              <circle cx="60" cy="19" r="1.8" fill="#fff8d0"/>
+              <path d="M18 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffe08f"/>
+              <path d="M102 68l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffe08f"/>
+            </g>
+          </svg>
+        </div>
+
+        <form class="add-form flush" id="todoForm-yongwoo" autocomplete="off">
+          <label class="sr-only" for="todoInput-yongwoo">용우 할 일</label>
+          <input type="text" id="todoInput-yongwoo" name="todoInput-yongwoo" placeholder="용우가 할 일을 적어 두세요" maxlength="120">
+          <button class="btn btn-primary" type="submit">추가</button>
+        </form>
+        <ul class="todo-list" id="todoList-yongwoo"></ul>
+        <p class="empty" id="todoEmpty-yongwoo" hidden>아직 적어 둔 할 일이 없어요.</p>
+
+        <div class="quest">
+          <div class="quest-top">
+            <span class="quest-badge" id="questBadge-yongwoo">🌱 퀘스트 시작 전</span>
+            <span class="quest-count" id="questCount-yongwoo">완료 0 / 전체 0</span>
+          </div>
+          <span class="quest-bar"><span class="quest-fill" id="questFill-yongwoo"></span></span>
+        </div>
+
+        <div class="todo-foot">
+          <span class="foot-note" id="doneInfo-yongwoo">완료 0개</span>
+          <button class="btn btn-ghost" id="clearDone-yongwoo" type="button" disabled>완료 지우기</button>
+        </div>
+      </section>
+
+      <!-- 용우 미션 (퀘스트 + 진화) -->
+      <section class="card mission" id="missionCard" data-stage="1" aria-labelledby="missionTitle">
+        <span class="confetti" aria-hidden="true">
+          <svg class="cf c1"><use href="#spark"></use></svg>
+          <svg class="cf c2"><use href="#spark"></use></svg>
+          <svg class="cf c3"><use href="#spark"></use></svg>
+          <svg class="cf c4"><use href="#spark"></use></svg>
+        </span>
+
+        <div class="card-head">
+          <h2 id="missionTitle">
+            <span class="icon-chip"><svg aria-hidden="true"><use href="#icon-star"></use></svg></span>
+            용우 미션
+          </h2>
+          <span class="evo-label" id="evoLabel-mission">Lv.1 파트너</span>
+          <span class="count" id="missionCount" aria-live="polite">남은 미션 0개</span>
+        </div>
+        <p class="card-hint">미션을 해내면 버디가 진화해요!</p>
+
+        <div class="buddy" id="buddy-mission" aria-hidden="true">
+          <svg class="buddy-svg" viewBox="0 0 120 120">
+            <use href="#buddy-mouse"></use>
+            <g class="evo2">
+              <path d="M55 36l-3-8 7 3 1-7 3 7 6-3-3 8z" fill="#fff3bf" stroke="#d9a526" stroke-width="1.2" stroke-linejoin="round"/>
+              <path d="M24 42l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#ffe58f"/>
+              <path d="M96 42l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#ffe58f"/>
+              <ellipse cx="60" cy="108" rx="30" ry="7" fill="#fff1c0" opacity=".85"/>
+            </g>
+            <g class="evo3">
+              <circle cx="60" cy="60" r="57" fill="none" stroke="#ffd76a" stroke-width="2" opacity=".5"/>
+              <path d="M47 24l4 8h18l4-8-7 4-6-9-6 9z" fill="#ffd76a" stroke="#d99a1f" stroke-width="1.6" stroke-linejoin="round"/>
+              <circle cx="60" cy="19" r="1.8" fill="#fff8d0"/>
+              <path d="M18 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffe08f"/>
+              <path d="M102 68l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffe08f"/>
+            </g>
+          </svg>
+        </div>
+
+        <form class="add-form flush" id="missionForm" autocomplete="off">
+          <label class="sr-only" for="missionInput">용우 미션</label>
+          <input type="text" id="missionInput" name="missionInput" placeholder="용우가 해낼 미션을 적어 두세요" maxlength="120">
+          <button class="btn btn-primary" type="submit">추가</button>
+        </form>
+        <ul class="todo-list" id="missionList"></ul>
+        <p class="empty" id="missionEmpty" hidden>아직 정한 미션이 없어요. 해내고 싶은 일을 적어 두세요.</p>
+
+        <div class="quest">
+          <div class="quest-top">
+            <span class="quest-badge" id="questBadge-mission">🌱 퀘스트 시작 전</span>
+            <span class="quest-count" id="questCount-mission">완료 0 / 전체 0</span>
+          </div>
+          <span class="quest-bar"><span class="quest-fill" id="questFill-mission"></span></span>
+        </div>
+
+        <div class="todo-foot">
+          <span class="foot-note" id="doneInfo-mission">완료 0개</span>
+          <button class="btn btn-ghost" id="clearDone-mission" type="button" disabled>완료 지우기</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ══ 2단락 · 엄마 ═══════════════════════════════ -->
+    <div class="col col-mom">
+      <p class="col-label">엄마</p>
+
+      <section class="card todo" id="todoCard-mom" data-who="mom" data-stage="1" aria-labelledby="todoTitle-mom">
+        <span class="confetti" aria-hidden="true">
+          <svg class="cf c1"><use href="#spark"></use></svg>
+          <svg class="cf c2"><use href="#spark"></use></svg>
+          <svg class="cf c3"><use href="#spark"></use></svg>
+          <svg class="cf c4"><use href="#spark"></use></svg>
+        </span>
+
+        <div class="card-head">
+          <h2 id="todoTitle-mom">
+            <span class="icon-chip"><svg aria-hidden="true"><use href="#icon-checklist"></use></svg></span>
+            엄마 할 일
+          </h2>
+          <span class="evo-label" id="evoLabel-mom">Lv.1 파트너</span>
+          <span class="count" id="todoCount-mom" aria-live="polite">남은 할 일 0개</span>
+        </div>
+        <p class="card-hint">체크할수록 버디가 자라요!</p>
+
+        <div class="buddy" id="buddy-mom" aria-hidden="true">
+          <svg class="buddy-svg" viewBox="0 0 120 120">
+            <use href="#buddy-seed"></use>
+            <g class="evo2">
+              <path d="M42 30c-9 3-13 10-11 17 7-2 11-8 11-17z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.4" stroke-linejoin="round"/>
+              <path d="M78 30c9 3 13 10 11 17-7-2-11-8-11-17z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.4" stroke-linejoin="round"/>
+              <ellipse cx="60" cy="108" rx="30" ry="7" fill="#d9f5e6" opacity=".85"/>
+            </g>
+            <g class="evo3">
+              <circle cx="60" cy="60" r="57" fill="none" stroke="#8fdcae" stroke-width="2" opacity=".5"/>
+              <circle cx="34" cy="10" r="5" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
+              <circle cx="43" cy="15" r="5" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
+              <circle cx="40" cy="25" r="5" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
+              <circle cx="29" cy="26" r="5" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
+              <circle cx="25" cy="16" r="5" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
+              <circle cx="33" cy="17" r="4" fill="#ffe08f" stroke="#e0a83c" stroke-width="1.2"/>
+              <path d="M100 44l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffe08f"/>
+              <path d="M16 62l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#9ce3b8"/>
+            </g>
+          </svg>
+        </div>
+
+        <form class="add-form flush" id="todoForm-mom" autocomplete="off">
+          <label class="sr-only" for="todoInput-mom">엄마 할 일</label>
+          <input type="text" id="todoInput-mom" name="todoInput-mom" placeholder="엄마가 할 일을 적어 두세요" maxlength="120">
+          <button class="btn btn-primary" type="submit">추가</button>
+        </form>
+        <ul class="todo-list" id="todoList-mom"></ul>
+        <p class="empty" id="todoEmpty-mom" hidden>아직 적어 둔 할 일이 없어요.</p>
+
+        <div class="quest">
+          <div class="quest-top">
+            <span class="quest-badge" id="questBadge-mom">🌱 퀘스트 시작 전</span>
+            <span class="quest-count" id="questCount-mom">완료 0 / 전체 0</span>
+          </div>
+          <span class="quest-bar"><span class="quest-fill" id="questFill-mom"></span></span>
+        </div>
+
+        <div class="todo-foot">
+          <span class="foot-note" id="doneInfo-mom">완료 0개</span>
+          <button class="btn btn-ghost" id="clearDone-mom" type="button" disabled>완료 지우기</button>
+        </div>
+      </section>
+
+      <!-- ── 미니캘 일정 ─────────────────────────────── -->
+      <section class="card schedule" id="scheduleCard" aria-labelledby="scheduleTitle">
+        <div class="card-head">
+          <h2 id="scheduleTitle">
+            <span class="icon-chip"><svg aria-hidden="true"><use href="#icon-calendar"></use></svg></span>
+            내 미니캘 일정
+          </h2>
+          <span class="count" id="scheduleCount"></span>
+        </div>
+        <p class="card-hint">미니캘 일정을 그대로 모았어요</p>
+
+        <div class="sched-scroll">
+          <div class="group">
+            <div class="group-head">
+              <p class="group-title">오늘 일정</p>
+              <span class="badge sage" id="todayOffTag" hidden>아빠 휴무</span>
+            </div>
+            <ul class="event-list today" id="todayList"></ul>
+            <p class="empty" id="todayEmpty" hidden>오늘은 일정이 없어요. 편안한 하루 보내세요.</p>
+          </div>
+
+          <div class="group">
+            <p class="group-title">다가오는 일정</p>
+            <div id="upcomingGroups"></div>
+            <p class="empty" id="upcomingEmpty" hidden>다가오는 일정이 없어요.</p>
+          </div>
+        </div>
+
+        <form class="add-form" id="eventForm" autocomplete="off">
+          <label class="sr-only" for="eventTitle">일정 이름</label>
+          <input type="text" id="eventTitle" name="eventTitle" placeholder="일정 이름 (예: 병원 예약)" maxlength="80">
+          <label class="sr-only" for="eventWhen">날짜와 시간</label>
+          <input type="datetime-local" id="eventWhen" name="eventWhen" required>
+          <button class="btn btn-primary" type="submit">추가</button>
+        </form>
+      </section>
+
+    </div>
+
+    <!-- ══ 3단락 · 아빠 ═══════════════════════════════ -->
+    <div class="col col-dad">
+      <p class="col-label">아빠</p>
+
+      <section class="card todo" id="todoCard-dad" data-who="dad" data-stage="1" aria-labelledby="todoTitle-dad">
+        <span class="confetti" aria-hidden="true">
+          <svg class="cf c1"><use href="#spark"></use></svg>
+          <svg class="cf c2"><use href="#spark"></use></svg>
+          <svg class="cf c3"><use href="#spark"></use></svg>
+          <svg class="cf c4"><use href="#spark"></use></svg>
+        </span>
+
+        <div class="card-head">
+          <h2 id="todoTitle-dad">
+            <span class="icon-chip"><svg aria-hidden="true"><use href="#icon-checklist"></use></svg></span>
+            아빠 할 일
+          </h2>
+          <span class="evo-label" id="evoLabel-dad">Lv.1 파트너</span>
+          <span class="count" id="todoCount-dad" aria-live="polite">남은 할 일 0개</span>
+        </div>
+        <p class="card-hint">체크할수록 버디가 자라요!</p>
+
+        <div class="buddy" id="buddy-dad" aria-hidden="true">
+          <svg class="buddy-svg" viewBox="0 0 120 120">
+            <use href="#buddy-fin"></use>
+            <g class="evo2">
+              <path d="M96 40c4 6 4 12 0 18-4-6-4-12 0-18z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M18 56c3 5 3 9 0 14-3-5-3-9 0-14z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.2" stroke-linejoin="round"/>
+              <ellipse cx="60" cy="108" rx="30" ry="7" fill="#d8ecfd" opacity=".85"/>
+            </g>
+            <g class="evo3">
+              <circle cx="60" cy="60" r="57" fill="none" stroke="#a9d8f8" stroke-width="2" opacity=".55"/>
+              <path d="M47 24l4 8h18l4-8-7 4-6-9-6 9z" fill="#bcdcfa" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
+              <circle cx="60" cy="19" r="1.8" fill="#e8f5ff"/>
+              <path d="M20 36l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#bcdefa"/>
+              <path d="M100 70l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#bcdefa"/>
+            </g>
+          </svg>
+        </div>
+
+        <form class="add-form flush" id="todoForm-dad" autocomplete="off">
+          <label class="sr-only" for="todoInput-dad">아빠 할 일</label>
+          <input type="text" id="todoInput-dad" name="todoInput-dad" placeholder="아빠가 할 일을 적어 두세요" maxlength="120">
+          <button class="btn btn-primary" type="submit">추가</button>
+        </form>
+        <ul class="todo-list" id="todoList-dad"></ul>
+        <p class="empty" id="todoEmpty-dad" hidden>아직 적어 둔 할 일이 없어요.</p>
+
+        <div class="quest">
+          <div class="quest-top">
+            <span class="quest-badge" id="questBadge-dad">🌱 퀘스트 시작 전</span>
+            <span class="quest-count" id="questCount-dad">완료 0 / 전체 0</span>
+          </div>
+          <span class="quest-bar"><span class="quest-fill" id="questFill-dad"></span></span>
+        </div>
+
+        <div class="todo-foot">
+          <span class="foot-note" id="doneInfo-dad">완료 0개</span>
+          <button class="btn btn-ghost" id="clearDone-dad" type="button" disabled>완료 지우기</button>
+        </div>
+      </section>
+
+      <!-- ── 아빠는 지금 ─────────────────────────────── -->
+      <section class="card status" id="statusCard" data-current="none" aria-labelledby="statusTitle">
+        <div class="card-head">
+          <h2 id="statusTitle">
+            <span class="icon-chip"><svg aria-hidden="true"><use href="#icon-home"></use></svg></span>
+            아빠는 지금
+          </h2>
+          <span class="count" id="statusStamp" aria-live="polite"></span>
+        </div>
+        <p class="card-hint">오늘은 어떤 하루인가요?</p>
+        <p class="status-now is-empty" id="statusNow">—</p>
+        <p class="status-sub" id="statusSub">아래 버튼에서 아빠 상태를 골라 주세요.</p>
+        <div class="status-picker" id="statusPicker" role="group" aria-label="아빠는 지금">
+          <button class="status-btn" type="button" data-status="일" aria-pressed="false">
+            <svg aria-hidden="true"><use href="#icon-brief"></use></svg>
+            <span class="st-label">일</span>
+            <span class="st-sub">회사에서 일해요</span>
+          </button>
+          <button class="status-btn" type="button" data-status="집" aria-pressed="false">
+            <svg aria-hidden="true"><use href="#icon-home"></use></svg>
+            <span class="st-label">집</span>
+            <span class="st-sub">집에 있어요</span>
+          </button>
+          <button class="status-btn" type="button" data-status="도크" aria-pressed="false">
+            <svg aria-hidden="true"><use href="#icon-boat"></use></svg>
+            <span class="st-label">도크</span>
+            <span class="st-sub">도크에 있어요</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ── 아빠 휴무일 ─────────────────────────────── -->
+      <section class="card offdays" id="offdayCard" aria-labelledby="offdayTitle">
+        <div class="card-head">
+          <h2 id="offdayTitle">
+            <span class="icon-chip"><svg aria-hidden="true"><use href="#icon-calendar"></use></svg></span>
+            아빠 휴무일
+          </h2>
+          <span class="count" id="offdayCount"></span>
+        </div>
+        <p class="card-hint">쉬는 날은 달력에서 콕 눌러도 담겨요</p>
+
+        <div class="offday-body">
+          <div class="cal">
+            <div class="cal-bar">
+              <button class="cal-nav" id="calPrev" type="button" aria-label="이전 달">‹</button>
+              <span class="cal-month" id="calMonthLabel"></span>
+              <button class="cal-nav" id="calNext" type="button" aria-label="다음 달">›</button>
+            </div>
+            <div class="cal-week" aria-hidden="true">
+              <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+            <p class="cal-legend"><span><span class="dot"></span>쉬는 날</span><span><span class="dot today"></span>오늘</span></p>
+          </div>
+
+          <div class="offday-side">
+            <ul class="offday-list" id="offdayList"></ul>
+            <p class="empty" id="offdayEmpty">아직 등록된 휴무일이 없어요. 쉬는 날을 더해 두세요.</p>
+          </div>
+        </div>
+
+        <form class="add-form" id="offdayForm" autocomplete="off">
+          <label class="sr-only" for="offdayDate">휴무 날짜</label>
+          <input type="date" id="offdayDate" name="offdayDate" required>
+          <button class="btn btn-primary" type="submit">추가</button>
+        </form>
+        <p class="hint" id="offdayHint" role="status" hidden></p>
+      </section>
+    </div>
+
+  </main>
+
+  <p class="page-foot">
+    <svg aria-hidden="true"><use href="#spark"></use></svg>
+    아이패드에 열어 두고 함께 보는 보드 · 추가한 일정·할 일·휴무일은 이 브라우저에 저장됩니다.
+  </p>
+
+  <noscript>
+    <p class="empty">이 보드를 쓰려면 브라우저에서 자바스크립트를 켜 주세요.</p>
+  </noscript>
+</div>
+
+<script>
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════════
+     초기 일정 (Apple 캘린더에서 확인한 실제 일정)
+     필요하면 이 목록만 고치면 됩니다.
+     ═══════════════════════════════════════════════════════ */
+  var INITIAL_EVENTS = [
+    { id: 'init-1', title: '에스케이브로드밴드', start: '2026-11-16T12:00', end: '2026-11-16T13:00' },
+    { id: 'init-2', title: '10-12 심사연습',      start: '2026-11-21T19:00', end: '2026-11-21T20:00' },
+    { id: 'init-3', title: '4:30 용우치과',       start: '2026-11-25T11:00', end: '2026-11-25T12:00' },
+    { id: 'init-4', title: '아줌마 월급',          start: '2026-11-27T11:00', end: '2026-11-27T12:00' },
+    { id: 'init-5', title: '심사',                start: '2026-11-28T19:00', end: '2026-11-28T20:00' },
+    { id: 'init-6', title: '안과 3:30',           start: '2026-12-01T14:00', end: '2026-12-01T15:00' }
+  ];
+
+  var STORE_KEYS = {
+    events: 'familyBoard.events.v1',
+    todos: 'familyBoard.todos.v2',
+    todosLegacy: 'familyBoard.todos.v1',
+    missions: 'familyBoard.missions.v1',
+    dadStatus: 'familyBoard.dadStatus.v1',
+    offDays: 'familyBoard.offDays.v1'
+  };
+
+  var PEOPLE = [
+    { key: 'yongwoo', name: '용우' },
+    { key: 'mom', name: '엄마' },
+    { key: 'dad', name: '아빠' }
+  ];
+
+  /* 퀘스트·진화가 붙는 체크리스트 4칸 */
+  var QUEST_PREFIXES = ['mission', 'yongwoo', 'mom', 'dad'];
+
+  var DAD_STATUS = ['일', '집', '도크'];
+
+  var DAD_STATUS_SUB = {
+    '일': '지금 일하고 있어요.',
+    '집': '지금 집에 있어요.',
+    '도크': '지금 도크에 있어요.'
+  };
+
+  var WEEKDAYS = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+  var WEEKDAYS_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
+  var DOT_CLASSES = ['c1', 'c2', 'c3', 'c4', 'c5'];
+  var MISSION_STARS = 10;
+
+  var STAGE_LABEL = {
+    1: 'Lv.1 파트너',
+    2: 'Lv.2 진화!',
+    3: 'Lv.3 최종 진화!'
+  };
+
+  /* ── 저장소 ─────────────────────────────────────────── */
+  function readJSON(key, fallback) {
+    try {
+      var raw = window.localStorage.getItem(key);
+      if (raw === null || raw === undefined || raw === '') return fallback;
+      var parsed = JSON.parse(raw);
+      return parsed === null || parsed === undefined ? fallback : parsed;
+    } catch (err) {
+      return fallback;
+    }
+  }
+
+  function writeJSON(key, value) {
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      /* 저장이 막힌 환경(사생활 보호 모드 등)에서는 화면에서만 동작합니다. */
+    }
+  }
+
+  function newId(prefix) {
+    return prefix + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+
+  function isValidStatus(value) {
+    for (var i = 0; i < DAD_STATUS.length; i++) {
+      if (DAD_STATUS[i] === value) return true;
+    }
+    return false;
+  }
+
+  function normalizeChecklistItems(list) {
+    if (!Array.isArray(list)) return [];
+    return list.filter(function (item) {
+      return item && typeof item.text === 'string';
+    }).map(function (item) {
+      return {
+        id: String(item.id || newId('it')),
+        text: String(item.text).slice(0, 120),
+        done: item.done === true
+      };
+    });
+  }
+
+  function loadTodos() {
+    var blank = { yongwoo: [], mom: [], dad: [] };
+    var stored = readJSON(STORE_KEYS.todos, null);
+
+    if (stored && typeof stored === 'object' && !Array.isArray(stored)) {
+      return {
+        yongwoo: normalizeChecklistItems(stored.yongwoo),
+        mom: normalizeChecklistItems(stored.mom),
+        dad: normalizeChecklistItems(stored.dad)
+      };
+    }
+
+    /* 예전 한 칸짜리 '할 일' 목록은 이 보드를 쓰던 엄마 목록으로 옮겨 둡니다. */
+    var legacy = readJSON(STORE_KEYS.todosLegacy, []);
+    if (Array.isArray(legacy) && legacy.length > 0) {
+      blank.mom = normalizeChecklistItems(legacy);
+      writeJSON(STORE_KEYS.todos, blank);
+    }
+    return blank;
+  }
+
+  function loadDadStatus() {
+    var stored = readJSON(STORE_KEYS.dadStatus, null);
+    if (stored && typeof stored === 'object' && isValidStatus(String(stored.value))) {
+      return {
+        value: String(stored.value),
+        at: typeof stored.at === 'number' ? stored.at : null
+      };
+    }
+    if (typeof stored === 'string' && isValidStatus(stored)) {
+      return { value: stored, at: null };
+    }
+    return { value: '', at: null };
+  }
+
+  function loadOffDays() {
+    var stored = readJSON(STORE_KEYS.offDays, []);
+    if (!Array.isArray(stored)) return [];
+    var seen = {};
+    var out = [];
+    stored.forEach(function (value) {
+      var d = parseLocal(value);
+      if (!d) return;
+      var key = dateKey(d);
+      if (seen[key]) return;
+      seen[key] = true;
+      out.push(key);
+    });
+    out.sort();
+    return out;
+  }
+
+  var state = {
+    customEvents: readJSON(STORE_KEYS.events, []).filter(function (item) {
+      return item && typeof item.title === 'string' && typeof item.start === 'string';
+    }),
+    todos: loadTodos(),
+    missions: normalizeChecklistItems(readJSON(STORE_KEYS.missions, [])),
+    dadStatus: loadDadStatus(),
+    offDays: loadOffDays(),
+    calYear: new Date().getFullYear(),
+    calMonth: new Date().getMonth()
+  };
+
+  /* ── 날짜 도우미 ────────────────────────────────────── */
+  function pad2(n) {
+    return n < 10 ? '0' + n : String(n);
+  }
+
+  function dateKey(d) {
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  function parseLocal(value) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}))?/.exec(String(value || ''));
+    if (!m) return null;
+    var d = new Date(
+      Number(m[1]), Number(m[2]) - 1, Number(m[3]),
+      Number(m[4] || 0), Number(m[5] || 0), 0, 0
+    );
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function toInputValue(d) {
+    return dateKey(d) + 'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  function startOfDay(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  function dayDiff(a, b) {
+    return Math.round((startOfDay(a) - startOfDay(b)) / 86400000);
+  }
+
+  function formatTime(d) {
+    return pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  function formatClock(d) {
+    var h = d.getHours();
+    var h12 = h % 12 === 0 ? 12 : h % 12;
+    return (h < 12 ? '오전 ' : '오후 ') + h12 + ':' + pad2(d.getMinutes());
+  }
+
+  function formatDayLabel(d) {
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + WEEKDAYS_SHORT[d.getDay()] + '요일';
+  }
+
+  function defaultWhen() {
+    var d = new Date();
+    d.setMinutes(0, 0, 0);
+    d.setHours(d.getHours() + 1);
+    return toInputValue(d);
+  }
+
+  function isOffDay(date) {
+    return state.offDays.indexOf(dateKey(date)) >= 0;
+  }
+
+  /* ── 렌더링: 머리글 ─────────────────────────────────── */
+  function renderDate() {
+    var now = new Date();
+    document.getElementById('todayDate').textContent =
+      now.getFullYear() + '년 ' + (now.getMonth() + 1) + '월 ' + now.getDate() + '일 ' + WEEKDAYS[now.getDay()];
+    document.getElementById('todayClock').textContent = formatClock(now);
+  }
+
+  function makeIconButton(label, glyph, onClick) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'icon-btn';
+    btn.setAttribute('aria-label', label);
+    btn.textContent = glyph;
+    btn.addEventListener('click', onClick);
+    return btn;
+  }
+
+  /* ── 아빠는 지금 ────────────────────────────────────── */
+  function formatStamp(ts) {
+    var d = new Date(ts);
+    var diff = dayDiff(new Date(), d);
+    var clock = formatClock(d);
+    if (diff === 0) return clock + '에 바꿈';
+    if (diff === 1) return '어제 ' + clock + '에 바꿈';
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + clock + '에 바꿈';
+  }
+
+  function renderDadStatus() {
+    var value = state.dadStatus.value;
+    var card = document.getElementById('statusCard');
+    var nowEl = document.getElementById('statusNow');
+    var subEl = document.getElementById('statusSub');
+    var stampEl = document.getElementById('statusStamp');
+
+    card.setAttribute('data-current', value || 'none');
+
+    if (value) {
+      nowEl.textContent = value;
+      nowEl.className = 'status-now';
+      subEl.textContent = DAD_STATUS_SUB[value];
+    } else {
+      nowEl.textContent = '—';
+      nowEl.className = 'status-now is-empty';
+      subEl.textContent = '아래 버튼에서 아빠 상태를 골라 주세요.';
+    }
+
+    var buttons = document.querySelectorAll('[data-status]');
+    Array.prototype.forEach.call(buttons, function (btn) {
+      btn.setAttribute('aria-pressed', btn.getAttribute('data-status') === value ? 'true' : 'false');
+    });
+
+    stampEl.textContent = (value && state.dadStatus.at) ? formatStamp(state.dadStatus.at) : '';
+  }
+
+  function setDadStatus(value) {
+    if (!isValidStatus(value)) return;
+    state.dadStatus = { value: value, at: Date.now() };
+    writeJSON(STORE_KEYS.dadStatus, state.dadStatus);
+    renderDadStatus();
+  }
+
+  /* ── 아빠 휴무일 ────────────────────────────────────── */
+  function pruneOffDays() {
+    var today = startOfDay(new Date()).getTime();
+    var kept = state.offDays.filter(function (key) {
+      var d = parseLocal(key);
+      return d && startOfDay(d).getTime() >= today;
+    });
+    if (kept.length !== state.offDays.length) {
+      state.offDays = kept;
+      writeJSON(STORE_KEYS.offDays, state.offDays);
+    }
+  }
+
+  function ddayLabel(diff) {
+    if (diff === 0) return '오늘';
+    if (diff === 1) return '내일';
+    return 'D-' + diff;
+  }
+
+  function showOffdayHint(message) {
+    var hint = document.getElementById('offdayHint');
+    hint.textContent = message || '';
+    hint.hidden = !message;
+  }
+
+  function renderCalendar() {
+    var y = state.calYear;
+    var m = state.calMonth;
+    document.getElementById('calMonthLabel').textContent = y + '년 ' + (m + 1) + '월';
+
+    var grid = document.getElementById('calGrid');
+    grid.textContent = '';
+
+    var today = startOfDay(new Date());
+    var first = new Date(y, m, 1);
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+
+    for (var i = 0; i < first.getDay(); i++) {
+      var pad = document.createElement('span');
+      pad.className = 'cal-pad';
+      grid.appendChild(pad);
+    }
+
+    var days = [];
+    for (var d = 1; d <= daysInMonth; d++) days.push(d);
+
+    days.forEach(function (day) {
+      var date = new Date(y, m, day);
+      var key = dateKey(date);
+      var isToday = date.getTime() === today.getTime();
+      var off = state.offDays.indexOf(key) >= 0;
+      var past = date.getTime() < today.getTime();
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day'
+        + (date.getDay() === 0 ? ' sun' : '')
+        + (date.getDay() === 6 ? ' sat' : '')
+        + (isToday ? ' is-today' : '')
+        + (off ? ' is-off' : '')
+        + (past ? ' is-past' : '');
+      btn.setAttribute('data-date', key);
+      btn.textContent = String(day);
+      btn.setAttribute(
+        'aria-label',
+        (m + 1) + '월 ' + day + '일 ' + WEEKDAYS_SHORT[date.getDay()] + '요일' + (off ? ', 휴무일' : '')
+      );
+      if (past) {
+        btn.disabled = true;
+      } else {
+        btn.addEventListener('click', function () {
+          toggleOffDay(key);
+        });
+      }
+      grid.appendChild(btn);
+    });
+  }
+
+  function shiftCalendar(months) {
+    var d = new Date(state.calYear, state.calMonth + months, 1);
+    state.calYear = d.getFullYear();
+    state.calMonth = d.getMonth();
+    renderCalendar();
+  }
+
+  function toggleOffDay(key) {
+    if (state.offDays.indexOf(key) >= 0) {
+      removeOffDay(key);
+    } else {
+      addOffDay(key);
+    }
+  }
+
+  function renderOffDays() {
+    pruneOffDays();
+
+    var today = startOfDay(new Date());
+    var list = document.getElementById('offdayList');
+    list.textContent = '';
+
+    state.offDays.forEach(function (key) {
+      var d = parseLocal(key);
+      if (!d) return;
+      var diff = dayDiff(d, today);
+
+      var li = document.createElement('li');
+      li.className = 'row';
+
+      var chip = document.createElement('span');
+      chip.className = 'dday-chip' + (diff === 0 ? ' today' : (diff === 1 ? ' tomorrow' : ''));
+      chip.textContent = ddayLabel(diff);
+
+      var body = document.createElement('div');
+      body.className = 'event-body';
+      var title = document.createElement('p');
+      title.className = 'event-title';
+      title.textContent = (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + WEEKDAYS[d.getDay()];
+      body.appendChild(title);
+
+      li.appendChild(chip);
+      li.appendChild(body);
+      li.appendChild(makeIconButton('휴무일 삭제: ' + formatDayLabel(d), '\u00D7', function () {
+        removeOffDay(key);
+      }));
+
+      list.appendChild(li);
+    });
+
+    list.hidden = state.offDays.length === 0;
+    document.getElementById('offdayEmpty').hidden = state.offDays.length > 0;
+
+    var countEl = document.getElementById('offdayCount');
+    countEl.textContent = state.offDays.length === 0 ? '' : '남은 휴무 ' + state.offDays.length + '일';
+
+    renderCalendar();
+  }
+
+  function addOffDay(value) {
+    var d = parseLocal(value);
+    if (!d) {
+      showOffdayHint('쉬는 날짜를 골라 주세요.');
+      return false;
+    }
+
+    var key = dateKey(d);
+    if (startOfDay(d).getTime() < startOfDay(new Date()).getTime()) {
+      showOffdayHint('지난 날짜는 넣을 수 없어요. 오늘 이후 날짜를 골라 주세요.');
+      return false;
+    }
+    if (state.offDays.indexOf(key) >= 0) {
+      showOffdayHint('이미 등록된 날짜예요.');
+      return false;
+    }
+
+    state.offDays.push(key);
+    state.offDays.sort();
+    writeJSON(STORE_KEYS.offDays, state.offDays);
+
+    state.calYear = d.getFullYear();
+    state.calMonth = d.getMonth();
+
+    showOffdayHint('');
+    renderOffDays();
+    renderEvents();
+    return true;
+  }
+
+  function removeOffDay(key) {
+    state.offDays = state.offDays.filter(function (item) {
+      return item !== key;
+    });
+    writeJSON(STORE_KEYS.offDays, state.offDays);
+    showOffdayHint('');
+    renderOffDays();
+    renderEvents();
+  }
+
+  /* ── 일정 ───────────────────────────────────────────── */
+  function dotClassFor(text) {
+    var sum = 0;
+    var s = String(text || '');
+    for (var i = 0; i < s.length; i++) sum += s.charCodeAt(i);
+    return DOT_CLASSES[sum % DOT_CLASSES.length];
+  }
+
+  function makeEventRow(ev, now, withBadge) {
+    var li = document.createElement('li');
+    li.className = 'row';
+
+    var time = document.createElement('div');
+    time.className = 'time';
+    var startSpan = document.createElement('span');
+    startSpan.className = 's';
+    startSpan.textContent = formatTime(ev.start);
+    time.appendChild(startSpan);
+    if (ev.end) {
+      var endSpan = document.createElement('span');
+      endSpan.className = 'e';
+      endSpan.textContent = formatTime(ev.end);
+      time.appendChild(endSpan);
+    }
+
+    var body = document.createElement('div');
+    body.className = 'event-body';
+    var title = document.createElement('p');
+    title.className = 'event-title';
+    var dot = document.createElement('span');
+    dot.className = 'ev-dot ' + dotClassFor(ev.title);
+    dot.setAttribute('aria-hidden', 'true');
+    title.appendChild(dot);
+    title.appendChild(document.createTextNode(ev.title));
+    body.appendChild(title);
+
+    if (withBadge) {
+      if (ev.end && ev.end.getTime() <= now.getTime()) {
+        li.classList.add('is-past');
+        var pastBadge = document.createElement('span');
+        pastBadge.className = 'badge muted';
+        pastBadge.textContent = '지난 일정';
+        body.appendChild(pastBadge);
+      } else if (ev.start.getTime() <= now.getTime() && (!ev.end || now.getTime() < ev.end.getTime())) {
+        var nowBadge = document.createElement('span');
+        nowBadge.className = 'badge';
+        nowBadge.textContent = '진행 중';
+        body.appendChild(nowBadge);
+      }
+    }
+
+    li.appendChild(time);
+    li.appendChild(body);
+
+    if (ev.custom) {
+      li.appendChild(makeIconButton('일정 삭제: ' + ev.title, '\u00D7', function () {
+        removeEvent(ev.id);
+      }));
+    }
+
+    return li;
+  }
+
+  function renderEvents() {
+    var now = new Date();
+    var today = startOfDay(now);
+
+    var events = INITIAL_EVENTS.concat(state.customEvents)
+      .map(function (raw) {
+        var start = parseLocal(raw.start);
+        if (!start) return null;
+        var end = parseLocal(raw.end) || new Date(start.getTime() + 60 * 60000);
+        return {
+          id: String(raw.id || ''),
+          title: String(raw.title || '').trim() || '제목 없는 일정',
+          start: start,
+          end: end,
+          custom: String(raw.id || '').indexOf('init-') !== 0
+        };
+      })
+      .filter(Boolean)
+      .sort(function (a, b) { return a.start - b.start; });
+
+    var todayEvents = events.filter(function (ev) {
+      return dateKey(ev.start) === dateKey(today);
+    });
+    var upcomingEvents = events.filter(function (ev) {
+      return startOfDay(ev.start).getTime() > today.getTime();
+    });
+
+    var todayList = document.getElementById('todayList');
+    todayList.textContent = '';
+    todayEvents.forEach(function (ev) {
+      todayList.appendChild(makeEventRow(ev, now, true));
+    });
+    document.getElementById('todayEmpty').hidden = todayEvents.length > 0;
+    todayList.hidden = todayEvents.length === 0;
+
+    document.getElementById('todayOffTag').hidden = !isOffDay(now);
+
+    var groupsHost = document.getElementById('upcomingGroups');
+    groupsHost.textContent = '';
+
+    var groups = [];
+    var index = {};
+    upcomingEvents.forEach(function (ev) {
+      var key = dateKey(ev.start);
+      if (!index[key]) {
+        index[key] = { date: ev.start, items: [] };
+        groups.push(index[key]);
+      }
+      index[key].items.push(ev);
+    });
+
+    groups.forEach(function (group) {
+      var block = document.createElement('div');
+      block.className = 'day-group';
+
+      var head = document.createElement('p');
+      head.className = 'day-head';
+      var name = document.createElement('span');
+      name.textContent = formatDayLabel(group.date);
+
+      var meta = document.createElement('span');
+      meta.className = 'day-meta';
+
+      var dd = document.createElement('span');
+      dd.className = 'dday';
+      dd.textContent = ddayLabel(dayDiff(group.date, today));
+      meta.appendChild(dd);
+
+      if (isOffDay(group.date)) {
+        var offTag = document.createElement('span');
+        offTag.className = 'badge sage';
+        offTag.textContent = '아빠 휴무';
+        meta.appendChild(offTag);
+      }
+
+      head.appendChild(name);
+      head.appendChild(meta);
+
+      var list = document.createElement('ul');
+      list.className = 'event-list';
+      group.items.forEach(function (ev) {
+        list.appendChild(makeEventRow(ev, now, false));
+      });
+
+      block.appendChild(head);
+      block.appendChild(list);
+      groupsHost.appendChild(block);
+    });
+
+    document.getElementById('upcomingEmpty').hidden = upcomingEvents.length > 0;
+
+    var scheduleCount = document.getElementById('scheduleCount');
+    if (todayEvents.length + upcomingEvents.length === 0) {
+      scheduleCount.textContent = '';
+    } else if (todayEvents.length === 0) {
+      scheduleCount.textContent = '다가오는 일정 ' + upcomingEvents.length + '개';
+    } else {
+      scheduleCount.textContent = '오늘 ' + todayEvents.length + '개 · 예정 ' + upcomingEvents.length + '개';
+    }
+  }
+
+  function removeEvent(id) {
+    state.customEvents = state.customEvents.filter(function (ev) {
+      return String(ev.id) !== String(id);
+    });
+    writeJSON(STORE_KEYS.events, state.customEvents);
+    renderEvents();
+  }
+
+  /* ── 체크리스트 그리기 (할 일·미션 공통) ────────────── */
+  function renderChecklist(config) {
+    var host = document.getElementById(config.listId);
+    var items = config.items;
+    host.textContent = '';
+
+    items.forEach(function (item) {
+      var li = document.createElement('li');
+      li.className = 'todo-item' + (item.done ? ' done' : '');
+
+      var label = document.createElement('label');
+      label.className = 'todo-main';
+
+      var box = document.createElement('input');
+      box.type = 'checkbox';
+      box.checked = item.done;
+      box.setAttribute('aria-label', config.labelOf(item));
+      box.addEventListener('change', function () {
+        config.onToggle(item.id);
+      });
+
+      var text = document.createElement('span');
+      text.className = 'todo-text';
+      text.textContent = item.text;
+
+      label.appendChild(box);
+      label.appendChild(text);
+
+      if (config.chipOf) {
+        var chipText = config.chipOf(item);
+        if (chipText) {
+          var chip = document.createElement('span');
+          chip.className = 'star-chip';
+          chip.setAttribute('aria-hidden', 'true');
+          chip.textContent = chipText;
+          label.appendChild(chip);
+        }
+      }
+
+      li.appendChild(label);
+      li.appendChild(makeIconButton(config.deleteLabelOf(item), '\u00D7', function () {
+        config.onDelete(item.id);
+      }));
+
+      host.appendChild(li);
+    });
+
+    document.getElementById(config.emptyId).hidden = items.length > 0;
+    host.hidden = items.length === 0;
+
+    var remaining = items.filter(function (item) { return !item.done; }).length;
+    var done = items.length - remaining;
+
+    document.getElementById(config.countId).textContent = config.countText(remaining);
+    document.getElementById(config.doneId).textContent = '완료 ' + done + '개';
+
+    var clearBtn = document.getElementById(config.clearId);
+    clearBtn.disabled = done === 0;
+    clearBtn.textContent = done === 0 ? '완료 지우기' : '완료 ' + done + '개 지우기';
+  }
+
+  /* ── 할 일 ──────────────────────────────────────────── */
+  function personOf(who) {
+    for (var i = 0; i < PEOPLE.length; i++) {
+      if (PEOPLE[i].key === who) return PEOPLE[i];
+    }
+    return null;
+  }
+
+  function todosOf(who) {
+    if (!state.todos[who]) state.todos[who] = [];
+    return state.todos[who];
+  }
+
+  function saveTodos() {
+    writeJSON(STORE_KEYS.todos, {
+      yongwoo: state.todos.yongwoo,
+      mom: state.todos.mom,
+      dad: state.todos.dad
+    });
+  }
+
+  function renderTodoList(person) {
+    if (!person) return;
+    renderChecklist({
+      listId: 'todoList-' + person.key,
+      emptyId: 'todoEmpty-' + person.key,
+      countId: 'todoCount-' + person.key,
+      doneId: 'doneInfo-' + person.key,
+      clearId: 'clearDone-' + person.key,
+      items: todosOf(person.key),
+      labelOf: function (todo) { return person.name + ' 할 일: ' + todo.text; },
+      deleteLabelOf: function (todo) { return person.name + ' 할 일 삭제: ' + todo.text; },
+      onToggle: function (id) { toggleTodo(person.key, id); },
+      onDelete: function (id) { removeTodo(person.key, id); },
+      countText: function (n) { return '남은 할 일 ' + n + '개'; }
+    });
+  }
+
+  /* 할 일 3칸 + 퀘스트 3칸 + 요약을 다시 그립니다. */
+  function renderTodos() {
+    PEOPLE.forEach(renderTodoList);
+    PEOPLE.forEach(function (person) { renderQuest(person.key); });
+    renderQuestSummary();
+  }
+
+  function addTodo(who, text) {
+    var clean = String(text || '').trim();
+    if (!clean) return false;
+    todosOf(who).unshift({
+      id: newId('td'),
+      text: clean.slice(0, 120),
+      done: false
+    });
+    saveTodos();
+    renderTodos();
+    return true;
+  }
+
+  function toggleTodo(who, id) {
+    state.todos[who] = todosOf(who).map(function (todo) {
+      if (String(todo.id) !== String(id)) return todo;
+      return { id: todo.id, text: todo.text, done: !todo.done };
+    });
+    saveTodos();
+    renderTodos();
+  }
+
+  function removeTodo(who, id) {
+    state.todos[who] = todosOf(who).filter(function (todo) {
+      return String(todo.id) !== String(id);
+    });
+    saveTodos();
+    renderTodos();
+  }
+
+  function clearDoneTodos(who) {
+    state.todos[who] = todosOf(who).filter(function (todo) { return !todo.done; });
+    saveTodos();
+    renderTodos();
+  }
+
+  /* ── 용우 미션 ──────────────────────────────────────── */
+  function saveMissions() {
+    writeJSON(STORE_KEYS.missions, state.missions);
+  }
+
+  function renderMissions() {
+    renderChecklist({
+      listId: 'missionList',
+      emptyId: 'missionEmpty',
+      countId: 'missionCount',
+      doneId: 'doneInfo-mission',
+      clearId: 'clearDone-mission',
+      items: state.missions,
+      labelOf: function (mission) { return '용우 미션: ' + mission.text; },
+      deleteLabelOf: function (mission) { return '미션 삭제: ' + mission.text; },
+      onToggle: function (id) { toggleMission(id); },
+      onDelete: function (id) { removeMission(id); },
+      countText: function (n) { return '남은 미션 ' + n + '개'; },
+      chipOf: function () { return '\u2B50 +' + MISSION_STARS; }
+    });
+    renderQuest('mission');
+    renderQuestSummary();
+  }
+
+  function addMission(text) {
+    var clean = String(text || '').trim();
+    if (!clean) return false;
+    state.missions.unshift({
+      id: newId('ms'),
+      text: clean.slice(0, 120),
+      done: false
+    });
+    saveMissions();
+    renderMissions();
+    return true;
+  }
+
+  function toggleMission(id) {
+    state.missions = state.missions.map(function (mission) {
+      if (String(mission.id) !== String(id)) return mission;
+      return { id: mission.id, text: mission.text, done: !mission.done };
+    });
+    saveMissions();
+    renderMissions();
+  }
+
+  function removeMission(id) {
+    state.missions = state.missions.filter(function (mission) {
+      return String(mission.id) !== String(id);
+    });
+    saveMissions();
+    renderMissions();
+  }
+
+  function clearDoneMissions() {
+    state.missions = state.missions.filter(function (mission) { return !mission.done; });
+    saveMissions();
+    renderMissions();
+  }
+
+  /* ── 퀘스트 · 진화 (미션·용우·엄마·아빠 4칸 공통) ───── */
+  function questOf(items) {
+    var total = items.length;
+    var done = items.filter(function (item) { return item.done; }).length;
+    var pct = total === 0 ? 0 : Math.round(done / total * 100);
+    var cleared = total > 0 && done === total;
+    var stage = cleared ? 3 : (pct >= 50 ? 2 : 1);
+    return { total: total, done: done, pct: pct, cleared: cleared, stage: stage };
+  }
+
+  function questItems(prefix) {
+    if (prefix === 'mission') return state.missions;
+    return todosOf(prefix);
+  }
+
+  function questCardOf(prefix) {
+    return document.getElementById(prefix === 'mission' ? 'missionCard' : 'todoCard-' + prefix);
+  }
+
+  function renderQuest(prefix) {
+    var card = questCardOf(prefix);
+    if (!card) return;
+
+    var q = questOf(questItems(prefix));
+    var fill = document.getElementById('questFill-' + prefix);
+    var count = document.getElementById('questCount-' + prefix);
+    var badge = document.getElementById('questBadge-' + prefix);
+    var label = document.getElementById('evoLabel-' + prefix);
+
+    if (fill) fill.style.width = q.pct + '%';
+    if (count) count.textContent = '완료 ' + q.done + ' / 전체 ' + q.total;
+
+    if (badge) {
+      if (q.cleared) {
+        badge.textContent = '🎉 퀘스트 클리어!';
+      } else if (q.total === 0) {
+        badge.textContent = '🌱 퀘스트 시작 전';
+      } else {
+        badge.textContent = '⭐ 퀘스트 진행중';
+      }
+    }
+
+    card.setAttribute('data-stage', String(q.stage));
+    if (q.cleared) card.classList.add('is-cleared');
+    else card.classList.remove('is-cleared');
+
+    if (label) label.textContent = STAGE_LABEL[q.stage];
+  }
+
+  function renderQuestSummary() {
+    var stars = questOf(state.missions).done * MISSION_STARS;
+    var cleared = 0;
+    QUEST_PREFIXES.forEach(function (prefix) {
+      if (questOf(questItems(prefix)).cleared) cleared++;
+    });
+
+    var starsEl = document.getElementById('questStars');
+    var clearedEl = document.getElementById('questCleared');
+    if (starsEl) starsEl.textContent = '⭐ 별 ' + stars + '개';
+    if (clearedEl) clearedEl.textContent = '🎉 ' + cleared + ' / ' + QUEST_PREFIXES.length + ' 클리어';
+  }
+
+  /* ── 전체 그리기 ────────────────────────────────────── */
+  function render() {
+    renderDate();
+    renderDadStatus();
+    renderOffDays();
+    renderEvents();
+    renderTodos();
+    renderMissions();
+  }
+
+  /* ── 이벤트 연결 ────────────────────────────────────── */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-status]'), function (btn) {
+    btn.addEventListener('click', function () {
+      setDadStatus(btn.getAttribute('data-status'));
+    });
+  });
+
+  document.getElementById('calPrev').addEventListener('click', function () { shiftCalendar(-1); });
+  document.getElementById('calNext').addEventListener('click', function () { shiftCalendar(1); });
+
+  document.getElementById('offdayForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var input = document.getElementById('offdayDate');
+    if (addOffDay(input.value)) {
+      input.value = '';
+      input.focus();
+    }
+  });
+
+  document.getElementById('offdayDate').addEventListener('input', function () {
+    showOffdayHint('');
+  });
+
+  document.getElementById('eventForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var titleInput = document.getElementById('eventTitle');
+    var whenInput = document.getElementById('eventWhen');
+    var title = titleInput.value.trim();
+    var start = parseLocal(whenInput.value);
+
+    if (!title) { titleInput.focus(); return; }
+    if (!start) { whenInput.focus(); return; }
+
+    state.customEvents.push({
+      id: newId('ev'),
+      title: title.slice(0, 80),
+      start: toInputValue(start),
+      end: toInputValue(new Date(start.getTime() + 60 * 60000))
+    });
+    writeJSON(STORE_KEYS.events, state.customEvents);
+
+    titleInput.value = '';
+    whenInput.value = defaultWhen();
+    renderEvents();
+    titleInput.focus();
+  });
+
+  PEOPLE.forEach(function (person) {
+    document.getElementById('todoForm-' + person.key).addEventListener('submit', function (event) {
+      event.preventDefault();
+      var input = document.getElementById('todoInput-' + person.key);
+      if (addTodo(person.key, input.value)) {
+        input.value = '';
+        input.focus();
+      }
+    });
+
+    document.getElementById('clearDone-' + person.key).addEventListener('click', function () {
+      clearDoneTodos(person.key);
+    });
+  });
+
+  document.getElementById('missionForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var input = document.getElementById('missionInput');
+    if (addMission(input.value)) {
+      input.value = '';
+      input.focus();
+    }
+  });
+
+  document.getElementById('clearDone-mission').addEventListener('click', function () {
+    clearDoneMissions();
+  });
+
+  /* ── 시작 ───────────────────────────────────────────── */
+  var todayKey = dateKey(new Date());
+  document.getElementById('eventWhen').value = defaultWhen();
+  document.getElementById('offdayDate').min = todayKey;
+  document.getElementById('offdayDate').value = '';
+
+  render();
+
+  /* 시계 갱신, 날짜가 바뀌면 보드 전체 다시 그리기 */
+  var lastDayKey = dateKey(new Date());
+
+  setInterval(function () {
+    renderDate();
+    var key = dateKey(new Date());
+    if (key !== lastDayKey) {
+      lastDayKey = key;
+      document.getElementById('offdayDate').min = key;
+      render();
+    }
+  }, 30000);
+
+  /* 진행 중/지난 일정 표시를 주기적으로 갱신 (입력 중에는 건드리지 않음) */
+  setInterval(function () {
+    var active = document.activeElement;
+    if (active && active.closest && active.closest('.card')) return;
+    renderEvents();
+  }, 60000);
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) render();
+  });
+</script>
+</body>
+</html>
