@@ -214,6 +214,138 @@
     50% { opacity: .22; }
   }
 
+  /* ── 📜 달성 기록 버튼 + 모달 ───────────────────────── */
+  .history-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: none;
+    margin: 0;
+    padding: 2px 9px 2px 8px;
+    border: 1px solid #ffe0ac;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fffaf0, #fff1d8);
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 900;
+    line-height: 1.45;
+    letter-spacing: -.01em;
+    color: var(--amber-deep);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color .16s ease, border-color .16s ease, transform .12s ease;
+  }
+  .history-pill:hover { background: #fff6e3; border-color: #ffd79a; }
+  .history-pill:active { transform: translateY(1px); }
+
+  .history-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .history-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(63, 58, 77, .38);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+
+  .history-panel {
+    position: relative;
+    z-index: 1;
+    width: min(640px, 100%);
+    max-height: min(86vh, 760px);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 18px 18px 14px;
+    border: 1px solid #ffe3b8;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #fffdf8, #fffaef);
+    box-shadow: 0 24px 60px rgba(90, 70, 30, .3);
+  }
+
+  .history-head { position: relative; padding-right: 40px; flex: none; }
+  .history-head h2 { margin: 0; font-size: 17px; font-weight: 900; letter-spacing: -.02em; color: #7a5231; }
+  .history-sub { margin: 4px 0 0; font-size: 11.5px; font-weight: 700; color: var(--ink-faint); word-break: keep-all; }
+
+  .history-close {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #f0e6d4;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink-soft);
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .history-close:hover { background: #fff7e8; border-color: #ffe0ac; }
+
+  .history-body {
+    margin-top: 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-height: 0;
+    scrollbar-width: thin;
+  }
+
+  .history-day {
+    padding: 9px 11px;
+    border: 1px solid #f4ecdd;
+    border-radius: 16px;
+    background: #fff;
+  }
+
+  .history-day-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+
+  .history-date { font-size: 12.5px; font-weight: 900; color: #7a5231; letter-spacing: -.01em; }
+  .history-day-meta { font-size: 10px; font-weight: 800; color: var(--ink-faint); white-space: nowrap; }
+
+  .history-row { display: flex; align-items: flex-start; gap: 7px; padding: 2px 0; }
+
+  .history-who {
+    flex: none;
+    min-width: 40px;
+    padding: 1px 7px;
+    border: 1px solid var(--amber-line);
+    border-radius: 999px;
+    background: var(--amber-soft);
+    color: var(--amber-deep);
+    font-size: 10px;
+    font-weight: 900;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .history-who.w-mom { border-color: var(--pink-line); background: var(--pink-soft); color: var(--pink-deep); }
+  .history-who.w-dad { border-color: var(--sky-line); background: var(--sky-soft); color: var(--sky-deep); }
+  .history-who.w-mission { border-color: var(--mint-line); background: var(--mint-soft); color: var(--mint-deep); }
+
+  .history-titles { font-size: 11.5px; font-weight: 700; line-height: 1.55; color: var(--ink-soft); word-break: keep-all; }
+  .history-titles.is-empty { color: var(--ink-faint); }
+
+  .history-empty { margin: 16px 0 6px; font-size: 12px; font-weight: 700; color: var(--ink-faint); text-align: center; }
+
   .hero-side {
     position: relative;
     z-index: 1;
@@ -1468,6 +1600,8 @@
     .hb-seed { width: 70px; }
     .hb-fin { width: 72px; }
     .hero-when { font-size: 12px; padding: 5px 11px; }
+    .history-modal { padding: 10px; align-items: flex-end; }
+    .history-panel { padding: 15px 14px 12px; border-radius: 20px; max-height: 88vh; }
     .cloud { display: none; }
     .spark { display: none; }
     .card { padding: 16px 14px 14px; border-radius: 20px; }
@@ -1517,6 +1651,7 @@
     .hero-text h1 { font-size: 20px; letter-spacing: -.05em; white-space: nowrap; }
     .hero-sub { display: none; }
     .hero-when { margin: 0; padding: 3px 10px; font-size: 10.5px; gap: 6px; }
+    .history-pill { padding: 1px 7px; font-size: 9px; }
     .hero-side { flex-direction: row; align-items: center; gap: 10px; }
     .hero-score { align-items: center; }
     .hero-score .qs { padding: 3px 8px; font-size: 10px; }
@@ -2140,7 +2275,7 @@
     <div class="hero-text">
       <h1>용우네 대시보드</h1>
       <p class="hero-sub">오늘도 우리 가족 모두 화이팅!</p>
-      <p class="hero-when"><span class="hero-date" id="todayDate">—</span><span class="hero-clock" id="todayClock"></span><button class="sync-pill" id="syncPill" type="button" data-state="connecting" title="눌러서 다른 기기의 변경까지 새로 받아 옵니다" hidden><span class="sync-dot" aria-hidden="true"></span><span id="syncText" aria-live="polite">연결 중</span></button></p>
+      <p class="hero-when"><span class="hero-date" id="todayDate">—</span><span class="hero-clock" id="todayClock"></span><button class="sync-pill" id="syncPill" type="button" data-state="connecting" title="눌러서 다른 기기의 변경까지 새로 받아 옵니다" hidden><span class="sync-dot" aria-hidden="true"></span><span id="syncText" aria-live="polite">연결 중</span></button><button class="history-pill" id="historyBtn" type="button" aria-haspopup="dialog" aria-controls="historyModal" title="지난 날 달성한 할 일을 봅니다"><span aria-hidden="true">📜</span><span id="historyBtnText">달성 기록</span></button></p>
     </div>
 
     <div class="hero-side">
@@ -2508,6 +2643,20 @@
   </noscript>
 </div>
 
+<!-- ══ 지난 날 달성 기록 (모달) ═════════════════════════════════ -->
+<div class="history-modal" id="historyModal" hidden>
+  <div class="history-backdrop" id="historyBackdrop"></div>
+  <div class="history-panel" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+    <div class="history-head">
+      <h2 id="historyTitle">📜 달성 기록</h2>
+      <p class="history-sub" id="historySub">날마다 무엇을 해냈는지 모아 두었어요.</p>
+      <button class="history-close" id="historyClose" type="button" aria-label="달성 기록 닫기">×</button>
+    </div>
+    <div class="history-body" id="historyBody"></div>
+    <p class="history-empty" id="historyEmpty" hidden>아직 달성한 날이 없어요. 오늘 퀘스트를 다 채워 보세요!</p>
+  </div>
+</div>
+
 <script>
   'use strict';
 
@@ -2534,7 +2683,8 @@
     missions: 'familyBoard.missions.v1',
     dadStatus: 'familyBoard.dadStatus.v1',
     offDays: 'familyBoard.offDays.v1',
-    questDays: 'familyBoard.questDays.v1'
+    questDays: 'familyBoard.questDays.v1',
+    questLog: 'familyBoard.questLog.v1'
   };
 
   var PEOPLE = [
@@ -2616,7 +2766,8 @@
   var SYNC_TODO_UNITS = ['todos/yongwoo', 'todos/mom', 'todos/dad'];
   var SYNC_QUEST_UNITS = ['questDays/mission', 'questDays/yongwoo', 'questDays/mom', 'questDays/dad'];
   var SYNC_LIST_UNITS = ['missions', 'offDays', 'events'];
-  var SYNC_UNITS = SYNC_TODO_UNITS.concat(SYNC_LIST_UNITS).concat(SYNC_QUEST_UNITS).concat(['dadStatus']);
+  var SYNC_UNITS = SYNC_TODO_UNITS.concat(SYNC_LIST_UNITS).concat(SYNC_QUEST_UNITS)
+    .concat(['dadStatus', 'questLog']);
   var SYNC_STORE_UNITS = {};
   SYNC_STORE_UNITS[STORE_KEYS.todos] = SYNC_TODO_UNITS;
   SYNC_STORE_UNITS[STORE_KEYS.missions] = ['missions'];
@@ -2624,6 +2775,7 @@
   SYNC_STORE_UNITS[STORE_KEYS.offDays] = ['offDays'];
   SYNC_STORE_UNITS[STORE_KEYS.events] = ['events'];
   SYNC_STORE_UNITS[STORE_KEYS.questDays] = SYNC_QUEST_UNITS;
+  SYNC_STORE_UNITS[STORE_KEYS.questLog] = ['questLog'];
 
   /* 파일(file://)로 열어 본 미리보기나 아주 옛날 브라우저에서는 켜지 않습니다. */
   var SYNC_ENABLED = typeof fetch === 'function'
@@ -2724,6 +2876,7 @@
     if (unit === 'offDays') return listPayload(state.offDays);
     if (unit === 'events') return listPayload(state.customEvents);
     if (unit === 'dadStatus') return { value: state.dadStatus.value, at: state.dadStatus.at };
+    if (unit === 'questLog') return { days: state.questLog, at: Date.now() };
     return null;
   }
 
@@ -2737,6 +2890,7 @@
     if (unit === 'offDays') return JSON.stringify(state.offDays);
     if (unit === 'events') return JSON.stringify(state.customEvents);
     if (unit === 'dadStatus') return JSON.stringify([state.dadStatus.value, state.dadStatus.at]);
+    if (unit === 'questLog') return JSON.stringify(state.questLog);
     return '';
   }
 
@@ -2770,6 +2924,7 @@
 
   function hasContent(unit) {
     if (unit === 'dadStatus') return isValidStatus(state.dadStatus.value);
+    if (unit === 'questLog') return questLogDates(state.questLog).length > 0;
     var value = unitValue(unit);
     return !!value && listItems(value).length > 0;
   }
@@ -2872,6 +3027,7 @@
     }
     if (parts.length !== 1) return null;
     if (SYNC_LIST_UNITS.indexOf(parts[0]) >= 0 || parts[0] === 'dadStatus') return parts[0];
+    if (parts[0] === 'questLog') return 'questLog';
     return null;
   }
 
@@ -2918,6 +3074,13 @@
       writeJSON(STORE_KEYS.events, state.customEvents);
       return true;
     }
+    if (unit === 'questLog') {
+      var incoming = mergeQuestLog(normalizeQuestLog(payload && payload.days), state.questLog);
+      if (sameJSON(state.questLog, incoming)) return false;
+      state.questLog = incoming;
+      writeJSON(STORE_KEYS.questLog, state.questLog);
+      return true;
+    }
     if (unit === 'dadStatus') {
       if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false;
       var value = String(payload.value || '');
@@ -2934,6 +3097,10 @@
   /* 끊긴 사이 이 기기에서 바꾼 칸: 원격 목록과 합칩니다(지우지 않게). */
   function mergeDirtyUnit(unit, remoteValue) {
     if (unit === 'dadStatus') return null;      /* 상태는 이 기기 값이 우선 */
+    if (unit === 'questLog') {
+      var remoteDays = remoteValue && typeof remoteValue === 'object' ? remoteValue.days : null;
+      return { days: mergeQuestLog(remoteDays, state.questLog), at: Date.now() };
+    }
     var local = unitValue(unit);
     if (!local) return remoteValue;
     return {
@@ -3184,6 +3351,113 @@
     return out;
   }
 
+  /* ── 달성 기록장: 날짜마다 그날 해낸 할 일 제목까지 남긴다 ──
+     { "2026-11-16": { yongwoo: ["영어글쓰기", …], mom: [...], dad: [...], mission: [...] } }
+     할 일을 나중에 지워도 이 기록은 남는다. */
+  var QUEST_LOG_LIMIT = 200;
+
+  function normalizeQuestLog(raw) {
+    var out = {};
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+    Object.keys(raw).forEach(function (date) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+      var day = raw[date];
+      if (!day || typeof day !== 'object' || Array.isArray(day)) return;
+      var clean = {};
+      QUEST_PREFIXES.forEach(function (prefix) {
+        if (!Array.isArray(day[prefix])) return;
+        var titles = [];
+        day[prefix].forEach(function (title) {
+          var t = String(title === null || title === undefined ? '' : title).trim().slice(0, 120);
+          if (t && titles.indexOf(t) < 0) titles.push(t);
+        });
+        if (titles.length) clean[prefix] = titles;
+      });
+      if (Object.keys(clean).length) out[date] = clean;
+    });
+    return pruneQuestLog(out);
+  }
+
+  function mergeQuestLog(a, b) {
+    var out = {};
+    [a, b].forEach(function (src) {
+      if (!src || typeof src !== 'object' || Array.isArray(src)) return;
+      Object.keys(src).forEach(function (date) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+        var day = src[date];
+        if (!day || typeof day !== 'object' || Array.isArray(day)) return;
+        if (!out[date]) out[date] = {};
+        QUEST_PREFIXES.forEach(function (prefix) {
+          if (!Array.isArray(day[prefix])) return;
+          var list = out[date][prefix] || [];
+          day[prefix].forEach(function (title) {
+            var t = String(title === null || title === undefined ? '' : title).trim().slice(0, 120);
+            if (t && list.indexOf(t) < 0) list.push(t);
+          });
+          if (list.length) out[date][prefix] = list;
+        });
+      });
+    });
+    return pruneQuestLog(out);
+  }
+
+  function pruneQuestLog(log) {
+    var dates = Object.keys(log || {}).sort();
+    if (dates.length <= QUEST_LOG_LIMIT) return log;
+    var out = {};
+    dates.slice(-QUEST_LOG_LIMIT).forEach(function (d) { out[d] = log[d]; });
+    return out;
+  }
+
+  function questLogDates(log) {
+    return Object.keys(log || {}).sort();
+  }
+
+  function loadQuestLog() {
+    return normalizeQuestLog(readJSON(STORE_KEYS.questLog, null));
+  }
+
+  function saveQuestLog() {
+    writeJSON(STORE_KEYS.questLog, state.questLog);
+  }
+
+  /* 그 날 그 칸의 기록을 바꾼다 (빈 목록이면 그 칸만 지운다) */
+  function setQuestLogDay(date, prefix, titles) {
+    var day = state.questLog[date] || {};
+    var next = titles && titles.length ? titles.slice() : null;
+    var now = day[prefix] || null;
+    if (sameJSON(now, next)) return false;
+    if (next) {
+      day[prefix] = next;
+      state.questLog[date] = day;
+    } else {
+      delete day[prefix];
+      if (Object.keys(day).length) state.questLog[date] = day;
+      else delete state.questLog[date];
+    }
+    state.questLog = pruneQuestLog(state.questLog);
+    saveQuestLog();
+    return true;
+  }
+
+  /* 그 날 이미 남긴 제목에 새로 해낸 제목을 더한다 (지웠다고 기록이 줄지 않게) */
+  function addQuestLogTitles(date, prefix, titles) {
+    var day = state.questLog[date] || {};
+    var next = (day[prefix] || []).slice();
+    (titles || []).forEach(function (t) {
+      if (t && next.indexOf(t) < 0) next.push(t);
+    });
+    return setQuestLogDay(date, prefix, next);
+  }
+
+  function todayDoneTitles(prefix) {
+    var out = [];
+    questItems(prefix).forEach(function (item) {
+      if (item.done) out.push(String(item.text).slice(0, 120));
+    });
+    return out;
+  }
+
   function normalizeEvents(list) {
     if (!Array.isArray(list)) return [];
     return list.filter(function (item) {
@@ -3203,6 +3477,7 @@
     todos: loadTodos(),
     missions: normalizeChecklistItems(readJSON(STORE_KEYS.missions, [])),
     questDays: loadQuestDays(),
+    questLog: loadQuestLog(),
     dadStatus: loadDadStatus(),
     offDays: loadOffDays(),
     calYear: new Date().getFullYear(),
@@ -3274,15 +3549,20 @@
     var today = kstDateKey();
     var at = days.indexOf(today);
     if (questOf(questItems(prefix)).cleared) {
-      if (at >= 0) return false;
-      days.push(today);
-      days.sort();
-      saveQuestDays();
-      return true;
+      var first = at < 0;
+      if (first) {
+        days.push(today);
+        days.sort();
+        saveQuestDays();
+      }
+      /* 그날 해낸 할 일 이름을 기록장에 남긴다 (나중에 항목을 지워도 남는다). */
+      addQuestLogTitles(today, prefix, todayDoneTitles(prefix));
+      return first;
     }
     if (allowCancel && at >= 0) {
       days.splice(at, 1);
       saveQuestDays();
+      setQuestLogDay(today, prefix, null);
       return true;
     }
     return false;
@@ -4227,6 +4507,97 @@
     }, 6000);
   }
 
+  /* ── 📜 달성 기록 모달 ──────────────────────────────── */
+  function renderHistory() {
+    var body = document.getElementById('historyBody');
+    var empty = document.getElementById('historyEmpty');
+    var sub = document.getElementById('historySub');
+    var btnText = document.getElementById('historyBtnText');
+    if (!body) return;
+
+    var all = {};
+    QUEST_PREFIXES.forEach(function (prefix) {
+      questDaysOf(prefix).forEach(function (d) { all[d] = true; });
+    });
+    questLogDates(state.questLog).forEach(function (d) { all[d] = true; });
+
+    var dates = Object.keys(all).sort().reverse();
+    body.textContent = '';
+
+    if (btnText) btnText.textContent = dates.length ? '달성 기록 ' + dates.length : '달성 기록';
+
+    var shown = dates.slice(0, 60);
+    if (sub) {
+      sub.textContent = dates.length
+        ? '지금까지 ' + dates.length + '일 · 최근 기록부터 보여 드려요.'
+        : '날마다 무엇을 해냈는지 모아 두었어요.';
+    }
+    if (empty) empty.hidden = shown.length > 0;
+
+    shown.forEach(function (date) {
+      var d = parseLocal(date);
+      var day = state.questLog[date] || {};
+      var entries = [];
+      QUEST_PREFIXES.forEach(function (prefix) {
+        var titles = Array.isArray(day[prefix]) ? day[prefix] : [];
+        var onlyDate = titles.length === 0 && questDaysOf(prefix).indexOf(date) >= 0;
+        if (!titles.length && !onlyDate) return;
+        entries.push({ prefix: prefix, titles: titles });
+      });
+      if (!entries.length) return;
+
+      var wrap = document.createElement('div');
+      wrap.className = 'history-day';
+
+      var head = document.createElement('div');
+      head.className = 'history-day-head';
+      var label = document.createElement('span');
+      label.className = 'history-date';
+      label.textContent = d
+        ? (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + WEEKDAYS[d.getDay()]
+        : date;
+      var meta = document.createElement('span');
+      meta.className = 'history-day-meta';
+      meta.textContent = entries.length + '칸 달성';
+      head.appendChild(label);
+      head.appendChild(meta);
+      wrap.appendChild(head);
+
+      entries.forEach(function (entry) {
+        var row = document.createElement('div');
+        row.className = 'history-row';
+
+        var who = document.createElement('span');
+        who.className = 'history-who w-' + entry.prefix;
+        who.textContent = entry.prefix === 'mission' ? '미션' : (personOf(entry.prefix) || { name: entry.prefix }).name;
+        row.appendChild(who);
+
+        var titles = document.createElement('span');
+        titles.className = 'history-titles' + (entry.titles.length ? '' : ' is-empty');
+        titles.textContent = entry.titles.length ? entry.titles.join(', ') : '달성! (그날 항목 기록은 없어요)';
+        row.appendChild(titles);
+
+        wrap.appendChild(row);
+      });
+
+      body.appendChild(wrap);
+    });
+  }
+
+  function openHistory() {
+    renderHistory();
+    var modal = document.getElementById('historyModal');
+    if (!modal) return;
+    modal.hidden = false;
+    var close = document.getElementById('historyClose');
+    if (close && typeof close.focus === 'function') close.focus();
+  }
+
+  function closeHistory() {
+    var modal = document.getElementById('historyModal');
+    if (modal) modal.hidden = true;
+  }
+
   function renderQuestSummary() {
     var stars = questOf(state.missions).done * MISSION_STARS;
     var cleared = 0;
@@ -4248,6 +4619,8 @@
     renderEvents();
     renderTodos();
     renderMissions();
+    var modal = document.getElementById('historyModal');
+    if (modal && !modal.hidden) renderHistory();
   }
 
   /* ── 이벤트 연결 ────────────────────────────────────── */
@@ -4255,6 +4628,13 @@
     btn.addEventListener('click', function () {
       setDadStatus(btn.getAttribute('data-status'));
     });
+  });
+
+  document.getElementById('historyBtn').addEventListener('click', openHistory);
+  document.getElementById('historyClose').addEventListener('click', closeHistory);
+  document.getElementById('historyBackdrop').addEventListener('click', closeHistory);
+  document.addEventListener('keydown', function (event) {
+    if (event && (event.key === 'Escape' || event.key === 'Esc')) closeHistory();
   });
 
   document.getElementById('calPrev').addEventListener('click', function () { shiftCalendar(-1); });
