@@ -174,6 +174,46 @@
   .hero-clock { color: #b59a78; font-weight: 700; }
   .hero-date { font-weight: 900; }
 
+  /* 실시간 동기화 상태 (머리글과 같은 줄에 놓이는 작은 알약) */
+  .sync-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: none;
+    margin: 0;
+    padding: 2px 8px 2px 7px;
+    border: 1px solid #e9e2d6;
+    border-radius: 999px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 800;
+    line-height: 1.45;
+    letter-spacing: -.01em;
+    color: #8c8497;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .sync-pill .sync-dot {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: #cfc8d8;
+  }
+  .sync-pill[data-state="live"] { color: var(--mint-deep); border-color: var(--mint-line); background: var(--mint-soft); }
+  .sync-pill[data-state="live"] .sync-dot { background: var(--mint); }
+  .sync-pill[data-state="polling"] { color: var(--mint-deep); border-color: var(--mint-line); background: var(--mint-soft); }
+  .sync-pill[data-state="polling"] .sync-dot { background: var(--mint); opacity: .55; }
+  .sync-pill[data-state="working"] { color: var(--amber-deep); border-color: var(--amber-line); background: var(--amber-soft); }
+  .sync-pill[data-state="working"] .sync-dot { background: var(--amber); animation: syncpulse 1.1s ease-in-out infinite; }
+  .sync-pill[data-state="offline"] { color: var(--pink-deep); border-color: var(--pink-line); background: var(--pink-soft); }
+  .sync-pill[data-state="offline"] .sync-dot { background: var(--pink); }
+  @keyframes syncpulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .22; }
+  }
+
   .hero-side {
     position: relative;
     z-index: 1;
@@ -1576,7 +1616,7 @@
     <div class="hero-text">
       <h1>용우네 대시보드</h1>
       <p class="hero-sub">오늘도 우리 가족 모두 화이팅!</p>
-      <p class="hero-when"><span class="hero-date" id="todayDate">—</span><span class="hero-clock" id="todayClock"></span></p>
+      <p class="hero-when"><span class="hero-date" id="todayDate">—</span><span class="hero-clock" id="todayClock"></span><button class="sync-pill" id="syncPill" type="button" data-state="connecting" title="눌러서 다른 기기의 변경까지 새로 받아 옵니다" hidden><span class="sync-dot" aria-hidden="true"></span><span id="syncText" aria-live="polite">연결 중</span></button></p>
     </div>
 
     <div class="hero-side">
@@ -1961,7 +2001,7 @@
 
   <p class="page-foot">
     <svg aria-hidden="true"><use href="#spark"></use></svg>
-    아이패드에 열어 두고 함께 보는 보드 · 추가한 일정·할 일·휴무일은 이 브라우저에 저장됩니다.
+    아이패드에 열어 두고 함께 보는 보드 · 할 일·일정·휴무일은 우리 가족 기기에 함께 저장됩니다.
   </p>
 
   <noscript>
@@ -2040,6 +2080,471 @@
     } catch (err) {
       /* 저장이 막힌 환경(사생활 보호 모드 등)에서는 화면에서만 동작합니다. */
     }
+    noteLocalWrite(key);
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     Firebase 실시간 동기화 (REST + SSE, 바깥 라이브러리 없음)
+
+     아이폰 · 아이패드 · 아빠 폰이 같은 보드를 보도록
+     https://yongwoo-board-default-rtdb.firebaseio.com/yongwoo-family-board-v1
+     에 저장합니다.
+
+     저장 모양 — 목록이 비면 Firebase 가 통째로 지워 버려서,
+     빈 목록도 살아남도록 items + at 으로 한 겹 쌓습니다:
+       todos/yongwoo, todos/mom, todos/dad : { items: [할 일…], at: 시각 }
+       missions  : { items: [미션…], at: 시각 }
+       offDays   : { items: ["2026-11-20", …], at: 시각 }
+       events    : { items: [일정…], at: 시각 }   ← 앱에서 더하거나 지운 일정
+       dadStatus : { value: "일|집|도크", at: 시각 }
+
+     · 화면은 먼저 이 기기(localStorage)로 바로 그리고, 원격 값을 받으면
+       그 값으로 바꿔 다시 그립니다.
+     · 바뀐 칸(아빠 상태·할 일 한 사람 칸·일정…)만 따로 올려서, 서로 다른 칸을
+       동시에 고쳐도 덮어쓰지 않습니다.
+     · SSE(EventSource)로 실시간으로 받고, 끊기면 스스로 다시 붙으며,
+       그동안은 30초마다 확인합니다.
+     ═══════════════════════════════════════════════════════ */
+  var SYNC_BASE = 'https://yongwoo-board-default-rtdb.firebaseio.com/yongwoo-family-board-v1';
+  var SYNC_DB = SYNC_BASE + '.json';
+  var SYNC_TODO_UNITS = ['todos/yongwoo', 'todos/mom', 'todos/dad'];
+  var SYNC_LIST_UNITS = ['missions', 'offDays', 'events'];
+  var SYNC_UNITS = SYNC_TODO_UNITS.concat(SYNC_LIST_UNITS).concat(['dadStatus']);
+  var SYNC_STORE_UNITS = {};
+  SYNC_STORE_UNITS[STORE_KEYS.todos] = SYNC_TODO_UNITS;
+  SYNC_STORE_UNITS[STORE_KEYS.missions] = ['missions'];
+  SYNC_STORE_UNITS[STORE_KEYS.dadStatus] = ['dadStatus'];
+  SYNC_STORE_UNITS[STORE_KEYS.offDays] = ['offDays'];
+  SYNC_STORE_UNITS[STORE_KEYS.events] = ['events'];
+
+  /* 파일(file://)로 열어 본 미리보기나 아주 옛날 브라우저에서는 켜지 않습니다. */
+  var SYNC_ENABLED = typeof fetch === 'function'
+    && typeof EventSource === 'function'
+    && typeof location !== 'undefined'
+    && (location.protocol === 'https:' || location.protocol === 'http:');
+
+  var syncReady = false;      /* 원격 값을 한 번이라도 읽었는지 */
+  var syncApplying = 0;       /* 원격 값을 화면에 옮기는 중 (되돌려 올리지 않게) */
+  var syncDirty = {};         /* 아직 못 올린 칸 */
+  var syncTimers = {};
+  var syncSeen = {};          /* 이 칸에 대해 마지막으로 알고 있는 값 (헛되이 다시 올리지 않게) */
+  var syncStream = null;
+  var syncStreamOpen = false;
+  var syncPending = 0;
+
+  var SYNC_LABEL = {
+    connecting: '연결 중',
+    live: '실시간 동기화',
+    polling: '동기화 중',
+    working: '동기화 중',
+    offline: '오프라인'
+  };
+
+  function renderSyncStatus(next) {
+    var pill = document.getElementById('syncPill');
+    if (!pill) return;
+    if (!SYNC_ENABLED) {
+      pill.hidden = true;
+      return;
+    }
+    pill.hidden = false;
+    pill.setAttribute('data-state', next);
+    var label = document.getElementById('syncText');
+    if (label) label.textContent = SYNC_LABEL[next] || next;
+  }
+
+  function settleSyncStatus() {
+    if (!SYNC_ENABLED) return;
+    if (syncPending > 0) { renderSyncStatus('working'); return; }
+    if (syncStreamOpen) { renderSyncStatus('live'); return; }
+    renderSyncStatus(syncReady ? 'polling' : 'connecting');
+  }
+
+  function sameJSON(a, b) {
+    try {
+      return JSON.stringify(a) === JSON.stringify(b);
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function mergeObject(base, extra) {
+    if (!extra || typeof extra !== 'object' || Array.isArray(extra)) return extra;
+    var out = {};
+    var key;
+    if (base && typeof base === 'object' && !Array.isArray(base)) {
+      for (key in base) {
+        if (Object.prototype.hasOwnProperty.call(base, key)) out[key] = base[key];
+      }
+    }
+    for (key in extra) {
+      if (Object.prototype.hasOwnProperty.call(extra, key)) out[key] = extra[key];
+    }
+    return out;
+  }
+
+  /* 목록은 { items, at } 으로 감싸 둡니다 (빈 목록도 사라지지 않게). */
+  function listPayload(items) {
+    return { items: items, at: Date.now() };
+  }
+
+  function listItems(payload) {
+    if (payload && typeof payload === 'object' && Array.isArray(payload.items)) return payload.items;
+    return [];
+  }
+
+  function todoWho(unit) {
+    var parts = String(unit).split('/');
+    if (parts[0] !== 'todos' || parts.length !== 2) return '';
+    var person = personOf(parts[1]);
+    return person ? person.key : '';
+  }
+
+  function unitValue(unit) {
+    var who = todoWho(unit);
+    if (who) return listPayload(todosOf(who));
+    if (unit === 'missions') return listPayload(state.missions);
+    if (unit === 'offDays') return listPayload(state.offDays);
+    if (unit === 'events') return listPayload(state.customEvents);
+    if (unit === 'dadStatus') return { value: state.dadStatus.value, at: state.dadStatus.at };
+    return null;
+  }
+
+  /* 이 칸의 지금 내용을 짧은 문자열로 (값이 그대로면 다시 올리지 않기 위해) */
+  function fingerprint(unit) {
+    var who = todoWho(unit);
+    if (who) return JSON.stringify(todosOf(who));
+    if (unit === 'missions') return JSON.stringify(state.missions);
+    if (unit === 'offDays') return JSON.stringify(state.offDays);
+    if (unit === 'events') return JSON.stringify(state.customEvents);
+    if (unit === 'dadStatus') return JSON.stringify([state.dadStatus.value, state.dadStatus.at]);
+    return '';
+  }
+
+  function rememberUnit(unit) {
+    syncSeen[unit] = fingerprint(unit);
+  }
+
+  function itemKey(item) {
+    if (item && typeof item === 'object') return String(item.id);
+    return String(item);
+  }
+
+  /* 끊긴 사이 이 기기에서 쓰던 목록 + 원격 목록을 합칩니다 (같은 id 는 이 기기 것). */
+  function mergeIdLists(remoteItems, localItems) {
+    var out = [];
+    var seen = {};
+    (localItems || []).forEach(function (item) {
+      var id = itemKey(item);
+      if (seen[id]) return;
+      seen[id] = true;
+      out.push(item);
+    });
+    (remoteItems || []).forEach(function (item) {
+      var id = itemKey(item);
+      if (seen[id]) return;
+      seen[id] = true;
+      out.push(item);
+    });
+    return out;
+  }
+
+  function hasContent(unit) {
+    if (unit === 'dadStatus') return isValidStatus(state.dadStatus.value);
+    var value = unitValue(unit);
+    return !!value && listItems(value).length > 0;
+  }
+
+  /* ── 올리기 ─────────────────────────────────────────── */
+  function pushUnit(unit) {
+    if (!SYNC_ENABLED) return;
+    var value = unitValue(unit);
+    if (!value) return;
+    var fp = fingerprint(unit);
+    syncPending++;
+    fetch(SYNC_BASE + '/' + unit + '.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(value),
+      cache: 'no-store'
+    }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function () {
+      syncPending = Math.max(0, syncPending - 1);
+      syncSeen[unit] = fp;
+      delete syncDirty[unit];
+      settleSyncStatus();
+    }).catch(function () {
+      syncPending = Math.max(0, syncPending - 1);
+      syncDirty[unit] = true;
+      renderSyncStatus('offline');
+      /* 못 올린 것은 20초 뒤 다시 (인터넷이 돌아오면 바로 맞춰집니다) */
+      setTimeout(function () {
+        if (syncDirty[unit]) pushUnit(unit);
+      }, 20000);
+    });
+    settleSyncStatus();
+  }
+
+  function pushDirty() {
+    for (var unit in syncDirty) {
+      if (Object.prototype.hasOwnProperty.call(syncDirty, unit)) pushUnit(unit);
+    }
+  }
+
+  /* 이 기기에만 있던 내용을 처음으로 올려 둡니다. */
+  function pushContentUnits() {
+    SYNC_UNITS.forEach(function (unit) {
+      if (hasContent(unit)) pushUnit(unit);
+    });
+  }
+
+  /* 원격에 아직 없는 칸은 이 기기 내용으로 메꿉니다. */
+  function pushMissingUnits(root) {
+    SYNC_UNITS.forEach(function (unit) {
+      if (nodeAt(root, unit) === undefined && hasContent(unit)) pushUnit(unit);
+    });
+  }
+
+  /* 이 기기에서 바뀐 칸 표시 → 잠깐 묶었다가 올립니다. */
+  function markChanged(unit) {
+    if (!SYNC_ENABLED) return;
+    /* 마지막으로 알고 있는 값과 같으면 올릴 것이 없습니다(다른 칸을 덮어쓰지 않게). */
+    if (syncSeen[unit] === fingerprint(unit)) {
+      delete syncDirty[unit];
+      return;
+    }
+    syncDirty[unit] = true;
+    if (!syncReady) { renderSyncStatus('connecting'); return; }
+    if (syncTimers[unit]) clearTimeout(syncTimers[unit]);
+    syncTimers[unit] = setTimeout(function () {
+      syncTimers[unit] = null;
+      pushUnit(unit);
+    }, 300);
+  }
+
+  function noteLocalWrite(storeKey) {
+    if (!SYNC_ENABLED || syncApplying > 0) return;
+    var units = SYNC_STORE_UNITS[storeKey];
+    if (!units) return;
+    for (var i = 0; i < units.length; i++) markChanged(units[i]);
+  }
+
+  /* ── 받기 ───────────────────────────────────────────── */
+  function nodeAt(root, unit) {
+    var parts = unit.split('/');
+    var node = root;
+    for (var i = 0; i < parts.length; i++) {
+      if (!node || typeof node !== 'object') return undefined;
+      node = node[parts[i]];
+      if (node === undefined) return undefined;
+    }
+    return node;
+  }
+
+  function unitOfPath(path) {
+    var parts = String(path).replace(/^\/+/, '').replace(/\/+$/, '').split('/');
+    if (parts[0] === 'todos' && parts.length === 2) {
+      return todoWho('todos/' + parts[1]) ? 'todos/' + parts[1] : null;
+    }
+    if (parts.length !== 1) return null;
+    if (SYNC_LIST_UNITS.indexOf(parts[0]) >= 0 || parts[0] === 'dadStatus') return parts[0];
+    return null;
+  }
+
+  /* 원격 값을 이 기기 화면과 저장소에 옮깁니다. 실제로 달라졌을 때만 true. */
+  function applyUnit(unit, payload) {
+    var who = todoWho(unit);
+    if (who) {
+      var list = normalizeChecklistItems(listItems(payload));
+      if (sameJSON(state.todos[who], list)) return false;
+      state.todos[who] = list;
+      writeJSON(STORE_KEYS.todos, {
+        yongwoo: state.todos.yongwoo,
+        mom: state.todos.mom,
+        dad: state.todos.dad
+      });
+      return true;
+    }
+    if (unit === 'missions') {
+      var missions = normalizeChecklistItems(listItems(payload));
+      if (sameJSON(state.missions, missions)) return false;
+      state.missions = missions;
+      writeJSON(STORE_KEYS.missions, state.missions);
+      return true;
+    }
+    if (unit === 'offDays') {
+      var offDays = normalizeOffDays(listItems(payload));
+      if (sameJSON(state.offDays, offDays)) return false;
+      state.offDays = offDays;
+      writeJSON(STORE_KEYS.offDays, state.offDays);
+      return true;
+    }
+    if (unit === 'events') {
+      var events = normalizeEvents(listItems(payload));
+      if (sameJSON(state.customEvents, events)) return false;
+      state.customEvents = events;
+      writeJSON(STORE_KEYS.events, state.customEvents);
+      return true;
+    }
+    if (unit === 'dadStatus') {
+      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false;
+      var value = String(payload.value || '');
+      if (!isValidStatus(value)) return false;
+      var at = typeof payload.at === 'number' ? payload.at : null;
+      if (state.dadStatus.value === value && state.dadStatus.at === at) return false;
+      state.dadStatus = { value: value, at: at };
+      writeJSON(STORE_KEYS.dadStatus, state.dadStatus);
+      return true;
+    }
+    return false;
+  }
+
+  /* 끊긴 사이 이 기기에서 바꾼 칸: 원격 목록과 합칩니다(지우지 않게). */
+  function mergeDirtyUnit(unit, remoteValue) {
+    if (unit === 'dadStatus') return null;      /* 상태는 이 기기 값이 우선 */
+    var local = unitValue(unit);
+    if (!local) return remoteValue;
+    return {
+      items: mergeIdLists(listItems(remoteValue), listItems(local)),
+      at: Date.now()
+    };
+  }
+
+  function applyRemoteAll(root, dirty) {
+    if (!root || typeof root !== 'object' || Array.isArray(root)) return false;
+    var changed = false;
+    syncApplying++;
+    try {
+      SYNC_UNITS.forEach(function (unit) {
+        var value = nodeAt(root, unit);
+        if (value === undefined) return;
+        if (dirty && dirty[unit]) {
+          value = mergeDirtyUnit(unit, value);
+          if (value === null) return;           /* 이 기기 값을 그대로 두고 나중에 올림 */
+        }
+        if (applyUnit(unit, value)) changed = true;
+        rememberUnit(unit);
+      });
+    } finally {
+      syncApplying--;
+    }
+    return changed;
+  }
+
+  function pullAll() {
+    if (!SYNC_ENABLED) return;
+    var first = !syncReady;
+    renderSyncStatus('working');
+    fetch(SYNC_DB, { cache: 'no-store' }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function (root) {
+      syncReady = true;
+      var changed = applyRemoteAll(root, syncDirty);
+      if (changed) render();
+      if (first) {
+        if (root && typeof root === 'object' && !Array.isArray(root)) pushMissingUnits(root);
+        else pushContentUnits();
+      }
+      pushDirty();
+      settleSyncStatus();
+    }).catch(function () {
+      renderSyncStatus('offline');
+    });
+  }
+
+  /* SSE: Firebase 가 put/patch 이벤트로 바뀐 곳을 바로 알려 줍니다. */
+  function onRemoteEvent(kind, raw) {
+    if (!syncReady || !raw) return;
+    var msg;
+    try {
+      msg = JSON.parse(raw);
+    } catch (err) {
+      return;
+    }
+    if (!msg || typeof msg !== 'object') return;
+
+    var path = String(msg.path || '');
+    var data = typeof msg.data === 'undefined' ? null : msg.data;
+
+    if (path === '' || path === '/') {
+      if (kind !== 'put') return;
+      if (applyRemoteAll(data, syncDirty)) render();
+      settleSyncStatus();
+      return;
+    }
+
+    var unit = unitOfPath(path);
+    if (!unit) return;              /* 더 깊은 경로는 다음 확인(30초)에서 따라잡습니다. */
+    if (syncDirty[unit]) return;    /* 아직 못 올린 내 변경이 우선 */
+    if (kind === 'patch') data = mergeObject(unitValue(unit), data);
+
+    syncApplying++;
+    try {
+      if (applyUnit(unit, data)) render();
+      rememberUnit(unit);
+    } finally {
+      syncApplying--;
+    }
+    settleSyncStatus();
+  }
+
+  function openStream() {
+    if (!SYNC_ENABLED || syncStream) return;
+    try {
+      syncStream = new EventSource(SYNC_DB);
+    } catch (err) {
+      syncStream = null;
+      renderSyncStatus(syncReady ? 'polling' : 'offline');
+      return;
+    }
+    syncStream.addEventListener('open', function () {
+      syncStreamOpen = true;
+      settleSyncStatus();
+      pullAll();                    /* 끊긴 사이 바뀐 것 따라잡기 */
+    });
+    syncStream.addEventListener('put', function (event) {
+      onRemoteEvent('put', event.data);
+    });
+    syncStream.addEventListener('patch', function (event) {
+      onRemoteEvent('patch', event.data);
+    });
+    syncStream.addEventListener('error', function () {
+      syncStreamOpen = false;
+      renderSyncStatus(syncReady ? 'polling' : 'offline');  /* 스스로 다시 붙고, 그동안 30초 확인 */
+    });
+  }
+
+  function startSync() {
+    if (!SYNC_ENABLED) return;
+    renderSyncStatus('connecting');
+    pullAll();
+    openStream();
+
+    var pill = document.getElementById('syncPill');
+    if (pill) {
+      pill.addEventListener('click', function () { pullAll(); });
+    }
+
+    /* SSE 가 쉬는 동안(백그라운드 등) 놓친 변경을 30초마다 확인합니다. */
+    setInterval(function () {
+      if (document.hidden) return;
+      if (!syncStreamOpen || !syncReady) pullAll();
+    }, 30000);
+
+    /* 화면을 다시 켜면(아이패드/아이폰) 바로 최신으로 맞춥니다. */
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) pullAll();
+    });
+
+    if (typeof window.addEventListener === 'function') {
+      window.addEventListener('online', function () {
+        if (!syncStream) openStream();
+        pullAll();
+      });
+    }
   }
 
   function newId(prefix) {
@@ -2101,12 +2606,11 @@
     return { value: '', at: null };
   }
 
-  function loadOffDays() {
-    var stored = readJSON(STORE_KEYS.offDays, []);
-    if (!Array.isArray(stored)) return [];
+  function normalizeOffDays(list) {
+    if (!Array.isArray(list)) return [];
     var seen = {};
     var out = [];
-    stored.forEach(function (value) {
+    list.forEach(function (value) {
       var d = parseLocal(value);
       if (!d) return;
       var key = dateKey(d);
@@ -2118,10 +2622,26 @@
     return out;
   }
 
-  var state = {
-    customEvents: readJSON(STORE_KEYS.events, []).filter(function (item) {
+  function loadOffDays() {
+    return normalizeOffDays(readJSON(STORE_KEYS.offDays, []));
+  }
+
+  function normalizeEvents(list) {
+    if (!Array.isArray(list)) return [];
+    return list.filter(function (item) {
       return item && typeof item.title === 'string' && typeof item.start === 'string';
-    }),
+    }).map(function (item) {
+      return {
+        id: String(item.id || newId('ev')),
+        title: String(item.title).slice(0, 80),
+        start: String(item.start),
+        end: typeof item.end === 'string' ? item.end : ''
+      };
+    });
+  }
+
+  var state = {
+    customEvents: normalizeEvents(readJSON(STORE_KEYS.events, [])),
     todos: loadTodos(),
     missions: normalizeChecklistItems(readJSON(STORE_KEYS.missions, [])),
     dadStatus: loadDadStatus(),
@@ -2953,6 +3473,10 @@
   document.getElementById('offdayDate').value = '';
 
   render();
+
+  /* 다른 기기와 실시간으로 맞추기 시작 */
+  /* 다른 기기와 실시간으로 맞추기 시작 */
+  startSync();
 
   /* 시계 갱신, 날짜가 바뀌면 보드 전체 다시 그리기 */
   var lastDayKey = dateKey(new Date());
