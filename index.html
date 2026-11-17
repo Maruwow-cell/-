@@ -3786,8 +3786,8 @@
       label.textContent = look[1] + (weather.stale ? ' · 최근' : '') +
         (typeof d.feels === 'number' && Math.abs(d.feels - d.temp) >= 2 ? ' · 체감 ' + Math.round(d.feels) + '°' : '');
     }
-    if (hi) hi.textContent = (typeof d.hi === 'number' ? Math.round(d.hi) : '–') + '°';
-    if (lo) lo.textContent = (typeof d.lo === 'number' ? Math.round(d.lo) : '–') + '°';
+    if (hi) hi.textContent = typeof d.hi === 'number' ? Math.round(d.hi) + '°' : '–';
+    if (lo) lo.textContent = typeof d.lo === 'number' ? Math.round(d.lo) + '°' : '–';
 
     var grade = dustGrade(d.pm10, d.pm25);
     if (dust) {
