@@ -85,8 +85,11 @@
     overflow: hidden;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "text side"
+      "wx   wx";
     align-items: center;
-    gap: 12px;
+    gap: 10px 12px;
     padding: 22px 24px 20px;
     border: 1px solid #ffe7c2;
     border-radius: 30px;
@@ -134,7 +137,10 @@
     50% { opacity: 1; transform: scale(1.1); }
   }
 
-  .hero-text { position: relative; z-index: 1; min-width: 0; }
+  .hero-text { position: relative; z-index: 1; min-width: 0; grid-area: text; }
+
+  .hero-line1 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .hero-line2 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 2px; }
 
   .hero-text h1 {
     margin: 0;
@@ -159,20 +165,157 @@
     align-items: center;
     gap: 9px;
     flex-wrap: wrap;
-    margin: 10px 0 0;
-    padding: 6px 14px;
-    border: 1px solid #ffe4bd;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .9);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
     font-size: 13px;
     font-weight: 800;
     color: #7a5231;
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 2px 6px rgba(160, 120, 60, .07);
   }
 
-  .hero-clock { color: #b59a78; font-weight: 700; }
-  .hero-date { font-weight: 900; }
+  .hero-clock { color: #a9805a; font-weight: 800; font-size: clamp(15px, 2vw, 21px); font-variant-numeric: tabular-nums; }
+  .hero-date {
+    display: inline-flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 0 .28em;
+    font-size: clamp(32px, 4.6vw, 46px);
+    line-height: 1.03;
+    font-weight: 900;
+    letter-spacing: -.05em;
+    color: #6b4526;
+    text-shadow: 0 2px 0 #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-date .y { align-self: flex-start; margin-top: .08em; font-size: .4em; font-weight: 800; letter-spacing: 0; color: #b3946f; }
+  .hero-date .wd { font-size: .54em; font-weight: 900; letter-spacing: -.02em; color: #8f6c45; }
+
+  /* ── 날씨 (머리글) ──────────────────────────────────── */
+  .weather {
+    grid-area: wx;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    padding: 8px 14px 8px 11px;
+    border: 1px solid #ffe0b4;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fffdf7 0%, #fff9ec 100%);
+    box-shadow: 0 3px 10px rgba(170, 130, 70, .09);
+    font-family: inherit;
+    color: #6b4c2b;
+    text-align: left;
+    cursor: pointer;
+    justify-self: start;
+  }
+  .weather:hover { border-color: #ffd396; }
+  .weather[data-state="error"] { border-color: #ecdfd0; }
+  .wx-icon { font-size: 30px; line-height: 1; flex: none; filter: drop-shadow(0 2px 3px rgba(160, 130, 70, .16)); }
+  .wx-main { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; min-width: 0; }
+  .wx-temp { display: inline-flex; align-items: flex-start; font-size: 34px; line-height: 1; font-weight: 900; letter-spacing: -.045em; color: #5b4227; font-variant-numeric: tabular-nums; }
+  .wx-temp .deg { font-size: .46em; font-weight: 900; color: #a98a63; margin-top: .16em; }
+  .wx-label { font-size: 12px; font-weight: 850; line-height: 1.25; letter-spacing: -.01em; color: #8a6a47; white-space: nowrap; }
+  .wx-meta { display: flex; flex-direction: column; gap: 1px; font-size: 10.5px; font-weight: 700; line-height: 1.3; color: #9a7f5d; letter-spacing: -.01em; }
+  .wx-meta b { font-weight: 900; color: #7a5a37; font-variant-numeric: tabular-nums; }
+  .wx-dust { display: inline-flex; align-items: center; gap: 3px; }
+  .wx-dust .dot { width: 6px; height: 6px; border-radius: 50%; background: #cfc6b8; flex: none; }
+  .wx-dust[data-grade="좋음"] .dot { background: #4fb894; }
+  .wx-dust[data-grade="보통"] .dot { background: #6aa8e8; }
+  .wx-dust[data-grade="나쁨"] .dot { background: #ef8b6b; }
+  .wx-dust[data-grade="매우나쁨"] .dot { background: #b95a86; }
+  .wx-place { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 800; color: #b0946e; white-space: nowrap; }
+  .wx-place::before { content: "\1F4CD"; font-size: 9px; }
+
+  .wx-pop {
+    position: fixed;
+    z-index: 70;
+    width: 232px;
+    max-width: calc(100vw - 24px);
+    padding: 11px 11px 9px;
+    border: 1px solid #ffe0b4;
+    border-radius: 18px;
+    background: #fffdf8;
+    box-shadow: 0 18px 44px rgba(120, 100, 70, .22);
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .wx-pop-title { margin: 0 0 7px; padding: 0 2px; font-size: 10.5px; font-weight: 900; letter-spacing: .04em; color: #b0946e; }
+  .wx-pop-list { display: grid; gap: 3px; }
+  .wx-opt {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    min-height: 30px;
+    padding: 4px 9px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: #fdfaf4;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    color: #7a5a37;
+    text-align: left;
+    cursor: pointer;
+  }
+  .wx-opt[aria-pressed="true"] { border-color: #ffd08a; background: #fff5df; color: #a9721a; }
+  .wx-opt .tick { margin-left: auto; font-size: 10px; color: #d79a2c; }
+  .wx-pop-foot { margin: 8px 2px 0; font-size: 9.5px; line-height: 1.35; color: #b3a48f; }
+  .wx-geo { margin-top: 7px; display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; min-height: 30px; border: 1px dashed #ecd8ba; border-radius: 9px; background: #fff; font-family: inherit; font-size: 11.5px; font-weight: 850; color: #9a7b52; cursor: pointer; }
+
+  /* ── 미션 카드: 주중 5일 저금통 ─────────────────────── */
+  .piggy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 5px 9px 5px 6px;
+    border: 1px solid #ffe1bb;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #fffdf6 0%, #fff5e4 100%);
+  }
+  .piggy-art { width: 58px; height: auto; flex: none; display: block; }
+  .piggy-body-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .piggy-days { display: flex; gap: 3px; }
+  .piggy-day {
+    display: grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    border: 1px solid #efe0c9;
+    border-radius: 50%;
+    background: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    color: #bda88a;
+  }
+  .piggy-day.is-done {
+    border-color: #e7b23a;
+    background: radial-gradient(circle at 34% 28%, #fff6c9, #ffd257 58%, #e9a92b);
+    color: #7d4d02;
+    box-shadow: 0 1px 4px rgba(220, 160, 40, .38);
+  }
+  .piggy-day.is-today { outline: 1.5px solid #ffc46a; outline-offset: 1px; }
+  .piggy-line { margin: 0; display: flex; align-items: baseline; gap: 3px; flex-wrap: wrap; font-size: 11px; font-weight: 800; color: #8a6a45; letter-spacing: -.01em; }
+  .piggy-line b { font-size: 13px; font-weight: 900; color: #b1720f; font-variant-numeric: tabular-nums; }
+  .piggy-note { font-size: 9.5px; font-weight: 700; color: #b39a78; }
+  .piggy-badge { margin-left: auto; padding: 2px 8px; border-radius: 999px; background: linear-gradient(180deg, #ffeaa8, #ffcf57); color: #7a4a06; font-size: 10px; font-weight: 900; white-space: nowrap; box-shadow: 0 2px 6px rgba(230, 170, 45, .3); }
+  .piggy .coin { opacity: .14; transform: translateY(2.5px) scale(.9); transform-box: fill-box; transform-origin: center; transition: opacity .35s ease, transform .35s ease; }
+  .piggy .coin.is-on { opacity: 1; transform: none; }
+  .piggy.is-full { border-color: #ffd06a; background: linear-gradient(180deg, #fffbe8 0%, #fff0c4 100%); }
+  .piggy.is-full .piggy-art { filter: drop-shadow(0 0 7px rgba(255, 196, 60, .6)); }
+  .piggy .piggy-spark { opacity: 0; transition: opacity .4s ease; }
+  .piggy.is-full .piggy-spark { opacity: 1; animation: twinkle 2.6s ease-in-out infinite; }
+  .piggy.is-full .piggy-badge { animation: piggyPop 2.4s ease-in-out infinite; }
+  @keyframes piggyPop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
 
   /* 실시간 동기화 상태 (머리글과 같은 줄에 놓이는 작은 알약) */
   .sync-pill {
@@ -353,6 +496,7 @@
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
+    grid-area: side;
   }
 
   .hero-score {
@@ -381,10 +525,10 @@
     gap: 3px;
   }
 
-  .hb { width: 84px; height: auto; aspect-ratio: 1 / 1; filter: drop-shadow(0 8px 12px rgba(120, 100, 60, .14)); }
+  .hb { width: 74px; height: auto; aspect-ratio: 120 / 155; filter: drop-shadow(0 8px 12px rgba(120, 100, 60, .14)); }
   .hb-mouse { animation: bob 5.6s ease-in-out infinite; }
-  .hb-seed { width: 78px; animation: bob 6.4s ease-in-out infinite .5s; }
-  .hb-fin { width: 80px; animation: bob 6s ease-in-out infinite 1s; }
+  .hb-seed { width: 70px; animation: bob 6.4s ease-in-out infinite .5s; }
+  .hb-fin { width: 72px; animation: bob 6s ease-in-out infinite 1s; }
 
   @keyframes bob {
     0%, 100% { transform: translateY(0); }
@@ -557,7 +701,7 @@
     position: absolute;
     top: -8px;
     right: 8px;
-    width: 78px;
+    width: 66px;
     pointer-events: none;
   }
 
@@ -589,7 +733,8 @@
   /* 단계별 진화: 1단계 아기 → 2단계 성장 → 3단계 완전 진화 (+ 3일 연속 슈퍼) */
   .buddy-svg .f2,
   .buddy-svg .f3,
-  .buddy-svg .super { display: none; }
+  .buddy-svg .super,
+  .buddy-svg .hat-3 { display: none; }
 
   .card[data-stage="2"] .buddy-svg .f1 { display: none; }
   .card[data-stage="2"] .buddy-svg .f2 { display: inline; }
@@ -599,6 +744,10 @@
   .card[data-stage="3"] .buddy-svg .f3 { display: inline; }
 
   .card[data-super="1"] .buddy-svg .super { display: inline; }
+  /* 3일 연속 슈퍼: 모자 탑 꼭대기에 황금 왕관 */
+  .card[data-super="1"] .buddy-svg .hat-3 { display: inline; }
+  .card[data-super="1"] .buddy-svg .hat-3 path,
+  .card[data-super="1"] .buddy-svg .hat-3 circle { animation: crownFloat 2.8s ease-in-out infinite; transform-box: view-box; transform-origin: 60px 20px; }
 
   .card[data-stage="2"] .buddy-svg { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(255, 214, 120, .75)); }
   .card[data-stage="3"] .buddy-svg { transform: scale(1.1); filter: drop-shadow(0 0 16px rgba(255, 202, 84, .9)); }
@@ -1587,19 +1736,30 @@
     .page { padding: 14px 13px calc(30px + env(safe-area-inset-bottom)); gap: 12px; }
     .hero {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "text" "wx" "side";
       justify-items: center;
       text-align: center;
-      padding: 18px 16px 16px;
+      padding: 16px 14px 14px;
       border-radius: 24px;
       gap: 8px;
     }
     .hero-text { text-align: center; }
-    .hero-side { align-items: center; }
+    .hero-text h1 { font-size: 21px; }
+    .hero-date { font-size: 27px; flex-wrap: nowrap; }
+    .hero-date .wd { font-size: .58em; }
+    .hero-clock { font-size: 15px; }
+    .hero-sub { margin-top: 3px; font-size: 12.5px; }
+    .hero-side { flex-direction: row; align-items: center; justify-content: center; gap: 8px; }
     .hero-buddies { gap: 0; }
-    .hb { width: 74px; }
-    .hb-seed { width: 70px; }
-    .hb-fin { width: 72px; }
-    .hero-when { font-size: 12px; padding: 5px 11px; }
+    .hb { width: 62px; }
+    .hb-seed { width: 58px; }
+    .hb-fin { width: 60px; }
+    .hero-when { font-size: 12px; padding: 0; }
+    .hero-line1, .hero-line2 { justify-content: center; }
+    .weather { justify-self: stretch; justify-content: center; }
+    .wx-main { align-items: flex-start; }
+    .piggy { margin-top: 2px; }
+    .piggy-note { display: none; }
     .history-modal { padding: 10px; align-items: flex-end; }
     .history-panel { padding: 15px 14px 12px; border-radius: 20px; max-height: 88vh; }
     .cloud { display: none; }
@@ -1609,7 +1769,7 @@
     .add-form .btn-primary { flex: 1 1 100%; }
     .status-btn { min-height: 72px; }
     .st-sub { display: none; }
-    .buddy { width: 68px; top: 0; }
+    .buddy { width: 58px; top: 0; }
     .card[data-stage="3"] .buddy-svg { transform: scale(1.04); }
     .card[data-super="1"] .buddy-svg { transform: scale(1.06); }
     .card.mission .card-head,
@@ -1642,23 +1802,38 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 6px 14px;
+      gap: 10px;
+      padding: 3px 14px;
       border-radius: 16px;
       grid-template-columns: none;
+      grid-template-areas: none;
     }
-    .hero-text { display: flex; align-items: center; gap: 10px; }
-    .hero-text h1 { font-size: 20px; letter-spacing: -.05em; white-space: nowrap; }
+    .hero-text { display: flex; flex-direction: column; justify-content: center; gap: 0; grid-area: auto; flex: none; }
+    .hero-line1 { gap: 7px; flex-wrap: nowrap; line-height: 1.1; }
+    .hero-line2 { gap: 8px; margin-top: 0; flex-wrap: nowrap; }
+    .hero-text h1 { font-size: 14px; letter-spacing: -.04em; white-space: nowrap; line-height: 1.16; }
     .hero-sub { display: none; }
-    .hero-when { margin: 0; padding: 3px 10px; font-size: 10.5px; gap: 6px; }
+    .hero-when { margin: 0; padding: 0; font-size: 10.5px; gap: 6px; flex-wrap: nowrap; }
+    .hero-date { font-size: 29px; line-height: 1; gap: 0 .26em; flex-wrap: nowrap; white-space: nowrap; }
+    /* 좁은 한 줄 띠에서는 연도를 빼고 날짜만 크게 (연도는 화면 읽기용으로 남김) */
+    .hero-date .y { display: none; }
+    .hero-date .wd { font-size: .56em; }
+    .hero-clock { font-size: 14px; }
+    .weather { padding: 2px 9px 2px 6px; gap: 6px; border-radius: 12px; justify-self: auto; }
+    .wx-icon { font-size: 24px; }
+    .wx-temp { font-size: 26px; }
+    .wx-label { font-size: 10px; }
+    .wx-meta { font-size: 8.5px; }
+    .wx-dust .dot { width: 5px; height: 5px; }
+    .wx-place { font-size: 8.5px; }
     .history-pill { padding: 1px 7px; font-size: 9px; }
     .hero-side { flex-direction: row; align-items: center; gap: 10px; }
     .hero-score { align-items: center; }
     .hero-score .qs { padding: 3px 8px; font-size: 10px; }
     .hero-buddies { gap: 1px; }
-    .hb { width: 42px; }
-    .hb-seed { width: 40px; }
-    .hb-fin { width: 41px; }
+    .hb { width: 34px; }
+    .hb-seed { width: 33px; }
+    .hb-fin { width: 34px; }
     .hill { height: 44px; bottom: -26px; }
     .cloud, .spark { display: none; }
 
@@ -1870,6 +2045,28 @@
 
     .page-foot { display: none; }
 
+    /* 미션 카드: 주중 5일 저금통 줄 */
+    .card.mission {
+      grid-template-rows: auto auto minmax(0, 1fr) auto auto auto;
+      grid-template-areas:
+        "head  head"
+        "form  buddy"
+        "list  buddy"
+        "piggy piggy"
+        "quest quest"
+        "foot  foot";
+    }
+    .card.mission .piggy { grid-area: piggy; margin: 2px 0 0; padding: 1px 7px 1px 4px; gap: 6px; border-radius: 9px; }
+    .card.mission .piggy-art { width: 42px; }
+    .card.mission .piggy-body-text { gap: 1px; }
+    .card.mission .piggy-days { gap: 2px; }
+    .card.mission .piggy-day { width: 15px; height: 15px; font-size: 7.5px; }
+    .card.mission .piggy-day.is-today { outline-width: 1px; outline-offset: 1px; }
+    .card.mission .piggy-line { font-size: 9px; gap: 2px; }
+    .card.mission .piggy-line b { font-size: 11px; }
+    .card.mission .piggy-badge { padding: 1px 6px; font-size: 8.5px; }
+    .card.mission .piggy-note { display: none; }
+
     /* 내부 스크롤 영역의 얇은 스크롤바 */
     .todo-list, .mcal-events, .offday-list { scrollbar-width: thin; }
     .todo-list::-webkit-scrollbar,
@@ -1893,14 +2090,28 @@
   /* 아이패드 가로라도 높이가 낮으면(사파리 툴바 등) 더 조인다 */  @media (min-width: 960px) and (max-height: 700px) {
     .page { padding: 7px 10px; gap: 6px; }
     .hero { padding: 4px 12px; }
-    .hero-text h1 { font-size: 17px; }
-    .hb { width: 30px; }
-    .hb-seed, .hb-fin { width: 29px; }
+    .hero-text h1 { font-size: 13px; }
+    .hero-date { font-size: 26px; }
+    .hero-clock { font-size: 13px; }
+    .weather { padding: 1px 8px 1px 5px; gap: 5px; }
+    .wx-icon { font-size: 21px; }
+    .wx-temp { font-size: 23px; }
+    .wx-label { font-size: 9.5px; }
+    .wx-meta { font-size: 8px; }
+    .wx-place { font-size: 8px; }
+    .piggy { padding: 2px 7px 2px 4px; gap: 6px; }
+    .piggy-art { width: 46px; }
+    .piggy-day { width: 16px; height: 16px; font-size: 8px; }
+    .piggy-line { font-size: 10px; }
+    .piggy-line b { font-size: 12px; }
+    .piggy-note { display: none; }
+    .hb { width: 26px; }
+    .hb-seed, .hb-fin { width: 25px; }
     .board { gap: 6px; }
     .col { gap: 6px; }
     .col-label { display: none; }
     .col-yongwoo, .col-mom { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
-    .col-dad { grid-template-rows: minmax(0, 1fr) auto minmax(0, .72fr); }
+    .col-dad { grid-template-rows: minmax(0, 1fr) auto minmax(0, .8fr); }
     .card { padding: 6px 8px; border-radius: 12px; }
     .status-now { font-size: 23px; }
     .status-sub { font-size: 10px; }
@@ -1917,6 +2128,9 @@
     .mcal-add { min-height: 15px; font-size: 7.5px; }
     #eventForm input { min-height: 24px; }
     #eventForm .btn { min-height: 24px; font-size: 10px; }
+    .card.offdays .add-form input[type="date"] { min-height: 26px; }
+    .card.offdays .add-form .btn { min-height: 26px; }
+    .card.offdays .add-form { flex-wrap: nowrap; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1937,294 +2151,68 @@
     </linearGradient>
 
     <!-- ⚡ 노란 전기 몬스터 · 1단계 (아기) -->
-    <symbol id="mon-mouse-1" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="108" rx="25" ry="6" fill="#fff1c0" opacity=".85"/>
-      <path d="M84 86c10 1 15-6 12-13-6 2-11 7-12 13z" fill="#ffd869" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="87" rx="22" ry="17" fill="#ffe07f" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="60" cy="91" rx="13" ry="10" fill="#fff7d8"/>
-      <ellipse cx="46" cy="101" rx="9" ry="5" fill="#ffdf7a" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="74" cy="101" rx="9" ry="5" fill="#ffdf7a" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="38" cy="80" rx="6" ry="8" transform="rotate(-22 38 80)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="82" cy="80" rx="6" ry="8" transform="rotate(22 82 80)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <path d="M37 33c-4-12 2-20 10-20 7 0 11 7 11 16z" fill="#ffe07f" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M83 33c4-12-2-20-10-20-7 0-11 7-11 16z" fill="#ffe07f" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M41 32c-2-8 1-13 5-13 4 0 6 4 6 10z" fill="#ffb9a8"/>
-      <path d="M79 32c2-8-1-13-5-13-4 0-6 4-6 10z" fill="#ffb9a8"/>
-      <circle cx="60" cy="55" r="25" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <path d="M60 31c0-6 4-9 8-9-1 6-4 8-8 9z" fill="#ffe486" stroke="#e2ad33" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="40" cy="63" rx="5.2" ry="3.6" fill="#ff9a86"/>
-      <ellipse cx="80" cy="63" rx="5.2" ry="3.6" fill="#ff9a86"/>
-      <ellipse cx="50" cy="53" rx="6.4" ry="7.6" fill="#3d2f26"/>
-      <ellipse cx="70" cy="53" rx="6.4" ry="7.6" fill="#3d2f26"/>
-      <circle cx="52.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="72.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="48.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <circle cx="68.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <path d="M58 63h4l-2 2.4z" fill="#8a6236"/>
-      <path d="M54.5 67.5c3 2.8 8 2.8 11 0" fill="none" stroke="#8a6236" stroke-width="1.7" stroke-linecap="round"/>
+    <symbol id="mon-mouse-1" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="106" rx="24" ry="5.5" fill="#ffe9e4" opacity=".85"/><path d="M46 80c-2 9-8 11-8 17" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M60 82c0 9-4 12-4 18" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M74 80c2 9 8 11 8 17" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><rect x="36" y="30" width="48" height="56" rx="24" fill="#ff9ba0" stroke="#e0707c" stroke-width="2"/><ellipse cx="60" cy="41" rx="15" ry="7" fill="#ffc9cb" opacity=".7"/><ellipse cx="48" cy="38" rx="6" ry="3.4" fill="#fff" opacity=".55"/><circle cx="48.0" cy="54.0" r="4.4" fill="#3a3038"/><circle cx="72.0" cy="54.0" r="4.4" fill="#3a3038"/><circle cx="49.5" cy="52.2" r="1.6" fill="#fff"/><circle cx="73.5" cy="52.2" r="1.6" fill="#fff"/><path d="M51.0 64.0c3.6 5.4 14.4 5.4 18.0 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="37.0" cy="62.0" rx="6.2" ry="3.8" fill="#ff7f95" opacity=".5"/><ellipse cx="83.0" cy="62.0" rx="6.2" ry="3.8" fill="#ff7f95" opacity=".5"/></g>
     </symbol>
 
     <!-- ⚡ 노란 전기 몬스터 · 2단계 (성장) -->
-    <symbol id="mon-mouse-2" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="109" rx="27" ry="6" fill="#fff1c0" opacity=".9"/>
-      <path d="M86 82c12 2 18-6 15-14" fill="none" stroke="#f2c451" stroke-width="6" stroke-linecap="round"/>
-      <path d="M95 60l15-6-3 10 10 4-18 15-1-13-9-3z" fill="#ffd869" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="84" rx="25" ry="20" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="60" cy="88" rx="15" ry="12" fill="#fffbe0"/>
-      <path d="M63 77l-8 11h6l-3 9 10-12h-6z" fill="#ffcf4d" stroke="#d99a1f" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="45" cy="101" rx="10" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="75" cy="101" rx="10" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="34" cy="76" rx="6.5" ry="9" transform="rotate(-24 34 76)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="86" cy="76" rx="6.5" ry="9" transform="rotate(24 86 76)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <path d="M44 40 32 5l20 23z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M76 40 88 5 68 28z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M45 33 38 12l11 14z" fill="#4a3a2c"/>
-      <path d="M75 33 82 12 71 26z" fill="#4a3a2c"/>
-      <circle cx="60" cy="50" r="26" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="39" cy="60" rx="5.8" ry="4" fill="#ff9a86"/>
-      <ellipse cx="81" cy="60" rx="5.8" ry="4" fill="#ff9a86"/>
-      <ellipse cx="50" cy="48" rx="6.8" ry="8" fill="#3d2f26"/>
-      <ellipse cx="70" cy="48" rx="6.8" ry="8" fill="#3d2f26"/>
-      <circle cx="52.4" cy="44.8" r="2.5" fill="#fff"/>
-      <circle cx="72.4" cy="44.8" r="2.5" fill="#fff"/>
-      <circle cx="48" cy="51" r="1.2" fill="#fff" opacity=".85"/>
-      <circle cx="68" cy="51" r="1.2" fill="#fff" opacity=".85"/>
-      <path d="M58 58h4l-2 2.4z" fill="#8a6236"/>
-      <path d="M54 63c3.4 3.2 8.6 3.2 12 0" fill="none" stroke="#8a6236" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M23 44l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" fill="#ffe58f"/>
-      <path d="M99 70l1.4 4 4 1.4-4 1.4-1.4 4-1.4-4-4-1.4 4-1.4z" fill="#ffe58f"/>
+    <symbol id="mon-mouse-2" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="110" rx="27" ry="6" fill="#ffe9e4" opacity=".9"/><path d="M42 80c-3 9-10 11-10 18" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M55 84c-1 10-5 13-5 19" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M65 84c1 10 5 13 5 19" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M78 80c3 9 10 11 10 18" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><rect x="31" y="26" width="58" height="62" rx="29" fill="#ff9ba0" stroke="#e0707c" stroke-width="2"/><ellipse cx="60" cy="38" rx="18" ry="8" fill="#ffc9cb" opacity=".7"/><ellipse cx="45" cy="34" rx="7" ry="4" fill="#fff" opacity=".5"/><circle cx="47.0" cy="50.0" r="4.6" fill="#3a3038"/><circle cx="73.0" cy="50.0" r="4.6" fill="#3a3038"/><circle cx="48.5" cy="48.2" r="1.7" fill="#fff"/><circle cx="74.5" cy="48.2" r="1.7" fill="#fff"/><path d="M50.0 61.0c4.0 5.8 16.0 5.8 20.0 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="35.0" cy="59.0" rx="6.6" ry="4.0" fill="#ff7f95" opacity=".5"/><ellipse cx="85.0" cy="59.0" rx="6.6" ry="4.0" fill="#ff7f95" opacity=".5"/><circle cx="22" cy="48" r="3.4" fill="#fff0f2" stroke="#f6aab6" stroke-width="1.2"/><circle cx="99" cy="60" r="2.8" fill="#fff0f2" stroke="#f6aab6" stroke-width="1.1"/></g><ellipse cx="60" cy="61.0" rx="27" ry="9.5" fill="#ffccd2" stroke="#e0707c" stroke-width="2" transform="rotate(-4 60 61.0)"/><path d="M33 63.0q27 9 54 0" fill="none" stroke="#e0707c" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="49.0" r="3.6" fill="#ffccd2" stroke="#e0707c" stroke-width="1.5"/><path d="M45 57.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/>
     </symbol>
 
     <!-- ⚡ 노란 전기 몬스터 · 3단계 (완전 진화) -->
-    <symbol id="mon-mouse-3" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="110" rx="30" ry="6" fill="#fff1c0" opacity=".95"/>
-      <path d="M30 62c-15 3-23 15-19 29 10-2 19-13 21-25z" fill="#fff3bf" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M90 62c15 3 23 15 19 29-10-2-19-13-21-25z" fill="#fff3bf" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M88 80c13 3 19-6 16-15" fill="none" stroke="#f2c451" stroke-width="6" stroke-linecap="round"/>
-      <path d="M98 55l16-7-3 11 11 4-20 16-1-14-10-3z" fill="#ffd869" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="84" rx="26" ry="21" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="60" cy="88" rx="14" ry="12" fill="#fffbe0"/>
-      <path d="M63 76l-9 12h7l-4 10 11-13h-7z" fill="#ffcf4d" stroke="#d99a1f" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="44" cy="103" rx="11" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="76" cy="103" rx="11" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="32" cy="74" rx="7" ry="10" transform="rotate(-26 32 74)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="88" cy="74" rx="7" ry="10" transform="rotate(26 88 74)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <path d="M45 38 31 4l22 22z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M75 38 89 4 67 26z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M46 32 39 11l11 15z" fill="#4a3a2c"/>
-      <path d="M74 32 81 11 70 26z" fill="#4a3a2c"/>
-      <circle cx="60" cy="50" r="26" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <path d="M60 22l7 8-7 7-7-7z" fill="#ffd0e0" stroke="#e0a83c" stroke-width="1.4" stroke-linejoin="round"/>
-      <ellipse cx="38" cy="60" rx="6" ry="4.2" fill="#ff9a86"/>
-      <ellipse cx="82" cy="60" rx="6" ry="4.2" fill="#ff9a86"/>
-      <ellipse cx="50" cy="49" rx="7" ry="8.4" fill="#3d2f26"/>
-      <ellipse cx="70" cy="49" rx="7" ry="8.4" fill="#3d2f26"/>
-      <circle cx="52.6" cy="45.6" r="2.6" fill="#fff"/>
-      <circle cx="72.6" cy="45.6" r="2.6" fill="#fff"/>
-      <circle cx="47.8" cy="52.4" r="1.3" fill="#fff" opacity=".9"/>
-      <circle cx="67.8" cy="52.4" r="1.3" fill="#fff" opacity=".9"/>
-      <path d="M57 58h6l-3 3z" fill="#8a6236"/>
-      <path d="M53.5 64c3.6 3.6 9.4 3.6 13 0" fill="none" stroke="#8a6236" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M18 40l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#ffe58f"/>
-      <path d="M102 66l1.4 4.2 4.2 1.4-4.2 1.4-1.4 4.2-1.4-4.2-4.2-1.4 4.2-1.4z" fill="#ffe58f"/>
+    <symbol id="mon-mouse-3" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="112" rx="30" ry="6" fill="#ffe9e4"/><path d="M36 78c-5 9-13 11-14 19" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M50 84c-2 10-8 13-9 20" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M60 86c0 10-3 14-3 20" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M70 84c2 10 8 13 9 20" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><path d="M84 78c5 9 13 11 14 19" fill="none" stroke="#f8858e" stroke-width="9" stroke-linecap="round"/><rect x="28" y="24" width="64" height="64" rx="32" fill="#ff9ba0" stroke="#e0707c" stroke-width="2"/><ellipse cx="60" cy="36" rx="19" ry="9" fill="#ffc9cb" opacity=".72"/><ellipse cx="41" cy="32" rx="8" ry="4.2" fill="#fff" opacity=".5"/><circle cx="46.0" cy="54.0" r="4.8" fill="#3a3038"/><circle cx="74.0" cy="54.0" r="4.8" fill="#3a3038"/><circle cx="47.5" cy="52.2" r="1.7" fill="#fff"/><circle cx="75.5" cy="52.2" r="1.7" fill="#fff"/><path d="M49.5 66.0c4.2 6.2 16.8 6.2 21.0 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="33.0" cy="64.0" rx="6.8" ry="4.2" fill="#ff7f95" opacity=".5"/><ellipse cx="87.0" cy="64.0" rx="6.8" ry="4.2" fill="#ff7f95" opacity=".5"/><polygon points="20.0,39.0 21.7,44.3 27.0,46.0 21.7,47.7 20.0,53.0 18.3,47.7 13.0,46.0 18.3,44.3" fill="#ffd9de"/><polygon points="100.0,56.0 101.4,60.6 106.0,62.0 101.4,63.4 100.0,68.0 98.6,63.4 94.0,62.0 98.6,60.6" fill="#ffe9a8"/><polygon points="90.0,91.0 91.2,94.8 95.0,96.0 91.2,97.2 90.0,101.0 88.8,97.2 85.0,96.0 88.8,94.8" fill="#ffe9a8"/></g><ellipse cx="60" cy="59.0" rx="27" ry="9.5" fill="#ffccd2" stroke="#e0707c" stroke-width="2" transform="rotate(-4 60 59.0)"/><path d="M33 61.0q27 9 54 0" fill="none" stroke="#e0707c" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="47.0" r="3.6" fill="#ffccd2" stroke="#e0707c" stroke-width="1.5"/><path d="M45 55.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/><path d="M44 48.0h32l-16-13z" fill="#ffe27a" stroke="#dda52b" stroke-width="1.8" stroke-linejoin="round"/><path d="M52 45.0l8 3 6-4" fill="none" stroke="#dda52b" stroke-width="1.6" opacity=".55"/><circle cx="60" cy="31.0" r="4" fill="#ff9fb2" stroke="#dda52b" stroke-width="1.3"/><g class="hat-3"><path d="M41 27.0l3-12 8 7 8-10 8 10 8-7 3 12z" fill="#ffe27a" stroke="#d99a1f" stroke-width="1.8" stroke-linejoin="round"/><circle cx="44" cy="19.0" r="1.8" fill="#ff8f6b"/><circle cx="60" cy="16.0" r="1.8" fill="#7fd3ff"/><circle cx="76" cy="19.0" r="1.8" fill="#9be7a8"/><path d="M54 25.0l1.6 4.2 60 26.6l-4.4 1.6-1.6 4.2-1.6-4.2-4.4-1.6 4.4-1.6z" fill="#fff3b0" transform="translate(0 -6)"/></g>
     </symbol>
 
     <!-- 🌿 민트 새싹 몬스터 · 1단계 (아기) -->
-    <symbol id="mon-seed-1" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="108" rx="25" ry="6" fill="#d9f5e6" opacity=".9"/>
-      <path d="M84 86c9 2 14-4 11-11-5 2-9 6-11 11z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="87" rx="23" ry="18" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
-      <ellipse cx="60" cy="91" rx="13" ry="10" fill="#f0fdf6"/>
-      <ellipse cx="46" cy="101" rx="9" ry="5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="74" cy="101" rx="9" ry="5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="37" cy="80" rx="6" ry="8" transform="rotate(-22 37 80)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="83" cy="80" rx="6" ry="8" transform="rotate(22 83 80)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <circle cx="60" cy="54" r="25" fill="#c9f3dd" stroke="#57b083" stroke-width="2"/>
-      <path d="M57 31c-2-9 4-15 13-15-1 9-6 14-13 15z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M60 29c1-5 4-8 8-9" fill="none" stroke="#4f9b6e" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
-      <path d="M45 34l-6-8 9 3z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M75 34l6-8-9 3z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <ellipse cx="39" cy="62" rx="5" ry="3.4" fill="#ffc0c6"/>
-      <ellipse cx="81" cy="62" rx="5" ry="3.4" fill="#ffc0c6"/>
-      <ellipse cx="50" cy="52" rx="6.4" ry="7.6" fill="#2f6b4f"/>
-      <ellipse cx="70" cy="52" rx="6.4" ry="7.6" fill="#2f6b4f"/>
-      <circle cx="52.2" cy="49.2" r="2.3" fill="#fff"/>
-      <circle cx="72.2" cy="49.2" r="2.3" fill="#fff"/>
-      <circle cx="48.2" cy="55" r="1.1" fill="#fff" opacity=".8"/>
-      <circle cx="68.2" cy="55" r="1.1" fill="#fff" opacity=".8"/>
-      <path d="M55 66c3 3.2 7 3.2 10 0" fill="none" stroke="#3f7f5c" stroke-width="1.8" stroke-linecap="round"/>
+    <symbol id="mon-seed-1" viewBox="0 0 120 155">
+      <g transform="translate(0,48) translate(60,0) scale(0.86) translate(-60,0)"><ellipse cx="60" cy="108" rx="24" ry="5.5" fill="#eafaf2" opacity=".9"/><path d="M70 32l7-15" fill="none" stroke="#ffb3c6" stroke-width="6.5" stroke-linecap="round"/><circle cx="60" cy="36" r="16" fill="#fffdf6" stroke="#eddfc4" stroke-width="2"/><path d="M47 34c1-7 6-11 13-11s12 4 13 11c-4 4-9 6-13 6s-9-2-13-6z" fill="#fff8e6"/><path d="M41 46h38l-5 49q-1 8-9 8H55q-8 0-9-8z" fill="#eefaf5" stroke="#8fd6bc" stroke-width="2.2"/><path d="M44 58h32l-4 37q-1 5-6 5H54q-5 0-6-5z" fill="#a8e8cf"/><path d="M47 62h26l-3 30" fill="none" stroke="#cbf4e2" stroke-width="3" stroke-linecap="round" opacity=".8"/><circle cx="51.0" cy="74.0" r="3.9" fill="#3a3038"/><circle cx="69.0" cy="74.0" r="3.9" fill="#3a3038"/><circle cx="52.5" cy="72.2" r="1.4" fill="#fff"/><circle cx="70.5" cy="72.2" r="1.4" fill="#fff"/><path d="M52.8 82.0c2.9 4.4 11.5 4.4 14.4 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="44.0" cy="81.0" rx="4.8" ry="3.2" fill="#ff7f95" opacity=".5"/><ellipse cx="76.0" cy="81.0" rx="4.8" ry="3.2" fill="#ff7f95" opacity=".5"/><circle cx="92" cy="62" r="6" fill="#f2637a" stroke="#d1435c" stroke-width="1.4"/><path d="M92 56c1-4 4-6 7-5" fill="none" stroke="#7fbf8f" stroke-width="1.8" stroke-linecap="round"/></g>
     </symbol>
 
     <!-- 🌿 민트 새싹 몬스터 · 2단계 (성장) -->
-    <symbol id="mon-seed-2" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="109" rx="27" ry="6" fill="#d9f5e6" opacity=".95"/>
-      <path d="M86 84c11 3 18-4 15-13-6 3-12 8-15 13z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="85" rx="25" ry="20" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
-      <ellipse cx="60" cy="89" rx="15" ry="12" fill="#f4fef9"/>
-      <path d="M60 80c-4 3-4 7 0 10 4-3 4-7 0-10z" fill="#9ce3b8" stroke="#4f9b6e" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="45" cy="102" rx="10" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="75" cy="102" rx="10" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="34" cy="77" rx="6.5" ry="9" transform="rotate(-24 34 77)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="86" cy="77" rx="6.5" ry="9" transform="rotate(24 86 77)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#c9f3dd" stroke="#57b083" stroke-width="2"/>
-      <path d="M56 28c-6-11 0-19 12-20 1 11-5 18-12 20z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M64 28c6-11 0-19-12-20-1 11 5 18 12 20z" fill="#a9e8c4" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M60 30v-12" fill="none" stroke="#4f9b6e" stroke-width="1.2" opacity=".6"/>
-      <path d="M44 36l-8-9 12 2z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M76 36l8-9-12 2z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <ellipse cx="38" cy="61" rx="5.6" ry="3.8" fill="#ffc0c6"/>
-      <ellipse cx="82" cy="61" rx="5.6" ry="3.8" fill="#ffc0c6"/>
-      <ellipse cx="49" cy="50" rx="6.8" ry="8" fill="#2f6b4f"/>
-      <ellipse cx="71" cy="50" rx="6.8" ry="8" fill="#2f6b4f"/>
-      <circle cx="51.4" cy="46.8" r="2.5" fill="#fff"/>
-      <circle cx="73.4" cy="46.8" r="2.5" fill="#fff"/>
-      <circle cx="47" cy="53" r="1.2" fill="#fff" opacity=".85"/>
-      <circle cx="69" cy="53" r="1.2" fill="#fff" opacity=".85"/>
-      <path d="M54 64c3.4 3.4 8.6 3.4 12 0" fill="none" stroke="#3f7f5c" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M20 58l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" fill="#9ce3b8"/>
-      <path d="M100 42l1.4 4 4 1.4-4 1.4-1.4 4-1.4-4-4-1.4 4-1.4z" fill="#9ce3b8"/>
+    <symbol id="mon-seed-2" viewBox="0 0 120 155">
+      <g transform="translate(0,48) translate(60,0) scale(0.86) translate(-60,0)"><ellipse cx="60" cy="111" rx="27" ry="6" fill="#eafaf2" opacity=".95"/><path d="M72 28l8-17" fill="none" stroke="#ffb3c6" stroke-width="7" stroke-linecap="round"/><path d="M46 34c0-10 6-17 14-17s14 7 14 17c0 4-6 7-14 7s-14-3-14-7z" fill="#fffdf6" stroke="#eddfc4" stroke-width="2"/><path d="M48 27c0-7 5-11 12-11s12 4 12 11" fill="#fff9ea"/><path d="M38 42h44l-6 54q-1 9-10 9H54q-9 0-10-9z" fill="#eefaf5" stroke="#8fd6bc" stroke-width="2.2"/><path d="M41 56h38l-5 40q-1 6-7 6H53q-6 0-7-6z" fill="#a8e8cf"/><path d="M45 60h30l-4 33" fill="none" stroke="#cbf4e2" stroke-width="3.2" stroke-linecap="round" opacity=".85"/><path d="M52 62l3-3 3 3-3 3z" fill="#e8fff5" opacity=".9"/><path d="M62 72l2.6-2.6 2.6 2.6-2.6 2.6z" fill="#e8fff5" opacity=".85"/><circle cx="50.0" cy="76.0" r="4.1" fill="#3a3038"/><circle cx="70.0" cy="76.0" r="4.1" fill="#3a3038"/><circle cx="51.5" cy="74.2" r="1.5" fill="#fff"/><circle cx="71.5" cy="74.2" r="1.5" fill="#fff"/><path d="M52.2 85.0c3.1 4.8 12.5 4.8 15.6 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="43.0" cy="84.0" rx="5.0" ry="3.4" fill="#ff7f95" opacity=".5"/><ellipse cx="77.0" cy="84.0" rx="5.0" ry="3.4" fill="#ff7f95" opacity=".5"/><circle cx="92" cy="58" r="6" fill="#f2637a" stroke="#d1435c" stroke-width="1.4"/><path d="M92 52c1-4 4-6 7-5" fill="none" stroke="#7fbf8f" stroke-width="1.8" stroke-linecap="round"/><polygon points="21.0,47.5 22.6,52.4 27.5,54.0 22.6,55.6 21.0,60.5 19.4,55.6 14.5,54.0 19.4,52.4" fill="#a8e8cf"/><polygon points="101.0,62.5 102.3,66.7 106.5,68.0 102.3,69.3 101.0,73.5 99.7,69.3 95.5,68.0 99.7,66.7" fill="#ffd9e0"/></g><ellipse cx="60" cy="58.0" rx="27" ry="9.5" fill="#c3f2e2" stroke="#5cb894" stroke-width="2" transform="rotate(-4 60 58.0)"/><path d="M33 60.0q27 9 54 0" fill="none" stroke="#5cb894" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="46.0" r="3.6" fill="#c3f2e2" stroke="#5cb894" stroke-width="1.5"/><path d="M45 54.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/>
     </symbol>
 
     <!-- 🌿 민트 새싹 몬스터 · 3단계 (완전 진화) -->
-    <symbol id="mon-seed-3" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="110" rx="30" ry="6" fill="#d9f5e6"/>
-      <path d="M30 64c-15 4-22 16-17 29 10-3 18-14 20-26z" fill="#b9f0d1" stroke="#4f9b6e" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M90 64c15 4 22 16 17 29-10-3-18-14-20-26z" fill="#b9f0d1" stroke="#4f9b6e" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M86 84c11 3 18-4 15-13-6 3-12 8-15 13z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="85" rx="26" ry="21" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
-      <ellipse cx="60" cy="89" rx="14" ry="12" fill="#f4fef9"/>
-      <path d="M60 79c-5 3-5 8 0 12 5-4 5-9 0-12z" fill="#7fd6a8" stroke="#4f9b6e" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="44" cy="104" rx="11" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="76" cy="104" rx="11" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="31" cy="76" rx="7" ry="10" transform="rotate(-26 31 76)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="89" cy="76" rx="7" ry="10" transform="rotate(26 89 76)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#c9f3dd" stroke="#57b083" stroke-width="2"/>
-      <circle cx="44" cy="26" r="6" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
-      <circle cx="60" cy="20" r="7" fill="#ffd9e3" stroke="#e58aa2" stroke-width="1.2"/>
-      <circle cx="76" cy="26" r="6" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
-      <circle cx="52" cy="22" r="5" fill="#ffe0ea" stroke="#e58aa2" stroke-width="1"/>
-      <circle cx="68" cy="22" r="5" fill="#ffe0ea" stroke="#e58aa2" stroke-width="1"/>
-      <circle cx="60" cy="27" r="4" fill="#ffe08f" stroke="#e0a83c" stroke-width="1.2"/>
-      <path d="M42 38l-9-9 13 1z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M78 38l9-9-13 1z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <ellipse cx="37" cy="60" rx="6" ry="4.2" fill="#ffc0c6"/>
-      <ellipse cx="83" cy="60" rx="6" ry="4.2" fill="#ffc0c6"/>
-      <ellipse cx="49" cy="51" rx="7" ry="8.4" fill="#2f6b4f"/>
-      <ellipse cx="71" cy="51" rx="7" ry="8.4" fill="#2f6b4f"/>
-      <circle cx="51.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="73.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="47" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <circle cx="69" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <path d="M54 65c3.6 3.6 8.4 3.6 12 0" fill="none" stroke="#3f7f5c" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M18 44l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#9ce3b8"/>
-      <path d="M102 66l1.4 4.2 4.2 1.4-4.2 1.4-1.4 4.2-1.4-4.2-4.2-1.4 4.2-1.4z" fill="#9ce3b8"/>
+    <symbol id="mon-seed-3" viewBox="0 0 120 155">
+      <g transform="translate(0,48) translate(60,0) scale(0.86) translate(-60,0)"><ellipse cx="60" cy="112" rx="30" ry="6" fill="#eafaf2"/><path d="M74 26l8-18" fill="none" stroke="#ffb3c6" stroke-width="7" stroke-linecap="round"/><path d="M44 30c0-11 7-19 16-19s16 8 16 19c0 4-7 8-16 8s-16-4-16-8z" fill="#fffdf6" stroke="#eddfc4" stroke-width="2"/><path d="M50 22c1-6 5-9 10-9s9 3 10 9c-3 3-6 4-10 4s-7-1-10-4z" fill="#fff8e6"/><path d="M35 40h50l-6 58q-1 10-11 10H52q-10 0-11-10z" fill="#eefaf5" stroke="#8fd6bc" stroke-width="2.4"/><path d="M38 55h44l-5 43q-1 6-8 6H51q-7 0-8-6z" fill="#a8e8cf"/><path d="M42 59h36l-4 36" fill="none" stroke="#cbf4e2" stroke-width="3.4" stroke-linecap="round" opacity=".9"/><path d="M49 62l3.4-3.4 3.4 3.4-3.4 3.4z" fill="#e8fff5" opacity=".95"/><path d="M61 74l3-3 3 3-3 3z" fill="#e8fff5" opacity=".9"/><circle cx="49.0" cy="78.0" r="4.3" fill="#3a3038"/><circle cx="71.0" cy="78.0" r="4.3" fill="#3a3038"/><circle cx="50.5" cy="76.2" r="1.5" fill="#fff"/><circle cx="72.5" cy="76.2" r="1.5" fill="#fff"/><path d="M51.4 88.0c3.4 5.2 13.8 5.2 17.2 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="41.0" cy="87.0" rx="5.4" ry="3.6" fill="#ff7f95" opacity=".5"/><ellipse cx="79.0" cy="87.0" rx="5.4" ry="3.6" fill="#ff7f95" opacity=".5"/><circle cx="92" cy="56" r="6" fill="#f2637a" stroke="#d1435c" stroke-width="1.4"/><path d="M92 50c1-4 4-6 7-5" fill="none" stroke="#7fbf8f" stroke-width="1.8" stroke-linecap="round"/><polygon points="21.0,51.5 22.6,56.4 27.5,58.0 22.6,59.6 21.0,64.5 19.4,59.6 14.5,58.0 19.4,56.4" fill="#a8e8cf"/><polygon points="99.0,70.5 100.3,74.7 104.5,76.0 100.3,77.3 99.0,81.5 97.7,77.3 93.5,76.0 97.7,74.7" fill="#ffe9a8"/><polygon points="30.0,99.5 31.1,102.9 34.5,104.0 31.1,105.1 30.0,108.5 28.9,105.1 25.5,104.0 28.9,102.9" fill="#ffd9e0"/></g><ellipse cx="60" cy="53.0" rx="27" ry="9.5" fill="#c3f2e2" stroke="#5cb894" stroke-width="2" transform="rotate(-4 60 53.0)"/><path d="M33 55.0q27 9 54 0" fill="none" stroke="#5cb894" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="41.0" r="3.6" fill="#c3f2e2" stroke="#5cb894" stroke-width="1.5"/><path d="M45 49.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/><path d="M44 42.0h32l-16-13z" fill="#ffd0e0" stroke="#e58aa2" stroke-width="1.8" stroke-linejoin="round"/><path d="M52 39.0l8 3 6-4" fill="none" stroke="#e58aa2" stroke-width="1.6" opacity=".55"/><circle cx="60" cy="25.0" r="4" fill="#ffe27a" stroke="#e58aa2" stroke-width="1.3"/><g class="hat-3"><path d="M41 21.0l3-12 8 7 8-10 8 10 8-7 3 12z" fill="#ffe27a" stroke="#d99a1f" stroke-width="1.8" stroke-linejoin="round"/><circle cx="44" cy="13.0" r="1.8" fill="#ff8f6b"/><circle cx="60" cy="10.0" r="1.8" fill="#7fd3ff"/><circle cx="76" cy="13.0" r="1.8" fill="#9be7a8"/><path d="M54 19.0l1.6 4.2 60 20.6l-4.4 1.6-1.6 4.2-1.6-4.2-4.4-1.6 4.4-1.6z" fill="#fff3b0" transform="translate(0 -6)"/></g>
     </symbol>
 
     <!-- 💧 하늘빛 물 몬스터 · 1단계 (아기) -->
-    <symbol id="mon-fin-1" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="108" rx="25" ry="6" fill="#d8ecfd" opacity=".9"/>
-      <path d="M85 86c10 3 16-4 13-12-6 3-11 7-13 12z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M60 30c3-9 9-12 15-11-2 9-8 12-15 11z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="86" rx="23" ry="18" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
-      <ellipse cx="60" cy="90" rx="14" ry="11" fill="#fff4dd" stroke="#e6cd9c" stroke-width="1.4"/>
-      <path d="M52 86h16M55 92h10" fill="none" stroke="#e6cd9c" stroke-width="1.3" stroke-linecap="round"/>
-      <ellipse cx="46" cy="101" rx="9" ry="5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="74" cy="101" rx="9" ry="5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="37" cy="78" rx="6" ry="8" transform="rotate(-20 37 78)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="83" cy="78" rx="6" ry="8" transform="rotate(20 83 78)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <circle cx="60" cy="55" r="25" fill="#b6def9" stroke="#4f9bd4" stroke-width="2"/>
-      <path d="M60 28c2-6 6-9 11-9-2 6-6 8-11 9z" fill="#d9efff" stroke="#4f9bd4" stroke-width="1.4" stroke-linejoin="round"/>
-      <ellipse cx="39" cy="62" rx="5" ry="3.4" fill="#ffb59b"/>
-      <ellipse cx="81" cy="62" rx="5" ry="3.4" fill="#ffb59b"/>
-      <ellipse cx="50" cy="53" rx="6.4" ry="7.6" fill="#33506e"/>
-      <ellipse cx="70" cy="53" rx="6.4" ry="7.6" fill="#33506e"/>
-      <circle cx="52.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="72.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="48.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <circle cx="68.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <path d="M54.5 66c3 3.2 8 3.2 11 0" fill="none" stroke="#2f5578" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="26" cy="40" r="4" fill="#dff1ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="100" cy="52" r="3" fill="#dff1ff" stroke="#7fbcec" stroke-width="1.2"/>
+    <symbol id="mon-fin-1" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="106" rx="24" ry="5.5" fill="#ffeef0" opacity=".85"/><circle cx="60.0" cy="66.0" r="27.0" fill="none" stroke="#ff9aa7" stroke-width="6" stroke-dasharray="3 8" stroke-linecap="round"/><circle cx="60.0" cy="66.0" r="29.6" fill="none" stroke="#ff9aa7" stroke-width="4.4" stroke-dasharray="2.6 9" stroke-linecap="round" opacity=".72"/><circle cx="60" cy="66" r="27" fill="#f4737f" stroke="#d24d60" stroke-width="2"/><path d="M56 40c-5-9-2-15 3-16 4 6 4 11-3 16z" fill="#86d3a3" stroke="#4f9b6e" stroke-width="1.4" stroke-linejoin="round"/><path d="M60 39c4-8 9-10 13-7-3 6-8 9-13 8z" fill="#9adcb3" stroke="#4f9b6e" stroke-width="1.4" stroke-linejoin="round"/><path d="M44 50c3-4 7-6 11-7" fill="none" stroke="#ffb9c1" stroke-width="3.2" stroke-linecap="round" opacity=".6"/><circle cx="50.0" cy="64.0" r="4.1" fill="#3a3038"/><circle cx="70.0" cy="64.0" r="4.1" fill="#3a3038"/><circle cx="51.5" cy="62.2" r="1.5" fill="#fff"/><circle cx="71.5" cy="62.2" r="1.5" fill="#fff"/><path d="M52.4 74.0c3.0 4.8 12.2 4.8 15.2 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="40.0" cy="72.0" rx="5.4" ry="3.5" fill="#ff7f95" opacity=".5"/><ellipse cx="80.0" cy="72.0" rx="5.4" ry="3.5" fill="#ff7f95" opacity=".5"/></g>
     </symbol>
 
     <!-- 💧 하늘빛 물 몬스터 · 2단계 (성장) -->
-    <symbol id="mon-fin-2" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="109" rx="27" ry="6" fill="#d8ecfd"/>
-      <path d="M87 82c12 3 19-5 16-14-7 3-13 8-16 14z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M56 26c3-10 11-15 19-14-2 10-9 15-19 14z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M34 54c-9-4-15 0-16 7 7 4 14 2 16-7z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M86 54c9-4 15 0 16 7-7 4-14 2-16-7z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="84" rx="25" ry="20" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
-      <ellipse cx="60" cy="88" rx="15" ry="12" fill="#fff4dd" stroke="#e6cd9c" stroke-width="1.5"/>
-      <path d="M51 84h18M54 90h12M57 96h6" fill="none" stroke="#e6cd9c" stroke-width="1.3" stroke-linecap="round"/>
-      <ellipse cx="45" cy="102" rx="10" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="75" cy="102" rx="10" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="33" cy="74" rx="6.5" ry="9" transform="rotate(-22 33 74)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="87" cy="74" rx="6.5" ry="9" transform="rotate(22 87 74)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#b6def9" stroke="#4f9bd4" stroke-width="2"/>
-      <path d="M50 26c4-9 12-13 20-11-4 8-11 12-20 11z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M60 22v-9" fill="none" stroke="#4f9bd4" stroke-width="1.4" stroke-linecap="round" opacity=".65"/>
-      <ellipse cx="38" cy="60" rx="5.6" ry="3.8" fill="#ffb59b"/>
-      <ellipse cx="82" cy="60" rx="5.6" ry="3.8" fill="#ffb59b"/>
-      <ellipse cx="49" cy="49" rx="6.8" ry="8" fill="#33506e"/>
-      <ellipse cx="71" cy="49" rx="6.8" ry="8" fill="#33506e"/>
-      <circle cx="51.4" cy="45.8" r="2.5" fill="#fff"/>
-      <circle cx="73.4" cy="45.8" r="2.5" fill="#fff"/>
-      <circle cx="47" cy="52" r="1.2" fill="#fff" opacity=".85"/>
-      <circle cx="69" cy="52" r="1.2" fill="#fff" opacity=".85"/>
-      <path d="M53 63c3.4 3.4 8.6 3.4 12 0" fill="none" stroke="#2f5578" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="22" cy="38" r="4.4" fill="#e5f4ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="102" cy="46" r="3.4" fill="#e5f4ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="94" cy="26" r="2.6" fill="#dff1ff" stroke="#7fbcec" stroke-width="1.1"/>
+    <symbol id="mon-fin-2" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="109" rx="27" ry="6" fill="#ffeef0" opacity=".9"/><circle cx="60.0" cy="68.0" r="29.0" fill="none" stroke="#ff9aa7" stroke-width="6" stroke-dasharray="3 8" stroke-linecap="round"/><circle cx="60.0" cy="68.0" r="31.6" fill="none" stroke="#ff9aa7" stroke-width="4.4" stroke-dasharray="2.6 9" stroke-linecap="round" opacity=".72"/><circle cx="60" cy="68" r="29" fill="#f4737f" stroke="#d24d60" stroke-width="2"/><path d="M56 40c-5-9-2-15 3-16 4 6 4 11-3 16z" fill="#86d3a3" stroke="#4f9b6e" stroke-width="1.4" stroke-linejoin="round"/><path d="M60 39c4-8 9-10 13-7-3 6-8 9-13 8z" fill="#9adcb3" stroke="#4f9b6e" stroke-width="1.4" stroke-linejoin="round"/><path d="M60 38v-7" stroke="#5f9e78" stroke-width="2" stroke-linecap="round"/><path d="M44 50c3-4 7-6 11-7" fill="none" stroke="#ffb9c1" stroke-width="3.2" stroke-linecap="round" opacity=".6"/><circle cx="48.0" cy="66.0" r="4.4" fill="#3a3038"/><circle cx="72.0" cy="66.0" r="4.4" fill="#3a3038"/><circle cx="49.5" cy="64.2" r="1.6" fill="#fff"/><circle cx="73.5" cy="64.2" r="1.6" fill="#fff"/><path d="M51.4 77.0c3.4 5.2 13.8 5.2 17.2 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="37.0" cy="74.0" rx="6.0" ry="3.8" fill="#ff7f95" opacity=".5"/><ellipse cx="83.0" cy="74.0" rx="6.0" ry="3.8" fill="#ff7f95" opacity=".5"/><polygon points="20.0,50.0 21.4,54.6 26.0,56.0 21.4,57.4 20.0,62.0 18.6,57.4 14.0,56.0 18.6,54.6" fill="#ffe9a8"/><polygon points="100.0,79.0 101.2,82.8 105.0,84.0 101.2,85.2 100.0,89.0 98.8,85.2 95.0,84.0 98.8,82.8" fill="#ffd9de"/></g><ellipse cx="60" cy="59.0" rx="27" ry="9.5" fill="#ffc4cb" stroke="#d24d60" stroke-width="2" transform="rotate(-4 60 59.0)"/><path d="M33 61.0q27 9 54 0" fill="none" stroke="#d24d60" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="47.0" r="3.6" fill="#ffc4cb" stroke="#d24d60" stroke-width="1.5"/><path d="M45 55.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/>
     </symbol>
 
     <!-- 💧 하늘빛 물 몬스터 · 3단계 (완전 진화) -->
-    <symbol id="mon-fin-3" viewBox="0 0 120 120">
-      <ellipse cx="60" cy="110" rx="30" ry="6" fill="#d8ecfd"/>
-      <path d="M30 66c-16 3-24 16-19 29 11-3 19-14 21-27z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M90 66c16 3 24 16 19 29-11-3-19-14-21-27z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M88 82c12 3 19-5 16-14-7 3-13 8-16 14z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M56 24c3-10 11-15 19-14-2 10-9 15-19 14z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M40 30c-2-9 2-15 9-17 2 9-1 15-9 17z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M80 30c2-9-2-15-9-17-2 9 1 15 9 17z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="85" rx="26" ry="21" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
-      <ellipse cx="60" cy="89" rx="14" ry="12" fill="#fff8e8" stroke="#e6cd9c" stroke-width="1.5"/>
-      <path d="M50 85h20M54 91h12M57 97h6" fill="none" stroke="#e6cd9c" stroke-width="1.3" stroke-linecap="round"/>
-      <ellipse cx="44" cy="104" rx="11" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="76" cy="104" rx="11" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="31" cy="72" rx="7" ry="10" transform="rotate(-24 31 72)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="89" cy="72" rx="7" ry="10" transform="rotate(24 89 72)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#b6def9" stroke="#4f9bd4" stroke-width="2"/>
-      <path d="M60 20l6 9-6 8-6-8z" fill="#e8f7ff" stroke="#3f88c4" stroke-width="1.4" stroke-linejoin="round"/>
-      <path d="M44 34l-9-7 12-1z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.4" stroke-linejoin="round"/>
-      <path d="M76 34l9-7-12-1z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.4" stroke-linejoin="round"/>
-      <ellipse cx="37" cy="60" rx="6" ry="4.2" fill="#ffb59b"/>
-      <ellipse cx="83" cy="60" rx="6" ry="4.2" fill="#ffb59b"/>
-      <ellipse cx="49" cy="51" rx="7" ry="8.4" fill="#33506e"/>
-      <ellipse cx="71" cy="51" rx="7" ry="8.4" fill="#33506e"/>
-      <circle cx="51.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="73.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="47" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <circle cx="69" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <path d="M53 65c3.6 3.6 8.4 3.6 12 0" fill="none" stroke="#2f5578" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="18" cy="44" r="4.6" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="102" cy="64" r="4" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="96" cy="30" r="3" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1.1"/>
-      <circle cx="24" cy="72" r="2.6" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1"/>
+    <symbol id="mon-fin-3" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="112" rx="30" ry="6" fill="#ffeef0"/><circle cx="60.0" cy="66.0" r="32.0" fill="none" stroke="#ff9aa7" stroke-width="6" stroke-dasharray="3 8" stroke-linecap="round"/><circle cx="60.0" cy="66.0" r="34.6" fill="none" stroke="#ff9aa7" stroke-width="4.4" stroke-dasharray="2.6 9" stroke-linecap="round" opacity=".72"/><circle cx="60" cy="66" r="32" fill="#f4737f" stroke="#d24d60" stroke-width="2"/><path d="M29 64c4 14 16 23 31 23s27-9 31-23c-7 6-19 10-31 10s-24-4-31-10z" fill="#ffb3bd"/><circle cx="60" cy="64" r="19" fill="#fffaf2" stroke="#efdcc8" stroke-width="1.6"/><circle cx="51" cy="56" r="4.4" fill="#fffdf8" opacity=".9"/><path d="M54 38c-7-11-3-19 4-20 5 8 5 14-4 20z" fill="#86d3a3" stroke="#4f9b6e" stroke-width="1.5" stroke-linejoin="round"/><path d="M59 37c5-9 11-12 16-9-3 8-10 11-16 9z" fill="#9adcb3" stroke="#4f9b6e" stroke-width="1.5" stroke-linejoin="round"/><path d="M60 36v-6" stroke="#5f9e78" stroke-width="2" stroke-linecap="round"/><circle cx="52.0" cy="60.0" r="3.7" fill="#3a3038"/><circle cx="68.0" cy="60.0" r="3.7" fill="#3a3038"/><circle cx="53.5" cy="58.2" r="1.3" fill="#fff"/><circle cx="69.5" cy="58.2" r="1.3" fill="#fff"/><path d="M53.2 69.0c2.7 4.2 10.9 4.2 13.6 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="43.0" cy="67.0" rx="4.6" ry="3.2" fill="#ff7f95" opacity=".5"/><ellipse cx="77.0" cy="67.0" rx="4.6" ry="3.2" fill="#ff7f95" opacity=".5"/><polygon points="22.0,36.0 24.2,41.0 29.6,41.5 25.5,45.1 26.7,50.5 22.0,47.7 17.3,50.5 18.5,45.1 14.4,41.5 19.8,41.0" fill="#ffe9a8" stroke="#dda52b" stroke-width="1.3" stroke-linejoin="round"/><polygon points="100.0,58.0 101.4,62.6 106.0,64.0 101.4,65.4 100.0,70.0 98.6,65.4 94.0,64.0 98.6,62.6" fill="#ffe9a8"/><polygon points="88.0,93.5 89.1,96.9 92.5,98.0 89.1,99.1 88.0,102.5 86.9,99.1 83.5,98.0 86.9,96.9" fill="#ffd9de"/></g><ellipse cx="60" cy="53.0" rx="27" ry="9.5" fill="#ffc4cb" stroke="#d24d60" stroke-width="2" transform="rotate(-4 60 53.0)"/><path d="M33 55.0q27 9 54 0" fill="none" stroke="#d24d60" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="41.0" r="3.6" fill="#ffc4cb" stroke="#d24d60" stroke-width="1.5"/><path d="M45 49.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/><path d="M44 42.0h32l-16-13z" fill="#a8e8cf" stroke="#57b083" stroke-width="1.8" stroke-linejoin="round"/><path d="M52 39.0l8 3 6-4" fill="none" stroke="#57b083" stroke-width="1.6" opacity=".55"/><circle cx="60" cy="25.0" r="4" fill="#ffe27a" stroke="#57b083" stroke-width="1.3"/><g class="hat-3"><path d="M41 21.0l3-12 8 7 8-10 8 10 8-7 3 12z" fill="#ffe27a" stroke="#d99a1f" stroke-width="1.8" stroke-linejoin="round"/><circle cx="44" cy="13.0" r="1.8" fill="#ff8f6b"/><circle cx="60" cy="10.0" r="1.8" fill="#7fd3ff"/><circle cx="76" cy="13.0" r="1.8" fill="#9be7a8"/><path d="M54 19.0l1.6 4.2 60 20.6l-4.4 1.6-1.6 4.2-1.6-4.2-4.4-1.6 4.4-1.6z" fill="#fff3b0" transform="translate(0 -6)"/></g>
+    </symbol>
+    <symbol id="mon-coin-3" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="111" rx="30" ry="6" fill="#fff4d8"/><path d="M30 40c-10 7-15 18-13 31 3 15 18 25 43 25s40-10 43-25c2-13-3-24-13-31z" fill="#f3d59b" stroke="#c19a5e" stroke-width="2.2"/><path d="M43 38h34l-6-11H49z" fill="#e6c184" stroke="#c19a5e" stroke-width="2" stroke-linejoin="round"/><circle cx="60" cy="66" r="33" fill="#ffd35e" stroke="#dda52b" stroke-width="2.6"/><circle cx="60" cy="66" r="25" fill="none" stroke="#f0b93c" stroke-width="2.2" opacity=".85"/><circle cx="60" cy="66" r="18" fill="#ffe79b" opacity=".72"/><path d="M38 44c5-7 10-10 17-11" fill="none" stroke="#fffbe0" stroke-width="3.8" stroke-linecap="round" opacity=".95"/><circle cx="51.0" cy="63.0" r="4.2" fill="#3a3038"/><circle cx="69.0" cy="63.0" r="4.2" fill="#3a3038"/><circle cx="52.5" cy="61.2" r="1.5" fill="#fff"/><circle cx="70.5" cy="61.2" r="1.5" fill="#fff"/><path d="M52.2 73.0c3.1 4.8 12.5 4.8 15.6 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="40.0" cy="71.0" rx="5.6" ry="3.6" fill="#ff7f95" opacity=".5"/><ellipse cx="80.0" cy="71.0" rx="5.6" ry="3.6" fill="#ff7f95" opacity=".5"/><polygon points="20.0,68.5 21.3,72.7 25.5,74.0 21.3,75.3 20.0,79.5 18.7,75.3 14.5,74.0 18.7,72.7" fill="#ffd9de"/><polygon points="102.0,79.0 103.2,82.8 107.0,84.0 103.2,85.2 102.0,89.0 100.8,85.2 97.0,84.0 100.8,82.8" fill="#fff3b0"/></g><ellipse cx="60" cy="68.0" rx="27" ry="9.5" fill="#ffe7a8" stroke="#dda52b" stroke-width="2" transform="rotate(-4 60 68.0)"/><path d="M33 70.0q27 9 54 0" fill="none" stroke="#dda52b" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="56.0" r="3.6" fill="#ffe7a8" stroke="#dda52b" stroke-width="1.5"/><path d="M45 64.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/><path d="M44 57.0h32l-16-13z" fill="#ffc2d6" stroke="#e58aa2" stroke-width="1.8" stroke-linejoin="round"/><path d="M52 54.0l8 3 6-4" fill="none" stroke="#e58aa2" stroke-width="1.6" opacity=".55"/><circle cx="60" cy="40.0" r="4" fill="#ffe27a" stroke="#e58aa2" stroke-width="1.3"/><g class="hat-3"><path d="M41 36.0l3-12 8 7 8-10 8 10 8-7 3 12z" fill="#ffe27a" stroke="#d99a1f" stroke-width="1.8" stroke-linejoin="round"/><circle cx="44" cy="28.0" r="1.8" fill="#ff8f6b"/><circle cx="60" cy="25.0" r="1.8" fill="#7fd3ff"/><circle cx="76" cy="28.0" r="1.8" fill="#9be7a8"/><path d="M54 34.0l1.6 4.2 60 35.6l-4.4 1.6-1.6 4.2-1.6-4.2-4.4-1.6 4.4-1.6z" fill="#fff3b0" transform="translate(0 -6)"/></g>
+    </symbol>
+    <symbol id="mon-coin-2" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="104" rx="27" ry="6" fill="#fff4d8" opacity=".95"/><path d="M34 44c-8 6-12 16-10 27 2 12 13 20 36 20s34-8 36-20c2-11-2-21-10-27z" fill="#f3d59b" stroke="#c19a5e" stroke-width="2"/><path d="M46 42h28l-5-9H51z" fill="#e6c184" stroke="#c19a5e" stroke-width="1.8" stroke-linejoin="round"/><circle cx="60" cy="64" r="29" fill="#ffd35e" stroke="#dda52b" stroke-width="2.4"/><circle cx="60" cy="64" r="22" fill="none" stroke="#f0b93c" stroke-width="2" opacity=".85"/><circle cx="60" cy="64" r="16" fill="#ffe79b" opacity=".7"/><path d="M41 46c4-6 8-9 14-10" fill="none" stroke="#fffbe0" stroke-width="3.4" stroke-linecap="round" opacity=".9"/><circle cx="52.0" cy="61.0" r="3.9" fill="#3a3038"/><circle cx="68.0" cy="61.0" r="3.9" fill="#3a3038"/><circle cx="53.5" cy="59.2" r="1.4" fill="#fff"/><circle cx="69.5" cy="59.2" r="1.4" fill="#fff"/><path d="M53.0 71.0c2.8 4.4 11.2 4.4 14.0 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="42.0" cy="68.0" rx="5.0" ry="3.2" fill="#ff7f95" opacity=".5"/><ellipse cx="78.0" cy="68.0" rx="5.0" ry="3.2" fill="#ff7f95" opacity=".5"/><polygon points="24.0,36.0 25.4,40.6 30.0,42.0 25.4,43.4 24.0,48.0 22.6,43.4 18.0,42.0 22.6,40.6" fill="#ffe9a8"/><polygon points="98.0,49.0 99.2,52.8 103.0,54.0 99.2,55.2 98.0,59.0 96.8,55.2 93.0,54.0 96.8,52.8" fill="#fff3b0"/></g><ellipse cx="60" cy="70.0" rx="27" ry="9.5" fill="#ffe7a8" stroke="#dda52b" stroke-width="2" transform="rotate(-4 60 70.0)"/><path d="M33 72.0q27 9 54 0" fill="none" stroke="#dda52b" stroke-width="2" stroke-linecap="round"/><circle cx="60" cy="58.0" r="3.6" fill="#ffe7a8" stroke="#dda52b" stroke-width="1.5"/><path d="M45 66.0q15 -5 30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="mon-coin-1" viewBox="0 0 120 155">
+      <g transform="translate(0,40)"><ellipse cx="60" cy="100" rx="24" ry="5.5" fill="#fff4d8" opacity=".9"/><circle cx="60" cy="62" r="31" fill="#ffd35e" stroke="#dda52b" stroke-width="2.4"/><circle cx="60" cy="62" r="24" fill="none" stroke="#f0b93c" stroke-width="2" opacity=".85"/><circle cx="60" cy="62" r="18" fill="#ffe79b" opacity=".7"/><path d="M40 42c4-6 9-9 15-10" fill="none" stroke="#fffbe0" stroke-width="3.6" stroke-linecap="round" opacity=".9"/><circle cx="51.0" cy="59.0" r="4.0" fill="#3a3038"/><circle cx="69.0" cy="59.0" r="4.0" fill="#3a3038"/><circle cx="52.5" cy="57.2" r="1.4" fill="#fff"/><circle cx="70.5" cy="57.2" r="1.4" fill="#fff"/><path d="M52.6 69.0c3.0 4.6 11.8 4.6 14.8 0" fill="none" stroke="#5b4640" stroke-width="2.7" stroke-linecap="round"/><ellipse cx="40.0" cy="66.0" rx="5.4" ry="3.4" fill="#ff7f95" opacity=".5"/><ellipse cx="80.0" cy="66.0" rx="5.4" ry="3.4" fill="#ff7f95" opacity=".5"/></g>
     </symbol>
 
     <!-- 👑 3일 연속 슈퍼 진화 겹침 (왕관 + 무지개 오라 + 스파클) -->
-    <symbol id="super-glow" viewBox="0 0 120 120">
-      <circle class="aura" cx="60" cy="58" r="55" fill="none" stroke="url(#rainbow-aura)" stroke-width="3.4" stroke-dasharray="17 11" opacity=".9"/>
-      <circle class="aura" cx="60" cy="58" r="47" fill="none" stroke="#ffeaa0" stroke-width="1.4" opacity=".6"/>
-      <path class="crown" d="M41 21l3-13 8 8 8-11 8 11 8-8 3 13z" fill="#ffe27a" stroke="#d99a1f" stroke-width="1.8" stroke-linejoin="round"/>
-      <circle cx="44" cy="18" r="1.9" fill="#ff8f6b"/>
-      <circle cx="60" cy="17" r="1.9" fill="#7fd3ff"/>
-      <circle cx="76" cy="18" r="1.9" fill="#9be7a8"/>
-      <path d="M15 34l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#fff6c9"/>
-      <path d="M105 44l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#fff6c9"/>
-      <path d="M98 14l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#ffe9a8"/>
-      <path d="M20 80l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#ffe9a8"/>
+            <symbol id="super-glow" viewBox="0 0 120 155">
+      <circle class="aura" cx="60" cy="78" r="57" fill="none" stroke="url(#rainbow-aura)" stroke-width="3.4" stroke-dasharray="17 11" opacity=".9"/>
+      <circle class="aura" cx="60" cy="78" r="49" fill="none" stroke="#ffeaa0" stroke-width="1.4" opacity=".6"/>
+      <path d="M12 46l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#fff6c9"/>
+      <path d="M108 56l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#fff6c9"/>
+      <path d="M101 20l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#ffe9a8"/>
+      <path d="M17 104l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#ffe9a8"/>
+      <path d="M104 108l1.4 4 4 1.4-4 1.4-1.4 4-1.4-4-4-1.4 4-1.4z" fill="#ffe9a8"/>
     </symbol>
 
     <symbol id="spark" viewBox="0 0 24 24">
@@ -2273,9 +2261,35 @@
     <svg class="spark s2" aria-hidden="true"><use href="#spark"></use></svg>
 
     <div class="hero-text">
-      <h1>용우네 대시보드</h1>
+      <div class="hero-line1">
+        <h1>용우네 대시보드</h1>
+        <p class="hero-when"><button class="sync-pill" id="syncPill" type="button" data-state="connecting" title="눌러서 다른 기기의 변경까지 새로 받아 옵니다" hidden><span class="sync-dot" aria-hidden="true"></span><span id="syncText" aria-live="polite">연결 중</span></button><button class="history-pill" id="historyBtn" type="button" aria-haspopup="dialog" aria-controls="historyModal" title="지난 날 달성한 할 일을 봅니다"><span aria-hidden="true">📜</span><span id="historyBtnText">달성 기록</span></button></p>
+      </div>
+      <div class="hero-line2">
+        <span class="hero-date" id="todayDate">—</span>
+        <span class="hero-clock" id="todayClock"></span>
+      </div>
       <p class="hero-sub">오늘도 우리 가족 모두 화이팅!</p>
-      <p class="hero-when"><span class="hero-date" id="todayDate">—</span><span class="hero-clock" id="todayClock"></span><button class="sync-pill" id="syncPill" type="button" data-state="connecting" title="눌러서 다른 기기의 변경까지 새로 받아 옵니다" hidden><span class="sync-dot" aria-hidden="true"></span><span id="syncText" aria-live="polite">연결 중</span></button><button class="history-pill" id="historyBtn" type="button" aria-haspopup="dialog" aria-controls="historyModal" title="지난 날 달성한 할 일을 봅니다"><span aria-hidden="true">📜</span><span id="historyBtnText">달성 기록</span></button></p>
+    </div>
+
+    <button class="weather" id="weatherBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="wxPop" title="눌러서 날씨 동네를 바꿉니다">
+      <span class="wx-icon" id="wxIcon" aria-hidden="true">🌥️</span>
+      <span class="wx-main">
+        <span class="wx-temp"><b id="wxTemp">—</b><span class="deg" aria-hidden="true">°</span></span>
+        <span class="wx-label" id="wxLabel">날씨 불러오는 중</span>
+      </span>
+      <span class="wx-meta">
+        <span class="wx-hilo">최고 <b id="wxHi">–</b> · 최저 <b id="wxLo">–</b></span>
+        <span class="wx-dust" id="wxDust"><span class="dot" aria-hidden="true"></span><span id="wxDustText">미세먼지 –</span></span>
+      </span>
+      <span class="wx-place" id="wxPlace">부평구 산곡동</span>
+    </button>
+
+    <div class="wx-pop" id="wxPop" hidden role="dialog" aria-label="날씨 동네 고르기">
+      <p class="wx-pop-title">날씨 볼 동네</p>
+      <div class="wx-pop-list" id="wxPopList"></div>
+      <button class="wx-geo" id="wxGeoBtn" type="button">📍 지금 위치로 찾기</button>
+      <p class="wx-pop-foot" id="wxPopFoot">동네를 고르면 이 기기에 저장됩니다.</p>
     </div>
 
     <div class="hero-side">
@@ -2284,9 +2298,9 @@
         <span class="qs" id="questCleared">🎉 0 / 4 클리어</span>
       </div>
       <div class="hero-buddies" aria-hidden="true">
-        <svg class="hb hb-mouse" viewBox="0 0 120 120"><use href="#mon-mouse-2"></use></svg>
-        <svg class="hb hb-seed" viewBox="0 0 120 120"><use href="#mon-seed-2"></use></svg>
-        <svg class="hb hb-fin" viewBox="0 0 120 120"><use href="#mon-fin-2"></use></svg>
+        <svg class="hb hb-mouse" viewBox="0 0 120 155"><use href="#mon-mouse-2"></use></svg>
+        <svg class="hb hb-seed" viewBox="0 0 120 155"><use href="#mon-seed-2"></use></svg>
+        <svg class="hb hb-fin" viewBox="0 0 120 155"><use href="#mon-fin-2"></use></svg>
       </div>
     </div>
   </header>
@@ -2317,7 +2331,7 @@
         <p class="card-hint">체크할수록 버디가 자라요!</p>
 
         <div class="buddy" id="buddy-yongwoo" aria-hidden="true">
-          <svg class="buddy-svg" viewBox="0 0 120 120">
+          <svg class="buddy-svg" viewBox="0 0 120 155">
             <use class="form f1" href="#mon-mouse-1"></use>
             <use class="form f2" href="#mon-mouse-2"></use>
             <use class="form f3" href="#mon-mouse-3"></use>
@@ -2370,10 +2384,10 @@
         <p class="card-hint">미션을 해내면 버디가 진화해요!</p>
 
         <div class="buddy" id="buddy-mission" aria-hidden="true">
-          <svg class="buddy-svg" viewBox="0 0 120 120">
-            <use class="form f1" href="#mon-mouse-1"></use>
-            <use class="form f2" href="#mon-mouse-2"></use>
-            <use class="form f3" href="#mon-mouse-3"></use>
+          <svg class="buddy-svg" viewBox="0 0 120 155">
+            <use class="form f1" href="#mon-coin-1"></use>
+            <use class="form f2" href="#mon-coin-2"></use>
+            <use class="form f3" href="#mon-coin-3"></use>
             <use class="super" href="#super-glow"></use>
           </svg>
         </div>
@@ -2384,6 +2398,41 @@
           <input type="text" id="missionInput" name="missionInput" placeholder="용우가 해낼 미션을 적어 두세요" maxlength="120">
           <button class="btn btn-primary" type="submit">추가</button>
         </form>
+
+        <!-- 주중 5일 저금통: 월~금 미션을 채운 날마다 동전이 하나씩 쌓여요 -->
+        <div class="piggy" id="piggyBank" data-level="0" aria-label="주중 5일 저금통">
+          <svg class="piggy-art" viewBox="0 0 84 58" aria-hidden="true" focusable="false">
+            <ellipse cx="42" cy="55" rx="25" ry="3" fill="#e8d6c2" opacity=".5"/>
+            <path d="M13 30c-5-1-7 4-3 6 3 1 5-1 4-3" fill="none" stroke="#f4aec1" stroke-width="2" stroke-linecap="round"/>
+            <rect x="26" y="44" width="10" height="9" rx="4.5" fill="#ffc9d8"/>
+            <rect x="48" y="44" width="10" height="9" rx="4.5" fill="#ffc9d8"/>
+            <path d="M8 30c0-12 15-20 34-20s34 8 34 20-15 20-34 20S8 42 8 30z" fill="#ffd9e2" stroke="#f4aec1" stroke-width="1.8"/>
+            <path d="M26 12.5 23 2l12 6z" fill="#ffc9d8" stroke="#f4aec1" stroke-width="1.6" stroke-linejoin="round"/>
+            <ellipse cx="70" cy="32" rx="8" ry="6.2" fill="#ffc2d2" stroke="#f1a2b8" stroke-width="1.4"/>
+            <ellipse cx="68" cy="32" rx="1.1" ry="1.7" fill="#c9758f"/>
+            <ellipse cx="72.4" cy="32" rx="1.1" ry="1.7" fill="#c9758f"/>
+            <circle cx="58" cy="23.5" r="2.3" fill="#4a3b45"/>
+            <path d="M60.5 36c2.4 2.6 6.2 2.6 8.6 0" fill="none" stroke="#c9758f" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="33" y="9" width="18" height="4" rx="2" fill="#b9768c"/>
+            <ellipse cx="42" cy="33.5" rx="15.5" ry="11.5" fill="#fff8fb" stroke="#f2c4d1" stroke-width="1.4"/>
+            <g class="piggy-coins">
+              <g class="coin coin-1"><ellipse cx="34" cy="40" rx="4.4" ry="2.4" fill="#ffd257" stroke="#dfa22b" stroke-width="1"/><ellipse cx="34" cy="40" rx="1.7" ry=".9" fill="#fff2bd"/></g>
+              <g class="coin coin-2"><ellipse cx="42.5" cy="40" rx="4.4" ry="2.4" fill="#ffd257" stroke="#dfa22b" stroke-width="1"/><ellipse cx="42.5" cy="40" rx="1.7" ry=".9" fill="#fff2bd"/></g>
+              <g class="coin coin-3"><ellipse cx="50" cy="40" rx="4.4" ry="2.4" fill="#ffd257" stroke="#dfa22b" stroke-width="1"/><ellipse cx="50" cy="40" rx="1.7" ry=".9" fill="#fff2bd"/></g>
+              <g class="coin coin-4"><ellipse cx="38.5" cy="34.5" rx="4.4" ry="2.4" fill="#ffd257" stroke="#dfa22b" stroke-width="1"/><ellipse cx="38.5" cy="34.5" rx="1.7" ry=".9" fill="#fff2bd"/></g>
+              <g class="coin coin-5"><ellipse cx="46.5" cy="34.5" rx="4.4" ry="2.4" fill="#ffd257" stroke="#dfa22b" stroke-width="1"/><ellipse cx="46.5" cy="34.5" rx="1.7" ry=".9" fill="#fff2bd"/></g>
+            </g>
+            <g class="piggy-spark">
+              <path d="M11 9l1.5 3.6L16 14l-3.5 1.4L11 19l-1.5-3.6L6 14l3.5-1.4z" fill="#ffd257"/>
+              <path d="M75 5l1 2.6 2.6 1-2.6 1L75 12l-1-2.4-2.5-1 2.5-1z" fill="#ffe08a"/>
+            </g>
+          </svg>
+          <div class="piggy-body-text">
+            <div class="piggy-days" id="piggyDays" role="group" aria-label="이번 주 미션 달성한 요일"></div>
+            <p class="piggy-line"><b id="piggyCount">0/5</b>일 저금<span class="piggy-note" id="piggyNote">· 월~금 미션을 다 하면 동전이 쌓여요</span></p>
+          </div>
+          <span class="piggy-badge" id="piggyBadge" hidden>🪙 주중 5일 저금 달성!</span>
+        </div>
         <ul class="todo-list" id="missionList"></ul>
         <p class="empty" id="missionEmpty" hidden>아직 정한 미션이 없어요. 해내고 싶은 일을 적어 두세요.</p>
 
@@ -2427,7 +2476,7 @@
         <p class="card-hint">체크할수록 버디가 자라요!</p>
 
         <div class="buddy" id="buddy-mom" aria-hidden="true">
-          <svg class="buddy-svg" viewBox="0 0 120 120">
+          <svg class="buddy-svg" viewBox="0 0 120 155">
             <use class="form f1" href="#mon-seed-1"></use>
             <use class="form f2" href="#mon-seed-2"></use>
             <use class="form f3" href="#mon-seed-3"></use>
@@ -2527,7 +2576,7 @@
         <p class="card-hint">체크할수록 버디가 자라요!</p>
 
         <div class="buddy" id="buddy-dad" aria-hidden="true">
-          <svg class="buddy-svg" viewBox="0 0 120 120">
+          <svg class="buddy-svg" viewBox="0 0 120 155">
             <use class="form f1" href="#mon-fin-1"></use>
             <use class="form f2" href="#mon-fin-2"></use>
             <use class="form f3" href="#mon-fin-3"></use>
@@ -3622,9 +3671,352 @@
   /* ── 렌더링: 머리글 ─────────────────────────────────── */
   function renderDate() {
     var now = new Date();
-    document.getElementById('todayDate').textContent =
-      now.getFullYear() + '년 ' + (now.getMonth() + 1) + '월 ' + now.getDate() + '일 ' + WEEKDAYS[now.getDay()];
+    var dateEl = document.getElementById('todayDate');
+    if (dateEl) {
+      dateEl.textContent = '';
+      var y = document.createElement('span');
+      y.className = 'y';
+      y.textContent = now.getFullYear() + '년';
+      var md = document.createElement('span');
+      md.textContent = (now.getMonth() + 1) + '월 ' + now.getDate() + '일';
+      var wd = document.createElement('span');
+      wd.className = 'wd';
+      wd.textContent = WEEKDAYS[now.getDay()];
+      dateEl.appendChild(y);
+      dateEl.appendChild(document.createTextNode(' '));
+      dateEl.appendChild(md);
+      dateEl.appendChild(document.createTextNode(' '));
+      dateEl.appendChild(wd);
+    }
     document.getElementById('todayClock').textContent = formatClock(now);
+  }
+
+  /* ── 실시간 날씨 (Open-Meteo · API 키 없이) ──────────── */
+  var WEATHER_STORE = 'familyBoard.weather.v2';
+  var WEATHER_TTL = 10 * 60 * 1000;
+
+  /* 기본은 릴리님 동네(인천 부평구 산곡동). 날씨를 누르면 다른 동네로 바뀔 수 있습니다. */
+  var WEATHER_LOCATIONS = [
+    { id: 'sangok', name: '인천 부평구 산곡동', short: '부평구 산곡동', lat: 37.5069, lon: 126.7076 },
+    { id: 'incheon', name: '인천 남동구 구월동', short: '인천 구월동', lat: 37.4490, lon: 126.7010 },
+    { id: 'seoul', name: '서울', short: '서울', lat: 37.5665, lon: 126.9780 },
+    { id: 'bucheon', name: '부천', short: '부천', lat: 37.5035, lon: 126.7660 },
+    { id: 'suwon', name: '수원', short: '수원', lat: 37.2636, lon: 127.0286 }
+  ];
+
+  /* WMO 날씨 코드 → [아이콘, 한글] */
+  var WMO_NOW = {
+    0: ['☀️', '맑음'], 1: ['🌤️', '대체로 맑음'], 2: ['⛅', '구름 조금'], 3: ['☁️', '흐림'],
+    45: ['🌫️', '안개'], 48: ['🌫️', '안개'],
+    51: ['🌦️', '이슬비'], 53: ['🌦️', '이슬비'], 55: ['🌧️', '이슬비'],
+    56: ['🌧️', '어는 이슬비'], 57: ['🌧️', '어는 이슬비'],
+    61: ['🌧️', '비'], 63: ['🌧️', '비'], 65: ['🌧️', '강한 비'],
+    66: ['🌧️', '어는 비'], 67: ['🌧️', '어는 비'],
+    71: ['❄️', '눈'], 73: ['❄️', '눈'], 75: ['❄️', '많은 눈'], 77: ['❄️', '싸락눈'],
+    80: ['🌦️', '소나기'], 81: ['🌧️', '소나기'], 82: ['⛈️', '강한 소나기'],
+    85: ['🌨️', '소나기눈'], 86: ['🌨️', '소나기눈'],
+    95: ['⛈️', '천둥번개'], 96: ['⛈️', '천둥번개'], 99: ['⛈️', '천둥번개']
+  };
+
+  var weather = { loc: null, data: null, at: 0, busy: false, stale: false, timer: null };
+
+  function weatherLocById(id) {
+    for (var i = 0; i < WEATHER_LOCATIONS.length; i++) {
+      if (WEATHER_LOCATIONS[i].id === id) return WEATHER_LOCATIONS[i];
+    }
+    return null;
+  }
+
+  function loadWeather() {
+    var saved = readJSON(WEATHER_STORE, null);
+    if (saved && saved.loc && isFinite(saved.loc.lat) && isFinite(saved.loc.lon)) {
+      weather.loc = saved.loc;
+      if (saved.data && saved.at) {
+        weather.data = saved.data;
+        weather.at = saved.at;
+      }
+    }
+    if (!weather.loc) weather.loc = WEATHER_LOCATIONS[0];
+  }
+
+  function saveWeather() {
+    writeJSON(WEATHER_STORE, { loc: weather.loc, data: weather.data, at: weather.at });
+  }
+
+  function dustGrade(pm10, pm25) {
+    function g10(v) { return v <= 30 ? 0 : (v <= 80 ? 1 : (v <= 150 ? 2 : 3)); }
+    function g25(v) { return v <= 15 ? 0 : (v <= 35 ? 1 : (v <= 75 ? 2 : 3)); }
+    var g = -1;
+    if (typeof pm10 === 'number' && isFinite(pm10)) g = Math.max(g, g10(pm10));
+    if (typeof pm25 === 'number' && isFinite(pm25)) g = Math.max(g, g25(pm25));
+    return g < 0 ? '' : ['좋음', '보통', '나쁨', '매우나쁨'][g];
+  }
+
+  function renderWeather() {
+    var loc = weather.loc || WEATHER_LOCATIONS[0];
+    var d = weather.data;
+    var placeEl = document.getElementById('wxPlace');
+    var icon = document.getElementById('wxIcon');
+    var temp = document.getElementById('wxTemp');
+    var label = document.getElementById('wxLabel');
+    var hi = document.getElementById('wxHi');
+    var lo = document.getElementById('wxLo');
+    var dust = document.getElementById('wxDust');
+    var dustText = document.getElementById('wxDustText');
+    var btn = document.getElementById('weatherBtn');
+
+    if (placeEl) placeEl.textContent = loc.short || loc.name;
+
+    if (!d) {
+      if (icon) icon.textContent = '🌥️';
+      if (temp) temp.textContent = '—';
+      if (label) label.textContent = weather.busy ? '날씨 불러오는 중' : '날씨 정보 없음';
+      if (hi) hi.textContent = '–';
+      if (lo) lo.textContent = '–';
+      if (dust) { dust.setAttribute('data-grade', ''); dust.setAttribute('title', ''); }
+      if (dustText) dustText.textContent = '미세먼지 –';
+      if (btn) btn.setAttribute('data-state', weather.busy ? 'loading' : 'error');
+      return;
+    }
+
+    var look = WMO_NOW[d.code] || ['🌥️', '구름'];
+    if (icon) icon.textContent = look[0];
+    if (temp) temp.textContent = String(Math.round(d.temp)) + '';
+    if (label) {
+      label.textContent = look[1] + (weather.stale ? ' · 최근' : '') +
+        (typeof d.feels === 'number' && Math.abs(d.feels - d.temp) >= 2 ? ' · 체감 ' + Math.round(d.feels) + '°' : '');
+    }
+    if (hi) hi.textContent = (typeof d.hi === 'number' ? Math.round(d.hi) : '–') + '°';
+    if (lo) lo.textContent = (typeof d.lo === 'number' ? Math.round(d.lo) : '–') + '°';
+
+    var grade = dustGrade(d.pm10, d.pm25);
+    if (dust) {
+      dust.setAttribute('data-grade', grade);
+      dust.setAttribute('title', 'PM10 ' + (typeof d.pm10 === 'number' ? Math.round(d.pm10) : '–') +
+        ' · PM2.5 ' + (typeof d.pm25 === 'number' ? Math.round(d.pm25) : '–') + ' ㎍/㎥');
+    }
+    if (dustText) dustText.textContent = grade ? '미세 ' + grade : '미세먼지 –';
+    if (btn) btn.setAttribute('data-state', 'ok');
+  }
+
+  function wxGetJSON(url) {
+    return new Promise(function (resolve, reject) {
+      var ctrl = null;
+      try { if (typeof AbortController === 'function') ctrl = new AbortController(); } catch (err) { ctrl = null; }
+      var timer = setTimeout(function () {
+        if (ctrl) { try { ctrl.abort(); } catch (err) {} }
+        reject(new Error('timeout'));
+      }, 9000);
+      fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined })
+        .then(function (res) {
+          if (!res.ok) throw new Error('http ' + res.status);
+          return res.json();
+        })
+        .then(function (json) { clearTimeout(timer); resolve(json); })
+        .catch(function (err2) { clearTimeout(timer); reject(err2); });
+    });
+  }
+
+  function fetchWeather(force) {
+    if (typeof fetch !== 'function' || weather.busy) return;
+    if (!force && weather.data && (Date.now() - weather.at) < WEATHER_TTL) {
+      weather.stale = false;
+      renderWeather();
+      return;
+    }
+    var loc = weather.loc || WEATHER_LOCATIONS[0];
+    var base = '?latitude=' + loc.lat + '&longitude=' + loc.lon + '&timezone=Asia%2FSeoul';
+    var nowUrl = 'https://api.open-meteo.com/v1/forecast' + base +
+      '&current=temperature_2m,apparent_temperature,weather_code' +
+      '&daily=temperature_2m_max,temperature_2m_min&forecast_days=1';
+    var airUrl = 'https://air-quality-api.open-meteo.com/v1/air-quality' + base + '&current=pm10,pm2_5';
+
+    weather.busy = true;
+    if (!weather.data) renderWeather();
+
+    var quiet = function () { return null; };
+    Promise.all([wxGetJSON(nowUrl).catch(quiet), wxGetJSON(airUrl).catch(quiet)])
+      .then(function (res) {
+        weather.busy = false;
+        var nowJson = res[0];
+        if (!nowJson || !nowJson.current || typeof nowJson.current.temperature_2m !== 'number') {
+          /* 받지 못하면 지난번 날씨를 '최근'으로 남긴다 (처음이면 깔끔한 빈 상태) */
+          weather.stale = !!weather.data;
+          renderWeather();
+          return;
+        }
+        var cur = nowJson.current;
+        var daily = nowJson.daily || {};
+        var air = (res[1] && res[1].current) || {};
+        weather.data = {
+          temp: cur.temperature_2m,
+          feels: cur.apparent_temperature,
+          code: cur.weather_code,
+          hi: Array.isArray(daily.temperature_2m_max) ? daily.temperature_2m_max[0] : null,
+          lo: Array.isArray(daily.temperature_2m_min) ? daily.temperature_2m_min[0] : null,
+          pm10: typeof air.pm10 === 'number' ? air.pm10 : null,
+          pm25: typeof air.pm2_5 === 'number' ? air.pm2_5 : null
+        };
+        weather.at = Date.now();
+        weather.stale = false;
+        saveWeather();
+        renderWeather();
+      })
+      .catch(function () {
+        weather.busy = false;
+        weather.stale = !!weather.data;
+        renderWeather();
+      });
+  }
+
+  function buildWeatherPop() {
+    var box = document.getElementById('wxPopList');
+    if (!box) return;
+    box.textContent = '';
+    var opts = WEATHER_LOCATIONS.slice();
+    if (weather.loc && weather.loc.id === 'geo') opts.unshift(weather.loc);
+    opts.forEach(function (loc) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'wx-opt';
+      btn.setAttribute('aria-pressed', weather.loc && weather.loc.id === loc.id ? 'true' : 'false');
+      var name = document.createElement('span');
+      name.textContent = loc.name;
+      btn.appendChild(name);
+      if (weather.loc && weather.loc.id === loc.id) {
+        var tick = document.createElement('span');
+        tick.className = 'tick';
+        tick.textContent = '✓';
+        btn.appendChild(tick);
+      }
+      btn.addEventListener('click', function () { pickWeatherLoc(loc); });
+      box.appendChild(btn);
+    });
+  }
+
+  function closeWeatherPop() {
+    var pop = document.getElementById('wxPop');
+    var btn = document.getElementById('weatherBtn');
+    if (pop) pop.hidden = true;
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function openWeatherPop() {
+    var pop = document.getElementById('wxPop');
+    var btn = document.getElementById('weatherBtn');
+    if (!pop || !btn) return;
+    buildWeatherPop();
+    pop.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    var r = btn.getBoundingClientRect();
+    var w = pop.offsetWidth || 232;
+    var h = pop.offsetHeight || 230;
+    var left = Math.max(12, Math.min(r.right - w, (window.innerWidth || 1024) - w - 12));
+    var top = r.bottom + 8;
+    if (top + h > (window.innerHeight || 800) - 12) top = Math.max(12, r.top - h - 8);
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+  }
+
+  function pickWeatherLoc(loc) {
+    weather.loc = loc;
+    weather.data = null;
+    weather.at = 0;
+    weather.stale = false;
+    saveWeather();
+    renderWeather();
+    closeWeatherPop();
+    fetchWeather(true);
+  }
+
+  function useGeoLocation() {
+    var foot = document.getElementById('wxPopFoot');
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
+      if (foot) foot.textContent = '이 기기에서는 위치를 쓸 수 없어요. 동네를 골라 주세요.';
+      return;
+    }
+    if (foot) foot.textContent = '지금 위치를 찾는 중…';
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      pickWeatherLoc({
+        id: 'geo',
+        name: '지금 위치',
+        short: '지금 위치',
+        lat: Math.round(pos.coords.latitude * 10000) / 10000,
+        lon: Math.round(pos.coords.longitude * 10000) / 10000
+      });
+    }, function () {
+      if (foot) foot.textContent = '위치를 받지 못했어요. 동네를 골라 주세요.';
+    }, { timeout: 8000, maximumAge: 600000 });
+  }
+
+  /* ── 주중 5일 저금통 (월~금 미션 달성) ──────────────── */
+  var PIGGY_DAYS = ['월', '화', '수', '목', '금'];
+
+  function missionWeekDays() {
+    var now = new Date(Date.now() + 9 * 3600000);   /* KST */
+    var sinceMonday = (now.getUTCDay() + 6) % 7;    /* 월=0 … 일=6 */
+    var monday = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - sinceMonday);
+    var days = questDaysOf('mission');
+    var out = [];
+    for (var i = 0; i < 5; i++) {
+      var d = new Date(monday + i * 86400000);
+      var key = d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate());
+      out.push({
+        key: key,
+        label: PIGGY_DAYS[i],
+        done: days.indexOf(key) >= 0,
+        today: i === sinceMonday
+      });
+    }
+    return out;
+  }
+
+  function renderPiggyBank() {
+    var bank = document.getElementById('piggyBank');
+    if (!bank) return;
+    var week = missionWeekDays();
+    var done = 0;
+    var i;
+    for (i = 0; i < week.length; i++) if (week[i].done) done++;
+
+    bank.setAttribute('data-level', String(done));
+    if (done >= 5) bank.classList.add('is-full');
+    else bank.classList.remove('is-full');
+
+    var daysEl = document.getElementById('piggyDays');
+    if (daysEl) {
+      daysEl.textContent = '';
+      for (i = 0; i < week.length; i++) {
+        var d = week[i];
+        var chip = document.createElement('span');
+        chip.className = 'piggy-day' + (d.done ? ' is-done' : '') + (d.today ? ' is-today' : '');
+        chip.textContent = d.label;
+        chip.setAttribute('title', d.key + (d.done ? ' · 달성' : ' · 미달성'));
+        daysEl.appendChild(chip);
+      }
+    }
+
+    var coins = bank.querySelectorAll('.coin');
+    for (i = 0; i < coins.length; i++) {
+      if (i < done) coins[i].classList.add('is-on');
+      else coins[i].classList.remove('is-on');
+    }
+
+    var count = document.getElementById('piggyCount');
+    if (count) count.textContent = done + '/5';
+
+    var note = document.getElementById('piggyNote');
+    if (note) {
+      note.textContent = done >= 5
+        ? '· 이번 주 5일 모두 달성!'
+        : '· 월~금 미션을 다 하면 동전이 쌓여요';
+    }
+
+    var badge = document.getElementById('piggyBadge');
+    if (badge) badge.hidden = done < 5;
+
+    bank.setAttribute('aria-label', '주중 5일 저금통 · 이번 주 ' + done + '/5일 저금' +
+      (done >= 5 ? ' · 5일 모두 달성!' : ''));
   }
 
   function makeIconButton(label, glyph, onClick) {
@@ -4497,6 +4889,9 @@
         burst.hidden = true;
       }
     }
+
+    /* 용우 미션 칸은 주중 5일 저금통도 함께 새로 그립니다 */
+    if (prefix === 'mission') renderPiggyBank();
   }
 
   /* 3일·6일·9일 … 연속 보너스 축하 배너 */
@@ -4637,6 +5032,30 @@
   document.getElementById('historyBtn').addEventListener('click', openHistory);
   document.getElementById('historyClose').addEventListener('click', closeHistory);
   document.getElementById('historyBackdrop').addEventListener('click', closeHistory);
+
+  /* 날씨 동네 바꾸기 (머리글의 날씨를 누르면 열립니다) */
+  (function wireWeatherUI() {
+    var btn = document.getElementById('weatherBtn');
+    var pop = document.getElementById('wxPop');
+    var geo = document.getElementById('wxGeoBtn');
+    if (btn) {
+      btn.addEventListener('click', function (event) {
+        if (event && event.stopPropagation) event.stopPropagation();
+        if (pop && !pop.hidden) closeWeatherPop();
+        else openWeatherPop();
+      });
+    }
+    if (geo) geo.addEventListener('click', useGeoLocation);
+    document.addEventListener('click', function (event) {
+      if (!pop || pop.hidden) return;
+      var t = event && event.target;
+      if (t && ((pop.contains && pop.contains(t)) || (btn && btn.contains && btn.contains(t)))) return;
+      closeWeatherPop();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event && (event.key === 'Escape' || event.key === 'Esc')) closeWeatherPop();
+    });
+  })();
   document.addEventListener('keydown', function (event) {
     if (event && (event.key === 'Escape' || event.key === 'Esc')) closeHistory();
   });
@@ -4725,6 +5144,17 @@
   document.getElementById('offdayDate').value = '';
 
   render();
+
+  /* 이 기기에 저장해 둔 날씨 동네로 바로 그리고, 실제 값을 받아 옵니다 */
+  loadWeather();
+  renderWeather();
+  if (typeof fetch === 'function') {
+    fetchWeather(false);
+    weather.timer = setInterval(function () { fetchWeather(false); }, WEATHER_TTL);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) fetchWeather(false);
+    });
+  }
 
   /* 다른 기기와 실시간으로 맞추기 시작 */
   startSync();
