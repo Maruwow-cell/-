@@ -1188,8 +1188,11 @@
   }
 
   /* ═══ 오늘의 케어 체크 ═════════════════════ */
+  var renderedCareDay = '';
+
   function renderCare() {
     var tk = todayKey();
+    renderedCareDay = tk;
     $('careDate').textContent = fmtShort(tk);
     var done = checksOf(tk);
     var html = '';
@@ -1632,10 +1635,10 @@
     startSync();
   }
 
-  /* 화면을 켤 때 새벽을 넘겼으면 오늘 체크를 새로 그립니다. */
+  /* 날짜가 바뀌었으면(자정을 넘겼으면) 오늘 체크를 새로 그립니다. */
   setInterval(function () {
-    if (!document.hidden) renderCare();
-  }, 60000);
+    if (!document.hidden && todayKey() !== renderedCareDay) renderCare();
+  }, 30000);
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
