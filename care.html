@@ -382,6 +382,23 @@
     .cat-btn{ min-height:70px; }
     .note-text,.field textarea{ font-size:19px; }
   }
+  @media (min-width:641px) and (max-width:1100px){
+    .card{ padding:14px; }
+    .card-head{ margin-bottom:8px; }
+    .card-head h2{ font-size:22px; }
+    .side{ gap:14px; }
+    .care-row{ min-height:54px; padding:8px 4px; }
+    .care-label{ font-size:20px; }
+    .care-box{ width:32px; height:32px; font-size:20px; border-radius:9px; }
+    .care-del{ width:40px; height:40px; }
+    .care-add{ margin-top:8px; }
+    .care-add input,.care-add button{ min-height:46px; }
+    .care-note{ margin-top:6px; font-size:14.5px; }
+    .quick-add{ margin-top:8px; gap:6px; }
+    .quick-add button{ min-height:38px; padding:5px 10px; font-size:14.5px; }
+    .pin-text{ font-size:18px; }
+    .pins-wrap{ gap:10px; }
+  }
   @media (max-width:520px){
     .cell .badge{ font-size:10px; padding:1px 5px; gap:0; }
     .cell .badge .b-label{ display:none; }
@@ -429,9 +446,9 @@
         </div>
         <div class="pins-wrap" id="pinsWrap"></div>
         <div class="quick-add" id="quickAdd">
-          <button type="button" data-title="복용 중인 약">+ 복용 중인 약</button>
+          <button type="button" data-title="복용 중인 약">+ 복용 약</button>
           <button type="button" data-title="주의할 점">+ 주의할 점</button>
-          <button type="button" data-title="병원 · 연락처">+ 병원 · 연락처</button>
+          <button type="button" data-title="병원 · 연락처">+ 병원</button>
         </div>
       </section>
 
