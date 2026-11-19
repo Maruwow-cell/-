@@ -625,6 +625,7 @@
   var syncPending = 0;
   var syncDirty = {};
   var syncTimers = {};
+  var syncRetry = {};
   var syncSeen = {};
   var syncStream = null;
   var syncStreamOpen = false;
@@ -717,7 +718,14 @@
       syncPending = Math.max(0, syncPending - 1);
       syncDirty[unit] = true;
       renderSyncStatus('offline');
-      setTimeout(function () { if (syncDirty[unit]) pushUnit(unit); }, 20000);
+      /* 못 올린 것은 조금 뒤 다시 (인터넷이 돌아오면 바로 맞춰집니다) */
+      syncRetry[unit] = (syncRetry[unit] || 0) + 1;
+      var wait = Math.min(20000, 3000 * syncRetry[unit]);
+      clearTimeout(syncTimers[unit]);
+      syncTimers[unit] = setTimeout(function () {
+        syncTimers[unit] = null;
+        if (syncDirty[unit]) pushUnit(unit);
+      }, wait);
     });
     settleSyncStatus();
   }
@@ -741,12 +749,12 @@
     if (!SYNC_ENABLED) return;
     if (syncSeen[unit] === fingerprint(unit)) { delete syncDirty[unit]; return; }
     syncDirty[unit] = true;
-    if (!syncReady) { renderSyncStatus('connecting'); return; }
-    if (syncTimers[unit]) clearTimeout(syncTimers[unit]);
-    syncTimers[unit] = setTimeout(function () {
-      syncTimers[unit] = null;
-      pushUnit(unit);
-    }, 250);
+    if (!syncReady) { renderSyncStatus('connecting'); pullAll(); return; }
+    /* 바로 올립니다 — 아이패드에서 적은 것이 아이폰에 바로 보이도록 */
+    clearTimeout(syncTimers[unit]);
+    syncTimers[unit] = null;
+    syncRetry[unit] = 0;
+    pushUnit(unit);
   }
 
   /* ── 받기 ── */
@@ -968,12 +976,14 @@
 
     setInterval(function () {
       if (document.hidden) return;
+      pushDirty();
       if (!syncStreamOpen || !syncReady) pullAll();
     }, 30000);
 
     document.addEventListener('visibilitychange', function () {
-      if (!document.hidden) pullAll();
+      if (!document.hidden) { pushDirty(); pullAll(); }
     });
+    window.addEventListener('pagehide', function () { pushDirty(); });
   }
 
   /* ═══ 달력 ═════════════════════════════════ */
