@@ -20,8 +20,8 @@
     --line-3:#BDA98E;
 
     --mint:#2C6A4A;
-    --mint-soft:#E9F5EE;
-    --mint-line:#9CC7AE;
+    --mint-soft:#DFF0E6;
+    --mint-line:#8FC0A5;
 
     --coral:#B4472C;
     --coral-soft:#FBE6DD;
@@ -105,7 +105,7 @@
   /* ── 배치 ───────────────────────────────── */
   .layout{
     display:grid;
-    grid-template-columns:minmax(0,1.6fr) minmax(390px,1fr);
+    grid-template-columns:minmax(0,1.55fr) minmax(360px,1fr);
     gap:18px; align-items:start;
   }
   .card{
@@ -143,7 +143,7 @@
   .weekdays span.sun{ color:var(--coral); }
   .weekdays span.sat{ color:#2F5F7A; }
 
-  .grid{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; grid-auto-rows:minmax(74px,1fr); }
+  .grid{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; grid-auto-rows:minmax(70px,1fr); }
 
   .cell{
     position:relative; display:flex; flex-direction:column; align-items:stretch; gap:4px;
@@ -156,7 +156,7 @@
   .cell.sat .dnum{ color:#2F5F7A; }
   .cell.out{ background:#F7F0E3; border-color:#EBDFCC; }
   .cell.out .dnum{ color:#B9A88F; font-weight:700; }
-  .cell.today{ border-color:var(--mint); background:#EDF6F0; box-shadow:inset 0 0 0 2px var(--mint); }
+  .cell.today{ border-color:var(--mint); background:#F1FAF4; box-shadow:inset 0 0 0 2px var(--mint); }
   .cell.today .dnum{ color:#154C32; }
   .cell:active{ background:#F3ECE0; }
 
@@ -346,13 +346,8 @@
   }
 
   /* ── 좁은 화면 ─────────────────────────── */
-  @media (max-width:1080px){
+  @media (max-width:819px){
     .layout{ grid-template-columns:1fr; }
-    .side{ flex-direction:row; align-items:stretch; }
-    .side > .card{ flex:1 1 0; min-width:0; }
-  }
-  @media (max-width:760px){
-    .side{ flex-direction:column; }
   }
   @media (max-width:640px){
     body{ font-size:18px; }
@@ -998,6 +993,8 @@
   }
 
   /* ═══ 달력 ═════════════════════════════════ */
+  function badgeLimit() { return window.innerWidth >= 1200 ? 2 : 1; }
+
   function badgeHtml(list) {
     if (!list.length) return '';
     var counts = {}, order = [];
@@ -1007,7 +1004,7 @@
       counts[k]++;
     });
     order.sort(function (a, b) { return CAT_ORDER[a] - CAT_ORDER[b]; });
-    var shown = order.slice(0, 2);
+    var shown = order.slice(0, badgeLimit());
     var out = '';
     shown.forEach(function (k) {
       var c = CAT_BY_KEY[k];
@@ -1027,7 +1024,7 @@
       var k = CAT_BY_KEY[x.cat] ? x.cat : 'memo';
       if (!seen[k]) { seen[k] = true; n++; }
     });
-    return Math.max(0, n - 2);
+    return Math.max(0, n - badgeLimit());
   }
 
   function renderCalendar() {
@@ -1563,6 +1560,13 @@
       if (e.key !== 'Escape') return;
       if (!$('dayBackdrop').hidden) closeSheet('dayBackdrop');
       else if (!$('recentBackdrop').hidden) closeSheet('recentBackdrop');
+    });
+
+    /* 화면 폭이 바뀌면(가로/세로) 달력 배지를 다시 그립니다. */
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { resizeTimer = null; renderCalendar(); }, 200);
     });
   }
 
