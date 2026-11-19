@@ -626,6 +626,7 @@
   var syncDirty = {};
   var syncTimers = {};
   var syncRetry = {};
+  var syncLocalAt = {};   /* 이 기기에서 마지막으로 고친 시각 — 더 오래된 원격 값을 되돌려 받지 않게 */
   var syncSeen = {};
   var syncStream = null;
   var syncStreamOpen = false;
@@ -672,7 +673,11 @@
     return null;
   }
   function fingerprint(unit) {
-    try { return JSON.stringify(unitValue(unit)); } catch (err) { return ''; }
+    try {
+      var v = unitValue(unit);
+      if (!v) return '';
+      return JSON.stringify(v.items === undefined ? v : v.items);
+    } catch (err) { return ''; }
   }
   function rememberUnit(unit) { syncSeen[unit] = fingerprint(unit); }
 
@@ -713,6 +718,8 @@
       syncPending = Math.max(0, syncPending - 1);
       syncSeen[unit] = fp;
       delete syncDirty[unit];
+      /* 올리는 사이에 또 고쳤으면 한 번 더 */
+      if (fingerprint(unit) !== fp) markChanged(unit);
       settleSyncStatus();
     }).catch(function () {
       syncPending = Math.max(0, syncPending - 1);
@@ -747,6 +754,7 @@
 
   function markChanged(unit) {
     if (!SYNC_ENABLED) return;
+    syncLocalAt[unit] = Date.now();
     if (syncSeen[unit] === fingerprint(unit)) { delete syncDirty[unit]; return; }
     syncDirty[unit] = true;
     if (!syncReady) { renderSyncStatus('connecting'); pullAll(); return; }
@@ -797,6 +805,9 @@
   function applyUnit(unit, payload) {
     var items = listItems(payload);
     var m;
+    /* 내가 방금 고친 것보다 오래된 값(내 앞선 저장이 늦게 되돌아온 것)은 무시합니다. */
+    var remoteAt = payload && typeof payload.at === 'number' ? payload.at : 0;
+    if (syncLocalAt[unit] && remoteAt && remoteAt < syncLocalAt[unit]) return false;
     if (unit === 'pins') {
       var pins = normalizePins(items);
       if (sameJSON(state.pins, pins)) return false;
@@ -1091,9 +1102,14 @@
     if (pinsSaveTimer) clearTimeout(pinsSaveTimer);
     pinsSaveTimer = setTimeout(function () {
       pinsSaveTimer = null;
-      writeJSON(K.pins, state.pins);
-      markChanged('pins');
+      flushPins();
     }, 400);
+  }
+
+  function flushPins() {
+    if (pinsSaveTimer) { clearTimeout(pinsSaveTimer); pinsSaveTimer = null; }
+    writeJSON(K.pins, state.pins);
+    markChanged('pins');
   }
 
   function addPin(title) {
@@ -1452,7 +1468,10 @@
       pin.at = Date.now();
       savePinsSoon();
     });
-    pins.addEventListener('focusout', function () {
+    pins.addEventListener('focusout', function (e) {
+      if (e.target && (e.target.classList && (e.target.classList.contains('pin-title') || e.target.classList.contains('pin-text')))) {
+        flushPins();
+      }
       setTimeout(function () { if (pendingPinsRender) renderPins(); }, 0);
     });
     pins.addEventListener('click', function (e) {
