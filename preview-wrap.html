@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>화면 미리보기</title>
 <style>
-  html,body{ margin:0; padding:0; background:#b9b1a4; }
+  html,body{ margin:0; padding:0; background:#b9b1a4; overflow:hidden; }
   iframe{ display:block; border:0; background:#fff; }
 </style>
 </head>
 <body>
-<iframe id="f" src="care.html" title="미리보기"></iframe>
+<iframe id="f" src="care.html" title="미리보기" scrolling="no"></iframe>
 <script>
   var p = new URLSearchParams(location.search);
   var w = Number(p.get('w') || 390);
