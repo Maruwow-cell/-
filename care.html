@@ -168,11 +168,13 @@
     font-size:13px; font-weight:800; line-height:1.3; letter-spacing:-0.03em; white-space:nowrap;
   }
   .badge .b-emoji{ font-size:12.5px; line-height:1; }
+  .badge .b-label-s{ display:none; }
   .badge.c-clinic{ background:var(--coral-soft); color:#8E341F; border-color:var(--coral-line); }
   .badge.c-med{ background:var(--amber-soft); color:#5C4304; border-color:var(--amber-line); }
   .badge.c-body{ background:var(--mint-soft); color:#1F5738; border-color:var(--mint-line); }
   .badge.c-memo{ background:var(--blue-soft); color:#2A4150; border-color:var(--blue-line); }
   .badge.more{ background:#F1E7D8; color:#5B4A38; border-color:#D8C7AE; padding:2px 6px; }
+  .cell.today .badge{ box-shadow:0 0 0 2px #FFFDF8; }
   .more-chip{
     position:absolute; top:5px; right:5px;
     padding:1px 6px; border-radius:999px;
@@ -210,9 +212,9 @@
   }
   .quick-add{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
   .quick-add button{
-    min-height:46px; padding:8px 14px; border-radius:999px;
+    min-height:42px; padding:7px 12px; border-radius:999px;
     border:2px dashed var(--line-3); background:#FFFCF4; color:#4A3B2C;
-    font-size:16px; font-weight:800;
+    font-size:15.5px; font-weight:800;
   }
 
   /* ── 오늘의 케어 체크 ───────────────────── */
@@ -380,6 +382,13 @@
     .cat-btn{ min-height:70px; }
     .note-text,.field textarea{ font-size:19px; }
   }
+  @media (max-width:520px){
+    .cell .badge{ font-size:10px; padding:1px 5px; gap:0; }
+    .cell .badge .b-label{ display:none; }
+    .cell .badge .b-label-s{ display:inline; }
+    .cell .badge .b-emoji{ display:none; }
+    .cell .badge .b-count{ margin-left:2px; }
+  }
 </style>
 </head>
 <body>
@@ -512,10 +521,10 @@
   var SYNC_DB = SYNC_BASE + '.json';
 
   var CATS = [
-    { key: 'clinic', label: '진료',   emoji: '🏥', cls: 'c-clinic', ncls: 'n-clinic' },
-    { key: 'med',    label: '약',     emoji: '💊', cls: 'c-med',    ncls: 'n-med' },
-    { key: 'body',   label: '컨디션', emoji: '🦵', cls: 'c-body',   ncls: 'n-body' },
-    { key: 'memo',   label: '메모',   emoji: '📝', cls: 'c-memo',   ncls: 'n-memo' }
+    { key: 'clinic', label: '진료',   short: '진료', emoji: '🏥', cls: 'c-clinic', ncls: 'n-clinic' },
+    { key: 'med',    label: '약',     short: '약',   emoji: '💊', cls: 'c-med',    ncls: 'n-med' },
+    { key: 'body',   label: '컨디션', short: '컨디', emoji: '🦵', cls: 'c-body',   ncls: 'n-body' },
+    { key: 'memo',   label: '메모',   short: '메모', emoji: '📝', cls: 'c-memo',   ncls: 'n-memo' }
   ];
   var CAT_BY_KEY = {};
   var CAT_ORDER = {};
@@ -1010,6 +1019,7 @@
       var c = CAT_BY_KEY[k];
       out += '<span class="badge ' + c.cls + '"><span class="b-emoji">' + c.emoji + '</span>'
         + '<span class="b-label">' + c.label + '</span>'
+        + '<span class="b-label-s">' + (c.short || c.label) + '</span>'
         + (counts[k] > 1 ? '<span class="b-count">' + counts[k] + '</span>' : '')
         + '</span>';
     });
