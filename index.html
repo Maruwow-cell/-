@@ -285,12 +285,12 @@
   .piggy-day {
     display: grid;
     place-items: center;
-    width: 19px;
-    height: 19px;
-    border: 1px solid #efe0c9;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #efe0c9;
     border-radius: 50%;
     background: #fff;
-    font-size: 9px;
+    font-size: 10.5px;
     font-weight: 900;
     color: #bda88a;
   }
@@ -716,12 +716,12 @@
 
   .evo-label {
     flex: none;
-    padding: 2px 8px;
+    padding: 3px 9px;
     border-radius: 999px;
     border: 1px solid var(--accent-line);
     background: #fff;
     color: var(--accent-deep);
-    font-size: 9.5px;
+    font-size: 12px;
     font-weight: 900;
     letter-spacing: -.01em;
     white-space: nowrap;
@@ -731,25 +731,28 @@
   .card.todo[data-who] .card-head { padding-right: 92px; }
 
   /* 단계별 진화: 1단계 아기 → 2단계 성장 → 3단계 완전 진화 (+ 3일 연속 슈퍼) */
-  .buddy-svg .f2,
-  .buddy-svg .f3,
-  .buddy-svg .super,
-  .buddy-svg .cap,
-  .buddy-svg .crown { display: none; }
+  /* 이번 주 달성 일수(0~7일)만큼 파츠가 붙은 크림소다 — 한 장씩만 보입니다 */
+  .buddy-svg use.s0,
+  .buddy-svg use.s1,
+  .buddy-svg use.s2,
+  .buddy-svg use.s3,
+  .buddy-svg use.s4,
+  .buddy-svg use.s5,
+  .buddy-svg use.s6,
+  .buddy-svg use.s7,
+  .buddy-svg .super { display: none; }
 
-  .card[data-stage="2"] .buddy-svg .f1 { display: none; }
-  .card[data-stage="2"] .buddy-svg .f2 { display: inline; }
+  .card[data-week="0"] .buddy-svg use.s0 { display: inline; }
+  .card[data-week="1"] .buddy-svg use.s1 { display: inline; }
+  .card[data-week="2"] .buddy-svg use.s2 { display: inline; }
+  .card[data-week="3"] .buddy-svg use.s3 { display: inline; }
+  .card[data-week="4"] .buddy-svg use.s4 { display: inline; }
+  .card[data-week="5"] .buddy-svg use.s5 { display: inline; }
+  .card[data-week="6"] .buddy-svg use.s6 { display: inline; }
+  .card[data-week="7"] .buddy-svg use.s7 { display: inline; }
 
-  .card[data-stage="3"] .buddy-svg .f1,
-  .card[data-stage="3"] .buddy-svg .f2 { display: none; }
-  .card[data-stage="3"] .buddy-svg .f3 { display: inline; }
-
-  .card[data-super="1"] .buddy-svg .super { display: inline; }
-  /* 진화하면 파티 모자, 3일 연속이면 그 위에 황금 왕관(모자 위에 모자) */
-  .card[data-stage="3"] .buddy-svg .cap { display: inline; }
-  .card[data-stage="3"][data-super="1"] .buddy-svg .crown { display: inline; }
-  .card[data-super="1"] .buddy-svg .crown path,
-  .card[data-super="1"] .buddy-svg .crown circle { animation: crownFloat 2.8s ease-in-out infinite; transform-box: view-box; transform-origin: 60px 30px; }
+  /* 7일(주간 진화 완성)에만 무지개 오라 */
+  .card[data-week="7"] .buddy-svg .super { display: inline; }
 
   .card[data-stage="2"] .buddy-svg { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(255, 214, 120, .75)); }
   .card[data-stage="3"] .buddy-svg { transform: scale(1.1); filter: drop-shadow(0 0 16px rgba(255, 202, 84, .9)); }
@@ -786,19 +789,19 @@
   /* ── 하루하루 달성 · 연속 슈퍼 업그레이드 ────────────── */
   .streak-chip {
     flex: none;
-    padding: 2px 7px;
+    padding: 3px 9px;
     border-radius: 999px;
     border: 1px solid #ffdca6;
     background: linear-gradient(180deg, #fff8e8, #ffeed1);
     color: #a9721a;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 900;
     letter-spacing: -.01em;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
 
-  .streak-chip.is-pending { opacity: .6; }
+  .streak-chip.is-pending { opacity: .7; }
 
   .streak-chip.is-super {
     border-color: #edb434;
@@ -821,22 +824,36 @@
     box-shadow: 0 0 0 2px rgba(180, 214, 255, .35);
   }
 
-  .day-dots { display: flex; align-items: center; gap: 3px; margin-top: 5px; height: 7px; }
+  .day-dots { display: flex; align-items: center; gap: 5px; margin-top: 8px; height: 22px; }
 
   .day-dot {
-    width: 6px;
-    height: 6px;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid #ded7c6;
     border-radius: 999px;
-    background: #ece7da;
-    transition: background-color .3s ease, box-shadow .3s ease;
+    background: #f4f1e8;
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1;
+    color: #b9ae98;
+    transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease;
   }
 
   .day-dot.is-done {
-    background: linear-gradient(180deg, #ffd97a, #f0b93f);
-    box-shadow: 0 0 5px rgba(240, 185, 63, .65);
+    border-color: #d99a1c;
+    background: linear-gradient(180deg, #ffd97a, #eeae2c);
+    color: #fff;
+    font-size: 13px;
+    box-shadow: 0 0 0 2px rgba(255, 208, 94, .45), 0 2px 6px rgba(217, 154, 28, .45);
   }
 
-  .day-dot.is-today { outline: 1.5px solid rgba(227, 168, 62, .5); outline-offset: 1.5px; }
+  .day-dot.is-done::after { content: "✓"; }
+
+  .day-dot.is-future { border-style: dashed; background: #fbf8f0; color: #cfc5b0; }
+
+  .day-dot.is-today { outline: 2px solid rgba(227, 168, 62, .65); outline-offset: 2px; }
 
   .quest-burst {
     position: absolute;
@@ -933,12 +950,12 @@
   }
 
   .quest-badge {
-    padding: 3px 9px;
+    padding: 4px 12px;
     border: 1px solid var(--accent-line);
     border-radius: 999px;
     background: var(--accent-soft);
     color: var(--accent-deep);
-    font-size: 10.5px;
+    font-size: 14px;
     font-weight: 900;
     letter-spacing: -.01em;
     white-space: nowrap;
@@ -951,7 +968,7 @@
   }
 
   .quest-count {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 850;
     color: var(--accent-deep);
     font-variant-numeric: tabular-nums;
@@ -1871,7 +1888,7 @@
     .icon-chip { width: 20px; height: 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(120, 104, 74, .08); }
     .icon-chip svg { width: 12px; height: 12px; }
     .count { padding: 2px 6px; font-size: 9px; }
-    .evo-label { padding: 1px 5px; font-size: 8.5px; }
+    .evo-label { padding: 2px 8px; font-size: 12px; }
     .card-hint { margin: 0 0 3px; font-size: 9.5px; line-height: 1.3; }
     .empty { margin: 2px 0 0; padding: 5px 7px; font-size: 9.5px; line-height: 1.4; border-radius: 8px; }
 
@@ -2014,13 +2031,13 @@
     .todo-item .icon-btn::after { inset: -6px; }
     .card.mission .quest,
     .card.todo[data-who] .quest { grid-area: quest; margin: 0; padding: 3px 6px 4px; border-radius: 9px; }
-    .quest-top { margin-bottom: 3px; gap: 4px; }
-    .quest-badge { padding: 1px 6px; font-size: 8.5px; }
-    .quest-count { font-size: 8.5px; }
-    .quest-bar { height: 5px; }
-    .streak-chip { padding: 0 5px; font-size: 8px; line-height: 1.5; }
-    .day-dots { margin-top: 3px; height: 5px; gap: 2.5px; }
-    .day-dot { width: 5px; height: 5px; }
+    .quest-top { margin-bottom: 4px; gap: 6px; flex-wrap: wrap; }
+    .quest-badge { padding: 3px 10px; font-size: 14px; border-width: 1.5px; }
+    .quest-count { font-size: 14px; }
+    .quest-bar { height: 8px; }
+    .streak-chip { padding: 2px 8px; font-size: 12.5px; line-height: 1.35; }
+    .day-dots { margin-top: 5px; height: 22px; gap: 5px; }
+    .day-dot { width: 18px; height: 18px; font-size: 9px; }
     .quest-burst { padding: 4px 9px; font-size: 10px; }
     .card.mission .todo-foot,
     .card.todo[data-who] .todo-foot { grid-area: foot; margin: 0; padding: 0; border: 0; gap: 4px; flex-wrap: nowrap; }
@@ -2055,9 +2072,9 @@
     .card.mission .piggy { grid-area: piggy; margin: 2px 0 0; padding: 1px 7px 1px 4px; gap: 6px; border-radius: 9px; }
     .card.mission .piggy-art { width: 42px; }
     .card.mission .piggy-body-text { gap: 1px; }
-    .card.mission .piggy-days { gap: 2px; }
-    .card.mission .piggy-day { width: 15px; height: 15px; font-size: 7.5px; }
-    .card.mission .piggy-day.is-today { outline-width: 1px; outline-offset: 1px; }
+    .card.mission .piggy-days { gap: 3px; }
+    .card.mission .piggy-day { width: 22px; height: 22px; font-size: 11px; }
+    .card.mission .piggy-day.is-today { outline-width: 1.5px; outline-offset: 1px; }
     .card.mission .piggy-line { font-size: 9px; gap: 2px; }
     .card.mission .piggy-line b { font-size: 11px; }
     .card.mission .piggy-badge { padding: 1px 6px; font-size: 8.5px; }
@@ -2097,7 +2114,7 @@
     .wx-place { font-size: 8px; }
     .piggy { padding: 2px 7px 2px 4px; gap: 6px; }
     .piggy-art { width: 46px; }
-    .piggy-day { width: 16px; height: 16px; font-size: 8px; }
+    .piggy-day { width: 18px; height: 18px; font-size: 9px; }
     .piggy-line { font-size: 10px; }
     .piggy-line b { font-size: 12px; }
     .piggy-note { display: none; }
@@ -2146,323 +2163,550 @@
       <stop offset="1" stop-color="#ffb3c7"/>
     </linearGradient>
 
-    <!-- ⚡ 노란 전기 몬스터 · 1단계 (아기) -->
-    <symbol id="mon-mouse-1" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="108" rx="25" ry="6" fill="#fff1c0" opacity=".85"/>
-      <path d="M84 86c10 1 15-6 12-13-6 2-11 7-12 13z" fill="#ffd869" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="87" rx="22" ry="17" fill="#ffe07f" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="60" cy="91" rx="13" ry="10" fill="#fff7d8"/>
-      <ellipse cx="46" cy="101" rx="9" ry="5" fill="#ffdf7a" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="74" cy="101" rx="9" ry="5" fill="#ffdf7a" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="38" cy="80" rx="6" ry="8" transform="rotate(-22 38 80)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="82" cy="80" rx="6" ry="8" transform="rotate(22 82 80)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <path d="M37 33c-4-12 2-20 10-20 7 0 11 7 11 16z" fill="#ffe07f" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M83 33c4-12-2-20-10-20-7 0-11 7-11 16z" fill="#ffe07f" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M41 32c-2-8 1-13 5-13 4 0 6 4 6 10z" fill="#ffb9a8"/>
-      <path d="M79 32c2-8-1-13-5-13-4 0-6 4-6 10z" fill="#ffb9a8"/>
-      <circle cx="60" cy="55" r="25" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <path d="M60 31c0-6 4-9 8-9-1 6-4 8-8 9z" fill="#ffe486" stroke="#e2ad33" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="40" cy="63" rx="5.2" ry="3.6" fill="#ff9a86"/>
-      <ellipse cx="80" cy="63" rx="5.2" ry="3.6" fill="#ff9a86"/>
-      <ellipse cx="50" cy="53" rx="6.4" ry="7.6" fill="#3d2f26"/>
-      <ellipse cx="70" cy="53" rx="6.4" ry="7.6" fill="#3d2f26"/>
-      <circle cx="52.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="72.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="48.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <circle cx="68.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <path d="M58 63h4l-2 2.4z" fill="#8a6236"/>
-      <path d="M54.5 67.5c3 2.8 8 2.8 11 0" fill="none" stroke="#8a6236" stroke-width="1.7" stroke-linecap="round"/>
+    <!-- 🍧 크림소다 버디 — 이번 주(월~일) 달성 일수 0~7일에 따라 파츠가 붙습니다
+         0일 컵+아이스크림 · 1~3일 하얀 점 · 4일 왼쪽 눈 · 5일 양쪽 눈 · 6일 입 · 7일 체리+반짝이 -->
+    <symbol id="soda-green-0" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- ⚡ 노란 전기 몬스터 · 2단계 (성장) -->
-    <symbol id="mon-mouse-2" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="109" rx="27" ry="6" fill="#fff1c0" opacity=".9"/>
-      <path d="M86 82c12 2 18-6 15-14" fill="none" stroke="#f2c451" stroke-width="6" stroke-linecap="round"/>
-      <path d="M95 60l15-6-3 10 10 4-18 15-1-13-9-3z" fill="#ffd869" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="84" rx="25" ry="20" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="60" cy="88" rx="15" ry="12" fill="#fffbe0"/>
-      <path d="M63 77l-8 11h6l-3 9 10-12h-6z" fill="#ffcf4d" stroke="#d99a1f" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="45" cy="101" rx="10" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="75" cy="101" rx="10" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="34" cy="76" rx="6.5" ry="9" transform="rotate(-24 34 76)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="86" cy="76" rx="6.5" ry="9" transform="rotate(24 86 76)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <path d="M44 40 32 5l20 23z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M76 40 88 5 68 28z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M45 33 38 12l11 14z" fill="#4a3a2c"/>
-      <path d="M75 33 82 12 71 26z" fill="#4a3a2c"/>
-      <circle cx="60" cy="50" r="26" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="39" cy="60" rx="5.8" ry="4" fill="#ff9a86"/>
-      <ellipse cx="81" cy="60" rx="5.8" ry="4" fill="#ff9a86"/>
-      <ellipse cx="50" cy="48" rx="6.8" ry="8" fill="#3d2f26"/>
-      <ellipse cx="70" cy="48" rx="6.8" ry="8" fill="#3d2f26"/>
-      <circle cx="52.4" cy="44.8" r="2.5" fill="#fff"/>
-      <circle cx="72.4" cy="44.8" r="2.5" fill="#fff"/>
-      <circle cx="48" cy="51" r="1.2" fill="#fff" opacity=".85"/>
-      <circle cx="68" cy="51" r="1.2" fill="#fff" opacity=".85"/>
-      <path d="M58 58h4l-2 2.4z" fill="#8a6236"/>
-      <path d="M54 63c3.4 3.2 8.6 3.2 12 0" fill="none" stroke="#8a6236" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M23 44l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" fill="#ffe58f"/>
-      <path d="M99 70l1.4 4 4 1.4-4 1.4-1.4 4-1.4-4-4-1.4 4-1.4z" fill="#ffe58f"/>
+    <symbol id="soda-green-1" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- ⚡ 노란 전기 몬스터 · 3단계 (완전 진화) -->
-    <symbol id="mon-mouse-3" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="110" rx="30" ry="6" fill="#fff1c0" opacity=".95"/>
-      <path d="M30 62c-15 3-23 15-19 29 10-2 19-13 21-25z" fill="#fff3bf" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M90 62c15 3 23 15 19 29-10-2-19-13-21-25z" fill="#fff3bf" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M88 80c13 3 19-6 16-15" fill="none" stroke="#f2c451" stroke-width="6" stroke-linecap="round"/>
-      <path d="M98 55l16-7-3 11 11 4-20 16-1-14-10-3z" fill="#ffd869" stroke="#d99a1f" stroke-width="2" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="84" rx="26" ry="21" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <ellipse cx="60" cy="88" rx="14" ry="12" fill="#fffbe0"/>
-      <path d="M63 76l-9 12h7l-4 10 11-13h-7z" fill="#ffcf4d" stroke="#d99a1f" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="44" cy="103" rx="11" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="76" cy="103" rx="11" ry="5.5" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="32" cy="74" rx="7" ry="10" transform="rotate(-26 32 74)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <ellipse cx="88" cy="74" rx="7" ry="10" transform="rotate(26 88 74)" fill="#ffe07f" stroke="#e2ad33" stroke-width="1.6"/>
-      <path d="M45 38 31 4l22 22z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M75 38 89 4 67 26z" fill="#ffe486" stroke="#e2ad33" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M46 32 39 11l11 15z" fill="#4a3a2c"/>
-      <path d="M74 32 81 11 70 26z" fill="#4a3a2c"/>
-      <circle cx="60" cy="50" r="26" fill="#ffe486" stroke="#e2ad33" stroke-width="2"/>
-      <path d="M60 22l7 8-7 7-7-7z" fill="#ffd0e0" stroke="#e0a83c" stroke-width="1.4" stroke-linejoin="round"/>
-      <ellipse cx="38" cy="60" rx="6" ry="4.2" fill="#ff9a86"/>
-      <ellipse cx="82" cy="60" rx="6" ry="4.2" fill="#ff9a86"/>
-      <ellipse cx="50" cy="49" rx="7" ry="8.4" fill="#3d2f26"/>
-      <ellipse cx="70" cy="49" rx="7" ry="8.4" fill="#3d2f26"/>
-      <circle cx="52.6" cy="45.6" r="2.6" fill="#fff"/>
-      <circle cx="72.6" cy="45.6" r="2.6" fill="#fff"/>
-      <circle cx="47.8" cy="52.4" r="1.3" fill="#fff" opacity=".9"/>
-      <circle cx="67.8" cy="52.4" r="1.3" fill="#fff" opacity=".9"/>
-      <path d="M57 58h6l-3 3z" fill="#8a6236"/>
-      <path d="M53.5 64c3.6 3.6 9.4 3.6 13 0" fill="none" stroke="#8a6236" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M18 40l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#ffe58f"/>
-      <path d="M102 66l1.4 4.2 4.2 1.4-4.2 1.4-1.4 4.2-1.4-4.2-4.2-1.4 4.2-1.4z" fill="#ffe58f"/>
+    <symbol id="soda-green-2" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- 🌿 민트 새싹 몬스터 · 1단계 (아기) -->
-    <symbol id="mon-seed-1" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="108" rx="25" ry="6" fill="#d9f5e6" opacity=".9"/>
-      <path d="M84 86c9 2 14-4 11-11-5 2-9 6-11 11z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="87" rx="23" ry="18" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
-      <ellipse cx="60" cy="91" rx="13" ry="10" fill="#f0fdf6"/>
-      <ellipse cx="46" cy="101" rx="9" ry="5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="74" cy="101" rx="9" ry="5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="37" cy="80" rx="6" ry="8" transform="rotate(-22 37 80)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="83" cy="80" rx="6" ry="8" transform="rotate(22 83 80)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <circle cx="60" cy="54" r="25" fill="#c9f3dd" stroke="#57b083" stroke-width="2"/>
-      <path d="M57 31c-2-9 4-15 13-15-1 9-6 14-13 15z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M60 29c1-5 4-8 8-9" fill="none" stroke="#4f9b6e" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
-      <path d="M45 34l-6-8 9 3z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M75 34l6-8-9 3z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <ellipse cx="39" cy="62" rx="5" ry="3.4" fill="#ffc0c6"/>
-      <ellipse cx="81" cy="62" rx="5" ry="3.4" fill="#ffc0c6"/>
-      <ellipse cx="50" cy="52" rx="6.4" ry="7.6" fill="#2f6b4f"/>
-      <ellipse cx="70" cy="52" rx="6.4" ry="7.6" fill="#2f6b4f"/>
-      <circle cx="52.2" cy="49.2" r="2.3" fill="#fff"/>
-      <circle cx="72.2" cy="49.2" r="2.3" fill="#fff"/>
-      <circle cx="48.2" cy="55" r="1.1" fill="#fff" opacity=".8"/>
-      <circle cx="68.2" cy="55" r="1.1" fill="#fff" opacity=".8"/>
-      <path d="M55 66c3 3.2 7 3.2 10 0" fill="none" stroke="#3f7f5c" stroke-width="1.8" stroke-linecap="round"/>
+    <symbol id="soda-green-3" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- 🌿 민트 새싹 몬스터 · 2단계 (성장) -->
-    <symbol id="mon-seed-2" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="109" rx="27" ry="6" fill="#d9f5e6" opacity=".95"/>
-      <path d="M86 84c11 3 18-4 15-13-6 3-12 8-15 13z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="85" rx="25" ry="20" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
-      <ellipse cx="60" cy="89" rx="15" ry="12" fill="#f4fef9"/>
-      <path d="M60 80c-4 3-4 7 0 10 4-3 4-7 0-10z" fill="#9ce3b8" stroke="#4f9b6e" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="45" cy="102" rx="10" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="75" cy="102" rx="10" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="34" cy="77" rx="6.5" ry="9" transform="rotate(-24 34 77)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="86" cy="77" rx="6.5" ry="9" transform="rotate(24 86 77)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#c9f3dd" stroke="#57b083" stroke-width="2"/>
-      <path d="M56 28c-6-11 0-19 12-20 1 11-5 18-12 20z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M64 28c6-11 0-19-12-20-1 11 5 18 12 20z" fill="#a9e8c4" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M60 30v-12" fill="none" stroke="#4f9b6e" stroke-width="1.2" opacity=".6"/>
-      <path d="M44 36l-8-9 12 2z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M76 36l8-9-12 2z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <ellipse cx="38" cy="61" rx="5.6" ry="3.8" fill="#ffc0c6"/>
-      <ellipse cx="82" cy="61" rx="5.6" ry="3.8" fill="#ffc0c6"/>
-      <ellipse cx="49" cy="50" rx="6.8" ry="8" fill="#2f6b4f"/>
-      <ellipse cx="71" cy="50" rx="6.8" ry="8" fill="#2f6b4f"/>
-      <circle cx="51.4" cy="46.8" r="2.5" fill="#fff"/>
-      <circle cx="73.4" cy="46.8" r="2.5" fill="#fff"/>
-      <circle cx="47" cy="53" r="1.2" fill="#fff" opacity=".85"/>
-      <circle cx="69" cy="53" r="1.2" fill="#fff" opacity=".85"/>
-      <path d="M54 64c3.4 3.4 8.6 3.4 12 0" fill="none" stroke="#3f7f5c" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M20 58l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" fill="#9ce3b8"/>
-      <path d="M100 42l1.4 4 4 1.4-4 1.4-1.4 4-1.4-4-4-1.4 4-1.4z" fill="#9ce3b8"/>
+    <symbol id="soda-green-4" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
     </symbol>
 
-    <!-- 🌿 민트 새싹 몬스터 · 3단계 (완전 진화) -->
-    <symbol id="mon-seed-3" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="110" rx="30" ry="6" fill="#d9f5e6"/>
-      <path d="M30 64c-15 4-22 16-17 29 10-3 18-14 20-26z" fill="#b9f0d1" stroke="#4f9b6e" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M90 64c15 4 22 16 17 29-10-3-18-14-20-26z" fill="#b9f0d1" stroke="#4f9b6e" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M86 84c11 3 18-4 15-13-6 3-12 8-15 13z" fill="#8fdcae" stroke="#4f9b6e" stroke-width="1.8" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="85" rx="26" ry="21" fill="#c3f0d7" stroke="#57b083" stroke-width="2"/>
-      <ellipse cx="60" cy="89" rx="14" ry="12" fill="#f4fef9"/>
-      <path d="M60 79c-5 3-5 8 0 12 5-4 5-9 0-12z" fill="#7fd6a8" stroke="#4f9b6e" stroke-width="1.2" stroke-linejoin="round"/>
-      <ellipse cx="44" cy="104" rx="11" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="76" cy="104" rx="11" ry="5.5" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="31" cy="76" rx="7" ry="10" transform="rotate(-26 31 76)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <ellipse cx="89" cy="76" rx="7" ry="10" transform="rotate(26 89 76)" fill="#b3eaca" stroke="#57b083" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#c9f3dd" stroke="#57b083" stroke-width="2"/>
-      <circle cx="44" cy="26" r="6" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
-      <circle cx="60" cy="20" r="7" fill="#ffd9e3" stroke="#e58aa2" stroke-width="1.2"/>
-      <circle cx="76" cy="26" r="6" fill="#ffc6d4" stroke="#e58aa2" stroke-width="1.2"/>
-      <circle cx="52" cy="22" r="5" fill="#ffe0ea" stroke="#e58aa2" stroke-width="1"/>
-      <circle cx="68" cy="22" r="5" fill="#ffe0ea" stroke="#e58aa2" stroke-width="1"/>
-      <circle cx="60" cy="27" r="4" fill="#ffe08f" stroke="#e0a83c" stroke-width="1.2"/>
-      <path d="M42 38l-9-9 13 1z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M78 38l9-9-13 1z" fill="#b3eaca" stroke="#57b083" stroke-width="1.5" stroke-linejoin="round"/>
-      <ellipse cx="37" cy="60" rx="6" ry="4.2" fill="#ffc0c6"/>
-      <ellipse cx="83" cy="60" rx="6" ry="4.2" fill="#ffc0c6"/>
-      <ellipse cx="49" cy="51" rx="7" ry="8.4" fill="#2f6b4f"/>
-      <ellipse cx="71" cy="51" rx="7" ry="8.4" fill="#2f6b4f"/>
-      <circle cx="51.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="73.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="47" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <circle cx="69" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <path d="M54 65c3.6 3.6 8.4 3.6 12 0" fill="none" stroke="#3f7f5c" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M18 44l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z" fill="#9ce3b8"/>
-      <path d="M102 66l1.4 4.2 4.2 1.4-4.2 1.4-1.4 4.2-1.4-4.2-4.2-1.4 4.2-1.4z" fill="#9ce3b8"/>
+    <symbol id="soda-green-5" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
     </symbol>
 
-    <!-- 💧 하늘빛 물 몬스터 · 1단계 (아기) -->
-    <symbol id="mon-fin-1" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="108" rx="25" ry="6" fill="#d8ecfd" opacity=".9"/>
-      <path d="M85 86c10 3 16-4 13-12-6 3-11 7-13 12z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M60 30c3-9 9-12 15-11-2 9-8 12-15 11z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="86" rx="23" ry="18" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
-      <ellipse cx="60" cy="90" rx="14" ry="11" fill="#fff4dd" stroke="#e6cd9c" stroke-width="1.4"/>
-      <path d="M52 86h16M55 92h10" fill="none" stroke="#e6cd9c" stroke-width="1.3" stroke-linecap="round"/>
-      <ellipse cx="46" cy="101" rx="9" ry="5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="74" cy="101" rx="9" ry="5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="37" cy="78" rx="6" ry="8" transform="rotate(-20 37 78)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="83" cy="78" rx="6" ry="8" transform="rotate(20 83 78)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <circle cx="60" cy="55" r="25" fill="#b6def9" stroke="#4f9bd4" stroke-width="2"/>
-      <path d="M60 28c2-6 6-9 11-9-2 6-6 8-11 9z" fill="#d9efff" stroke="#4f9bd4" stroke-width="1.4" stroke-linejoin="round"/>
-      <ellipse cx="39" cy="62" rx="5" ry="3.4" fill="#ffb59b"/>
-      <ellipse cx="81" cy="62" rx="5" ry="3.4" fill="#ffb59b"/>
-      <ellipse cx="50" cy="53" rx="6.4" ry="7.6" fill="#33506e"/>
-      <ellipse cx="70" cy="53" rx="6.4" ry="7.6" fill="#33506e"/>
-      <circle cx="52.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="72.2" cy="50.2" r="2.3" fill="#fff"/>
-      <circle cx="48.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <circle cx="68.2" cy="56" r="1.1" fill="#fff" opacity=".8"/>
-      <path d="M54.5 66c3 3.2 8 3.2 11 0" fill="none" stroke="#2f5578" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="26" cy="40" r="4" fill="#dff1ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="100" cy="52" r="3" fill="#dff1ff" stroke="#7fbcec" stroke-width="1.2"/>
+    <symbol id="soda-green-6" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
     </symbol>
 
-    <!-- 💧 하늘빛 물 몬스터 · 2단계 (성장) -->
-    <symbol id="mon-fin-2" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="109" rx="27" ry="6" fill="#d8ecfd"/>
-      <path d="M87 82c12 3 19-5 16-14-7 3-13 8-16 14z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M56 26c3-10 11-15 19-14-2 10-9 15-19 14z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M34 54c-9-4-15 0-16 7 7 4 14 2 16-7z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M86 54c9-4 15 0 16 7-7 4-14 2-16-7z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="84" rx="25" ry="20" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
-      <ellipse cx="60" cy="88" rx="15" ry="12" fill="#fff4dd" stroke="#e6cd9c" stroke-width="1.5"/>
-      <path d="M51 84h18M54 90h12M57 96h6" fill="none" stroke="#e6cd9c" stroke-width="1.3" stroke-linecap="round"/>
-      <ellipse cx="45" cy="102" rx="10" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="75" cy="102" rx="10" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="33" cy="74" rx="6.5" ry="9" transform="rotate(-22 33 74)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="87" cy="74" rx="6.5" ry="9" transform="rotate(22 87 74)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#b6def9" stroke="#4f9bd4" stroke-width="2"/>
-      <path d="M50 26c4-9 12-13 20-11-4 8-11 12-20 11z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M60 22v-9" fill="none" stroke="#4f9bd4" stroke-width="1.4" stroke-linecap="round" opacity=".65"/>
-      <ellipse cx="38" cy="60" rx="5.6" ry="3.8" fill="#ffb59b"/>
-      <ellipse cx="82" cy="60" rx="5.6" ry="3.8" fill="#ffb59b"/>
-      <ellipse cx="49" cy="49" rx="6.8" ry="8" fill="#33506e"/>
-      <ellipse cx="71" cy="49" rx="6.8" ry="8" fill="#33506e"/>
-      <circle cx="51.4" cy="45.8" r="2.5" fill="#fff"/>
-      <circle cx="73.4" cy="45.8" r="2.5" fill="#fff"/>
-      <circle cx="47" cy="52" r="1.2" fill="#fff" opacity=".85"/>
-      <circle cx="69" cy="52" r="1.2" fill="#fff" opacity=".85"/>
-      <path d="M53 63c3.4 3.4 8.6 3.4 12 0" fill="none" stroke="#2f5578" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="22" cy="38" r="4.4" fill="#e5f4ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="102" cy="46" r="3.4" fill="#e5f4ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="94" cy="26" r="2.6" fill="#dff1ff" stroke="#7fbcec" stroke-width="1.1"/>
+    <symbol id="soda-green-7" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#74c47f" stroke="#4b8f5c" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#93d79b" stroke="#4b8f5c" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M86.5 11 C86.5 -1 74 -7 64.5 -1" fill="none" stroke="#7c4128" stroke-width="2.3" stroke-linecap="round"/>
+      <circle cx="86.5" cy="18.5" r="7.6" fill="#dd2b2b" stroke="#a91f1f" stroke-width="1.2"/>
+      <circle cx="84.1" cy="15.8" r="2.2" fill="#fff" opacity=".45"/>
+      <path d="M16 38l1.5 4.4 4.4 1.5-4.4 1.5-1.5 4.4-1.5-4.4-4.4-1.5 4.4-1.5z" fill="#ffe9a8"/>
+      <path d="M104 60l1.3 3.8 3.8 1.3-3.8 1.3-1.3 3.8-1.3-3.8-3.8-1.3 3.8-1.3z" fill="#ffe9a8"/>
+      <path d="M22 84l1.0 3.0 3.0 1.0-3.0 1.0-1.0 3.0-1.0-3.0-3.0-1.0 3.0-1.0z" fill="#fff3c4"/>
     </symbol>
 
-    <!-- 💧 하늘빛 물 몬스터 · 3단계 (완전 진화) -->
-    <symbol id="mon-fin-3" viewBox="0 -39 120 155">
-      <ellipse cx="60" cy="110" rx="30" ry="6" fill="#d8ecfd"/>
-      <path d="M30 66c-16 3-24 16-19 29 11-3 19-14 21-27z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M90 66c16 3 24 16 19 29-11-3-19-14-21-27z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M88 82c12 3 19-5 16-14-7 3-13 8-16 14z" fill="#bfe2fa" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M56 24c3-10 11-15 19-14-2 10-9 15-19 14z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M40 30c-2-9 2-15 9-17 2 9-1 15-9 17z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M80 30c2-9-2-15-9-17-2 9 1 15 9 17z" fill="#cfe9fd" stroke="#4f9bd4" stroke-width="1.6" stroke-linejoin="round"/>
-      <ellipse cx="60" cy="85" rx="26" ry="21" fill="#a9d8f8" stroke="#4f9bd4" stroke-width="2"/>
-      <ellipse cx="60" cy="89" rx="14" ry="12" fill="#fff8e8" stroke="#e6cd9c" stroke-width="1.5"/>
-      <path d="M50 85h20M54 91h12M57 97h6" fill="none" stroke="#e6cd9c" stroke-width="1.3" stroke-linecap="round"/>
-      <ellipse cx="44" cy="104" rx="11" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="76" cy="104" rx="11" ry="5.5" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="31" cy="72" rx="7" ry="10" transform="rotate(-24 31 72)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <ellipse cx="89" cy="72" rx="7" ry="10" transform="rotate(24 89 72)" fill="#9fd1f5" stroke="#4f9bd4" stroke-width="1.6"/>
-      <circle cx="60" cy="50" r="26" fill="#b6def9" stroke="#4f9bd4" stroke-width="2"/>
-      <path d="M60 20l6 9-6 8-6-8z" fill="#e8f7ff" stroke="#3f88c4" stroke-width="1.4" stroke-linejoin="round"/>
-      <path d="M44 34l-9-7 12-1z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.4" stroke-linejoin="round"/>
-      <path d="M76 34l9-7-12-1z" fill="#dff1ff" stroke="#4f9bd4" stroke-width="1.4" stroke-linejoin="round"/>
-      <ellipse cx="37" cy="60" rx="6" ry="4.2" fill="#ffb59b"/>
-      <ellipse cx="83" cy="60" rx="6" ry="4.2" fill="#ffb59b"/>
-      <ellipse cx="49" cy="51" rx="7" ry="8.4" fill="#33506e"/>
-      <ellipse cx="71" cy="51" rx="7" ry="8.4" fill="#33506e"/>
-      <circle cx="51.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="73.6" cy="47.6" r="2.6" fill="#fff"/>
-      <circle cx="47" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <circle cx="69" cy="54" r="1.3" fill="#fff" opacity=".9"/>
-      <path d="M53 65c3.6 3.6 8.4 3.6 12 0" fill="none" stroke="#2f5578" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="18" cy="44" r="4.6" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="102" cy="64" r="4" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1.2"/>
-      <circle cx="96" cy="30" r="3" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1.1"/>
-      <circle cx="24" cy="72" r="2.6" fill="#eaf7ff" stroke="#7fbcec" stroke-width="1"/>
+    <symbol id="soda-yellow-0" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- 🎩 mouse 버디 · 3단계 파티 모자 -->
-    <symbol id="cap-mouse" viewBox="0 0 120 155">
-      <path d="M45 56h30L60 34z" fill="#ffe27a" stroke="#dda52b" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M48 53h24" fill="none" stroke="#dda52b" stroke-width="1.6" opacity=".55" stroke-linecap="round"/>
-      <path d="M45 56l15 -22" fill="none" stroke="#dda52b" stroke-width="1.3" opacity=".35"/>
-      <path d="M75 56l-15 -22" fill="none" stroke="#dda52b" stroke-width="1.3" opacity=".35"/>
-      <path d="M46 52c2 -7 6 -16 9 -14" fill="none" stroke="#fff6d2" stroke-width="2.6" stroke-linecap="round" opacity=".95"/>
-      <circle cx="60" cy="30" r="4.1" fill="#ff9fb2" stroke="#dda52b" stroke-width="1.4"/>
+    <symbol id="soda-yellow-1" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- 🎩 seed 버디 · 3단계 파티 모자 -->
-    <symbol id="cap-seed" viewBox="0 0 120 155">
-      <path d="M45 50h30L60 28z" fill="#ffd0e0" stroke="#e58aa2" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M48 47h24" fill="none" stroke="#e58aa2" stroke-width="1.6" opacity=".55" stroke-linecap="round"/>
-      <path d="M45 50l15 -22" fill="none" stroke="#e58aa2" stroke-width="1.3" opacity=".35"/>
-      <path d="M75 50l-15 -22" fill="none" stroke="#e58aa2" stroke-width="1.3" opacity=".35"/>
-      <path d="M46 46c2 -7 6 -16 9 -14" fill="none" stroke="#fff3f7" stroke-width="2.6" stroke-linecap="round" opacity=".95"/>
-      <circle cx="60" cy="24" r="4.1" fill="#ffe27a" stroke="#e58aa2" stroke-width="1.4"/>
+    <symbol id="soda-yellow-2" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- 🎩 fin 버디 · 3단계 파티 모자 -->
-    <symbol id="cap-fin" viewBox="0 0 120 155">
-      <path d="M45 58h30L60 36z" fill="#a8e8cf" stroke="#57b083" stroke-width="1.8" stroke-linejoin="round"/>
-      <path d="M48 55h24" fill="none" stroke="#57b083" stroke-width="1.6" opacity=".55" stroke-linecap="round"/>
-      <path d="M45 58l15 -22" fill="none" stroke="#57b083" stroke-width="1.3" opacity=".35"/>
-      <path d="M75 58l-15 -22" fill="none" stroke="#57b083" stroke-width="1.3" opacity=".35"/>
-      <path d="M46 54c2 -7 6 -16 9 -14" fill="none" stroke="#effcf6" stroke-width="2.6" stroke-linecap="round" opacity=".95"/>
-      <circle cx="60" cy="32" r="4.1" fill="#ffe27a" stroke="#57b083" stroke-width="1.4"/>
+    <symbol id="soda-yellow-3" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
     </symbol>
 
-    <!-- 👑 모자 위에 얹는 왕관 (3일 연속 슈퍼) -->
-    <symbol id="crown" viewBox="0 0 120 155">
-      <path d="M45 40V30l6 5 9-10 9 10 6-5v10z" fill="#ffe27a" stroke="#d99a1f" stroke-width="1.7" stroke-linejoin="round"/>
-      <path d="M45 36.6h30" fill="none" stroke="#d99a1f" stroke-width="1.1" opacity=".5"/>
-      <circle cx="52" cy="36.6" r="1.5" fill="#ff8f6b"/>
-      <circle cx="60" cy="36.6" r="1.5" fill="#7fd3ff"/>
-      <circle cx="68" cy="36.6" r="1.5" fill="#9be7a8"/>
-      <circle cx="60" cy="23.4" r="2.3" fill="#ffc2d6" stroke="#d99a1f" stroke-width="1.1"/>
-      <path d="M83 25l1.2 3.5 3.5 1.2-3.5 1.2-1.2 3.5-1.2-3.5-3.5-1.2 3.5-1.2z" fill="#fff3b0"/>
-      <path d="M35 31l1 3 3 1-3 1-1 3-1-3-3-1 3-1z" fill="#fff3b0"/>
+    <symbol id="soda-yellow-4" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+    </symbol>
+
+    <symbol id="soda-yellow-5" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+    </symbol>
+
+    <symbol id="soda-yellow-6" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="soda-yellow-7" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#f7cd45" stroke="#cf9a16" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ffe07f" stroke="#cf9a16" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M86.5 11 C86.5 -1 74 -7 64.5 -1" fill="none" stroke="#7c4128" stroke-width="2.3" stroke-linecap="round"/>
+      <circle cx="86.5" cy="18.5" r="7.6" fill="#dd2b2b" stroke="#a91f1f" stroke-width="1.2"/>
+      <circle cx="84.1" cy="15.8" r="2.2" fill="#fff" opacity=".45"/>
+      <path d="M16 38l1.5 4.4 4.4 1.5-4.4 1.5-1.5 4.4-1.5-4.4-4.4-1.5 4.4-1.5z" fill="#ffe9a8"/>
+      <path d="M104 60l1.3 3.8 3.8 1.3-3.8 1.3-1.3 3.8-1.3-3.8-3.8-1.3 3.8-1.3z" fill="#ffe9a8"/>
+      <path d="M22 84l1.0 3.0 3.0 1.0-3.0 1.0-1.0 3.0-1.0-3.0-3.0-1.0 3.0-1.0z" fill="#fff3c4"/>
+    </symbol>
+
+    <symbol id="soda-pink-0" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-pink-1" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-pink-2" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-pink-3" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-pink-4" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+    </symbol>
+
+    <symbol id="soda-pink-5" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+    </symbol>
+
+    <symbol id="soda-pink-6" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="soda-pink-7" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#ee74ae" stroke="#c3477f" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#ff9dc6" stroke="#c3477f" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M86.5 11 C86.5 -1 74 -7 64.5 -1" fill="none" stroke="#7c4128" stroke-width="2.3" stroke-linecap="round"/>
+      <circle cx="86.5" cy="18.5" r="7.6" fill="#dd2b2b" stroke="#a91f1f" stroke-width="1.2"/>
+      <circle cx="84.1" cy="15.8" r="2.2" fill="#fff" opacity=".45"/>
+      <path d="M16 38l1.5 4.4 4.4 1.5-4.4 1.5-1.5 4.4-1.5-4.4-4.4-1.5 4.4-1.5z" fill="#ffe9a8"/>
+      <path d="M104 60l1.3 3.8 3.8 1.3-3.8 1.3-1.3 3.8-1.3-3.8-3.8-1.3 3.8-1.3z" fill="#ffe9a8"/>
+      <path d="M22 84l1.0 3.0 3.0 1.0-3.0 1.0-1.0 3.0-1.0-3.0-3.0-1.0 3.0-1.0z" fill="#fff3c4"/>
+    </symbol>
+
+    <symbol id="soda-blue-0" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-blue-1" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-blue-2" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-blue-3" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </symbol>
+
+    <symbol id="soda-blue-4" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+    </symbol>
+
+    <symbol id="soda-blue-5" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+    </symbol>
+
+    <symbol id="soda-blue-6" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="soda-blue-7" viewBox="0 -39 120 155">
+      <ellipse cx="60" cy="113" rx="23" ry="4.6" fill="#e7ddc8" opacity=".75"/>
+      <path d="M43.0 107.5 C46.0 103.0 74.0 103.0 77.0 107.5 C74.0 112.0 46.0 112.0 43.0 107.5 Z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M54.0 99.0 h12.0 v10.0 h-12.0 z" fill="#fdfaf2" stroke="#ddd0b8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M34.5 56 C34.5 80 44 100 60 100 C76 100 85.5 80 85.5 56 Z" fill="#3c7cc6" stroke="#265b98" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M45 62 C43 72 45 82 49 90" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".3"/>
+      <circle cx="70.0" cy="82.0" r="4.6" fill="#fff" opacity=".95"/>
+      <circle cx="78.5" cy="73.5" r="3.4" fill="#fff" opacity=".95"/>
+      <circle cx="64.5" cy="92.0" r="2.6" fill="#fff" opacity=".95"/>
+      <ellipse cx="60" cy="32.0" rx="25.5" ry="19.0" fill="#fffdf6" stroke="#e7d9bf" stroke-width="1.6"/>
+      <ellipse cx="52.0" cy="25.5" rx="10.0" ry="5.4" fill="#fff" opacity=".85"/>
+      <rect x="31.0" y="47.5" width="58.0" height="11.0" rx="5.5" fill="#6aa2e2" stroke="#265b98" stroke-width="1.7"/>
+      <path d="M34.0 49.9 h50.0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      <circle cx="50.4" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="51.3" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <circle cx="69.6" cy="30.5" r="3.1" fill="#4a3226"/>
+      <circle cx="70.5" cy="29.4" r="1.1" fill="#fff" opacity=".9"/>
+      <path d="M55.0 37.5 q5.0 4.4 10.0 0" fill="none" stroke="#6b4a34" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M86.5 11 C86.5 -1 74 -7 64.5 -1" fill="none" stroke="#7c4128" stroke-width="2.3" stroke-linecap="round"/>
+      <circle cx="86.5" cy="18.5" r="7.6" fill="#dd2b2b" stroke="#a91f1f" stroke-width="1.2"/>
+      <circle cx="84.1" cy="15.8" r="2.2" fill="#fff" opacity=".45"/>
+      <path d="M16 38l1.5 4.4 4.4 1.5-4.4 1.5-1.5 4.4-1.5-4.4-4.4-1.5 4.4-1.5z" fill="#ffe9a8"/>
+      <path d="M104 60l1.3 3.8 3.8 1.3-3.8 1.3-1.3 3.8-1.3-3.8-3.8-1.3 3.8-1.3z" fill="#ffe9a8"/>
+      <path d="M22 84l1.0 3.0 3.0 1.0-3.0 1.0-1.0 3.0-1.0-3.0-3.0-1.0 3.0-1.0z" fill="#fff3c4"/>
     </symbol>
 
     <!-- 👑 3일 연속 슈퍼 진화 겹침 (무지개 오라 + 스파클) -->
@@ -2559,9 +2803,9 @@
         <span class="qs" id="questCleared">🎉 0 / 4 클리어</span>
       </div>
       <div class="hero-buddies" aria-hidden="true">
-        <svg class="hb hb-mouse" viewBox="0 0 120 155"><use href="#mon-mouse-2"></use></svg>
-        <svg class="hb hb-seed" viewBox="0 0 120 155"><use href="#mon-seed-2"></use></svg>
-        <svg class="hb hb-fin" viewBox="0 0 120 155"><use href="#mon-fin-2"></use></svg>
+        <svg class="hb hb-mouse" viewBox="0 0 120 155"><use href="#soda-green-7"></use></svg>
+        <svg class="hb hb-seed" viewBox="0 0 120 155"><use href="#soda-pink-7"></use></svg>
+        <svg class="hb hb-fin" viewBox="0 0 120 155"><use href="#soda-blue-7"></use></svg>
       </div>
     </div>
   </header>
@@ -2594,11 +2838,14 @@
         <div class="buddy" id="buddy-yongwoo" aria-hidden="true">
           <svg class="buddy-svg" viewBox="0 0 120 155">
             <use class="super" href="#super-glow"></use>
-            <use class="form f1" href="#mon-mouse-1"></use>
-            <use class="form f2" href="#mon-mouse-2"></use>
-            <use class="form f3" href="#mon-mouse-3"></use>
-            <use class="cap cap-mouse" href="#cap-mouse"></use>
-            <use class="crown" href="#crown" transform="translate(0,-14)"></use>
+            <use class="form s0" href="#soda-green-0"></use>
+            <use class="form s1" href="#soda-green-1"></use>
+            <use class="form s2" href="#soda-green-2"></use>
+            <use class="form s3" href="#soda-green-3"></use>
+            <use class="form s4" href="#soda-green-4"></use>
+            <use class="form s5" href="#soda-green-5"></use>
+            <use class="form s6" href="#soda-green-6"></use>
+            <use class="form s7" href="#soda-green-7"></use>
           </svg>
         </div>
         <span class="quest-burst" id="questBurst-yongwoo" hidden aria-hidden="true"></span>
@@ -2649,11 +2896,14 @@
         <div class="buddy" id="buddy-mission" aria-hidden="true">
           <svg class="buddy-svg" viewBox="0 0 120 155">
             <use class="super" href="#super-glow"></use>
-            <use class="form f1" href="#mon-mouse-1"></use>
-            <use class="form f2" href="#mon-mouse-2"></use>
-            <use class="form f3" href="#mon-mouse-3"></use>
-            <use class="cap cap-mouse" href="#cap-mouse"></use>
-            <use class="crown" href="#crown" transform="translate(0,-14)"></use>
+            <use class="form s0" href="#soda-yellow-0"></use>
+            <use class="form s1" href="#soda-yellow-1"></use>
+            <use class="form s2" href="#soda-yellow-2"></use>
+            <use class="form s3" href="#soda-yellow-3"></use>
+            <use class="form s4" href="#soda-yellow-4"></use>
+            <use class="form s5" href="#soda-yellow-5"></use>
+            <use class="form s6" href="#soda-yellow-6"></use>
+            <use class="form s7" href="#soda-yellow-7"></use>
           </svg>
         </div>
         <span class="quest-burst" id="questBurst-mission" hidden aria-hidden="true"></span>
@@ -2743,11 +2993,14 @@
         <div class="buddy" id="buddy-mom" aria-hidden="true">
           <svg class="buddy-svg" viewBox="0 0 120 155">
             <use class="super" href="#super-glow"></use>
-            <use class="form f1" href="#mon-seed-1"></use>
-            <use class="form f2" href="#mon-seed-2"></use>
-            <use class="form f3" href="#mon-seed-3"></use>
-            <use class="cap cap-seed" href="#cap-seed"></use>
-            <use class="crown" href="#crown" transform="translate(0,-20)"></use>
+            <use class="form s0" href="#soda-pink-0"></use>
+            <use class="form s1" href="#soda-pink-1"></use>
+            <use class="form s2" href="#soda-pink-2"></use>
+            <use class="form s3" href="#soda-pink-3"></use>
+            <use class="form s4" href="#soda-pink-4"></use>
+            <use class="form s5" href="#soda-pink-5"></use>
+            <use class="form s6" href="#soda-pink-6"></use>
+            <use class="form s7" href="#soda-pink-7"></use>
           </svg>
         </div>
         <span class="quest-burst" id="questBurst-mom" hidden aria-hidden="true"></span>
@@ -2845,11 +3098,14 @@
         <div class="buddy" id="buddy-dad" aria-hidden="true">
           <svg class="buddy-svg" viewBox="0 0 120 155">
             <use class="super" href="#super-glow"></use>
-            <use class="form f1" href="#mon-fin-1"></use>
-            <use class="form f2" href="#mon-fin-2"></use>
-            <use class="form f3" href="#mon-fin-3"></use>
-            <use class="cap cap-fin" href="#cap-fin"></use>
-            <use class="crown" href="#crown" transform="translate(0,-12)"></use>
+            <use class="form s0" href="#soda-blue-0"></use>
+            <use class="form s1" href="#soda-blue-1"></use>
+            <use class="form s2" href="#soda-blue-2"></use>
+            <use class="form s3" href="#soda-blue-3"></use>
+            <use class="form s4" href="#soda-blue-4"></use>
+            <use class="form s5" href="#soda-blue-5"></use>
+            <use class="form s6" href="#soda-blue-6"></use>
+            <use class="form s7" href="#soda-blue-7"></use>
           </svg>
         </div>
         <span class="quest-burst" id="questBurst-dad" hidden aria-hidden="true"></span>
@@ -3052,13 +3308,13 @@
     }
   }
 
-  function writeJSON(key, value) {
+  function writeJSON(key, value, unitHint) {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch (err) {
       /* 저장이 막힌 환경(사생활 보호 모드 등)에서는 화면에서만 동작합니다. */
     }
-    noteLocalWrite(key);
+    noteLocalWrite(key, unitHint);
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -3262,7 +3518,8 @@
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(value),
-      cache: 'no-store'
+      cache: 'no-store',
+      keepalive: true          /* 창을 닫거나 앱을 나가도 전송이 끝나게 */
     }).then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
@@ -3270,6 +3527,8 @@
       syncPending = Math.max(0, syncPending - 1);
       syncSeen[unit] = fp;
       delete syncDirty[unit];
+      var qwho = questWho(unit);
+      if (qwho) delete canceledToday[qwho];   /* 취소한 날짜가 서버에 올라갔으니 표시를 지움 */
       settleSyncStatus();
     }).catch(function () {
       syncPending = Math.max(0, syncPending - 1);
@@ -3289,6 +3548,12 @@
     }
   }
 
+  /* 앱을 나기며 남은 것을 지금 보냅니다 (keepalive 라 전송이 마저 끝남) */
+  function flushDirtyNow() {
+    if (!SYNC_ENABLED) return;
+    pushDirty();
+  }
+
   /* 이 기기에만 있던 내용을 처음으로 올려 둡니다. */
   function pushContentUnits() {
     SYNC_UNITS.forEach(function (unit) {
@@ -3303,7 +3568,14 @@
     });
   }
 
-  /* 이 기기에서 바뀐 칸 표시 → 잠깐 묶었다가 올립니다. */
+  /* 체크·달성 기록은 앱을 닫아도 바로 올라가도록 묶지 않고 골라 보냅니다 */
+  function isInstantUnit(unit) {
+    return unit === 'questLog' || unit === 'missions' || unit === 'todos/yongwoo'
+      || unit.indexOf('questDays/') === 0;
+  }
+
+  /* 이 기기에서 바뀐 칸 표시 → 잠깐 묶었다가 올립니다.
+     달성 기록(questDays·questLog·미션·용우 할 일)은 기다리지 않고 바로 올립니다. */
   function markChanged(unit) {
     if (!SYNC_ENABLED) return;
     /* 마지막으로 알고 있는 값과 같으면 올릴 것이 없습니다(다른 칸을 덮어쓰지 않게). */
@@ -3314,14 +3586,21 @@
     syncDirty[unit] = true;
     if (!syncReady) { renderSyncStatus('connecting'); return; }
     if (syncTimers[unit]) clearTimeout(syncTimers[unit]);
+    if (isInstantUnit(unit)) {
+      syncTimers[unit] = null;
+      pushUnit(unit);
+      return;
+    }
     syncTimers[unit] = setTimeout(function () {
       syncTimers[unit] = null;
       pushUnit(unit);
     }, 300);
   }
 
-  function noteLocalWrite(storeKey) {
+  function noteLocalWrite(storeKey, unitHint) {
     if (!SYNC_ENABLED || syncApplying > 0) return;
+    /* 바뀐 칸을 알면 그 칸만 올립니다 (퀘스트 날짜는 4칸 중 바뀐 하나만) */
+    if (unitHint) { markChanged(unitHint); return; }
     var units = SYNC_STORE_UNITS[storeKey];
     if (!units) return;
     for (var i = 0; i < units.length; i++) markChanged(units[i]);
@@ -3357,10 +3636,13 @@
   function applyUnit(unit, payload) {
     var qwho = questWho(unit);
     if (qwho) {
-      var qdays = normalizeQuestDays(listItems(payload));
+      /* 원격 값으로 이 기기 기록을 덮어쓰지 않습니다: 둘을 합쳐 어느 쪽 기록도 잃지 않게. */
+      var remoteDays = normalizeQuestDays(listItems(payload));
+      var qdays = mergeQuestDays(remoteDays, questDaysOf(qwho), qwho);
       if (sameJSON(state.questDays[qwho], qdays)) return false;
       state.questDays[qwho] = qdays;
-      writeJSON(STORE_KEYS.questDays, state.questDays);
+      writeJSON(STORE_KEYS.questDays, state.questDays, unit);
+      if (qdays.length > remoteDays.length) markChanged(unit);   /* 이 기기에만 있던 기록도 올림 */
       return true;
     }
     var who = todoWho(unit);
@@ -3397,10 +3679,12 @@
       return true;
     }
     if (unit === 'questLog') {
-      var incoming = mergeQuestLog(normalizeQuestLog(payload && payload.days), state.questLog);
+      var remoteLog = normalizeQuestLog(payload && payload.days);
+      var incoming = mergeQuestLog(remoteLog, state.questLog);
       if (sameJSON(state.questLog, incoming)) return false;
       state.questLog = incoming;
-      writeJSON(STORE_KEYS.questLog, state.questLog);
+      writeJSON(STORE_KEYS.questLog, state.questLog, unit);
+      if (!sameJSON(remoteLog, incoming)) markChanged(unit);   /* 이 기기에만 있던 기록도 올림 */
       return true;
     }
     if (unit === 'dadStatus') {
@@ -3467,6 +3751,7 @@
         if (root && typeof root === 'object' && !Array.isArray(root)) pushMissingUnits(root);
         else pushContentUnits();
       }
+      syncDailyMission();   /* 원격 값을 읽은 뒤: 오늘의 타자연습 · 지난 완료 항목 정리 */
       pushDirty();
       settleSyncStatus();
     }).catch(function () {
@@ -3662,6 +3947,17 @@
     return out;
   }
 
+  /* 원격 날짜 목록 + 이 기기 기록 합집합 (오늘 체크를 방금 취소한 칸은 오늘만 빼기 위해) */
+  function mergeQuestDays(remoteDays, localDays, prefix) {
+    var out = normalizeQuestDays(remoteDays);
+    (localDays || []).forEach(function (d) {
+      if (out.indexOf(d) < 0) out.push(d);
+    });
+    var canceled = canceledToday[prefix];
+    if (canceled) out = out.filter(function (d) { return d !== canceled; });
+    return normalizeQuestDays(out);
+  }
+
   function loadQuestDays() {
     var raw = readJSON(STORE_KEYS.questDays, null);
     var out = { mission: [], yongwoo: [], mom: [], dad: [] };
@@ -3780,6 +4076,12 @@
     return out;
   }
 
+  /* 오늘 달성 기록에 남은 미션 제목 (체크해서 목록에서 지운 것도 여기 남습니다) */
+  function todayMissionTitles() {
+    var day = state.questLog[kstDateKey()] || {};
+    return Array.isArray(day.mission) ? day.mission : [];
+  }
+
   function normalizeEvents(list) {
     if (!Array.isArray(list)) return [];
     return list.filter(function (item) {
@@ -3836,8 +4138,8 @@
     return state.questDays[prefix];
   }
 
-  function saveQuestDays() {
-    writeJSON(STORE_KEYS.questDays, state.questDays);
+  function saveQuestDays(prefix) {
+    writeJSON(STORE_KEYS.questDays, state.questDays, prefix ? 'questDays/' + prefix : null);
   }
 
   /* key 가 포함된 연속 달성 일수 (key 자신부터 거슬러 셈) */
@@ -3864,6 +4166,29 @@
     return { count: streakEndingOn(days, shiftDateKey(today, -1)), today: false };
   }
 
+  /* 이번 주 월요일~일요일 7칸 (KST) */
+  function weekKeysOfThisWeek() {
+    var today = kstDateKey();
+    var d = parseLocal(today);
+    if (!d) return [];
+    var sinceMonday = (d.getDay() + 6) % 7;      /* 월=0 … 일=6 */
+    var out = [];
+    for (var i = 0; i < 7; i++) {
+      out.push({ key: shiftDateKey(today, i - sinceMonday), label: PIGGY_DAYS[i] });
+    }
+    return out;
+  }
+
+  /* 이번 주(월요일~일요일, KST)에 달성한 날짜들 — 진화 단계는 이 주간 일수로 정합니다 */
+  function weekDays(prefix) {
+    var days = questDaysOf(prefix);
+    var out = [];
+    weekKeysOfThisWeek().forEach(function (w) {
+      if (days.indexOf(w.key) >= 0) out.push(w.key);
+    });
+    return out;
+  }
+
   /* 오늘 카드를 다 채웠으면 오늘을 기록에 남기고, 체크를 해제해 미달이 되면 오늘 기록만 지운다.
      지난 날짜 기록은 지우지 않는다. */
   function recordTodayQuest(prefix, allowCancel) {
@@ -3875,7 +4200,8 @@
       if (first) {
         days.push(today);
         days.sort();
-        saveQuestDays();
+        delete canceledToday[prefix];
+        saveQuestDays(prefix);
       }
       /* 그날 해낸 할 일 이름을 기록장에 남긴다 (나중에 항목을 지워도 남는다). */
       addQuestLogTitles(today, prefix, todayDoneTitles(prefix));
@@ -3883,11 +4209,85 @@
     }
     if (allowCancel && at >= 0) {
       days.splice(at, 1);
-      saveQuestDays();
+      if (SYNC_ENABLED) canceledToday[prefix] = today;   /* 다른 기기에서 다시 살리지 않게 (올리면 지움) */
+      saveQuestDays(prefix);
       setQuestLogDay(today, prefix, null);
       return true;
     }
     return false;
+  }
+
+  /* 오늘 체크를 취소한 칸 (원격 값을 합칠 때 오늘만 다시 빼기 위해) */
+  var canceledToday = {};
+
+  /* ── 매일 하는 일: 주중 타자연습 미션 · 체크한 항목 정리 ── */
+  var WEEKDAY_MISSION_TEXT = '타자연습';
+  var lastQuestDay = kstDateKey();
+
+  /* 원격 값을 한 번 읽기 전에는 자동으로 넣지 않습니다 (다른 기기에서 오늘 이미 했을 수 있어서) */
+  function readyForDaily() {
+    return !SYNC_ENABLED || syncReady;
+  }
+
+  function isWeekdayKey(key) {
+    var d = parseLocal(key);
+    if (!d) return false;
+    var dow = d.getDay();
+    return dow >= 1 && dow <= 5;     /* 월~금 */
+  }
+
+  function hasMissionText(text) {
+    for (var i = 0; i < state.missions.length; i++) {
+      if (String(state.missions[i].text).trim() === text) return true;
+    }
+    return false;
+  }
+
+  /* 월~금에는 오늘 몫 '타자연습' 미션을 넣어 둡니다. 오늘 이미 달성했거나 주말이면 넣지 않습니다. */
+  function ensureWeekdayMission(nowMs) {
+    if (!readyForDaily()) return false;
+    var today = kstDateKey(nowMs);
+    if (!isWeekdayKey(today)) return false;
+    if (questDaysOf('mission').indexOf(today) >= 0) return false;
+    if (hasMissionText(WEEKDAY_MISSION_TEXT)) return false;
+    state.missions.unshift({ id: newId('ms'), text: WEEKDAY_MISSION_TEXT, done: false });
+    saveMissions();
+    return true;
+  }
+
+  /* 완료(done)로 남은 용우 할 일·미션을 비웁니다. 달성 기록(questDays·questLog)은 그대로 둡니다. */
+  function cleanupDoneItems(force) {
+    if (!force && !readyForDaily()) return false;
+    var changed = false;
+    var yongwoo = todosOf('yongwoo').filter(function (todo) { return !todo.done; });
+    if (yongwoo.length !== todosOf('yongwoo').length) {
+      state.todos.yongwoo = yongwoo;
+      saveTodos();
+      changed = true;
+    }
+    var missions = state.missions.filter(function (mission) { return !mission.done; });
+    if (missions.length !== state.missions.length) {
+      state.missions = missions;
+      saveMissions();
+      changed = true;
+    }
+    return changed;
+  }
+
+  /* 하루가 지났는지 살펴보고, 지났으면 완료 항목을 비우고 새 날의 타자연습을 채웁니다.
+     보드를 켜 둔 채로 자정이 지나도 새로 고침 없이 따라가도록 60초마다 부릅니다. */
+  function syncDailyMission(nowMs) {
+    var today = kstDateKey(nowMs);
+    var rolled = today !== lastQuestDay;
+    var changed = false;
+    if (rolled) {
+      lastQuestDay = today;
+      canceledToday = {};
+      if (cleanupDoneItems(true)) changed = true;
+    }
+    if (ensureWeekdayMission(nowMs)) changed = true;
+    if (changed) render();
+    return { rolled: rolled, changed: changed };
   }
 
   function parseLocal(value) {
@@ -4943,13 +5343,38 @@
   }
 
   function toggleTodo(who, id) {
+    var target = null;
     state.todos[who] = todosOf(who).map(function (todo) {
       if (String(todo.id) !== String(id)) return todo;
-      return { id: todo.id, text: todo.text, done: !todo.done };
+      target = { id: todo.id, text: todo.text, done: !todo.done };
+      return target;
     });
+    if (!target) return;
+
+    /* 용우 할 일은 체크하면 오늘 해낸 일로 기록하고 목록에서는 바로 지웁니다.
+       마지막 하나까지 끝냈으면 오늘 날짜도 남겨 두어 보드가 달성 상태를 유지합니다. */
+    if (who === 'yongwoo' && target.done) {
+      addQuestLogTitles(kstDateKey(), 'yongwoo', [String(target.text).slice(0, 120)]);
+      recordTodayQuest('yongwoo', false);
+      clearCheckedYongwoo(target.id);
+      return;
+    }
+
     recordTodayQuest(who, true);
     saveTodos();
     renderTodos();
+  }
+
+  /* 체크해서 목록에서 지울 용우 할 일 한 개 (기록은 이미 남긴 뒤에 부릅니다) */
+  function clearCheckedYongwoo(id) {
+    var before = todosOf('yongwoo').length;
+    state.todos.yongwoo = todosOf('yongwoo').filter(function (todo) {
+      return String(todo.id) !== String(id);
+    });
+    if (state.todos.yongwoo.length === before) return false;
+    saveTodos();
+    renderTodos();
+    return true;
   }
 
   function removeTodo(who, id) {
@@ -5007,13 +5432,37 @@
   }
 
   function toggleMission(id) {
+    var target = null;
     state.missions = state.missions.map(function (mission) {
       if (String(mission.id) !== String(id)) return mission;
-      return { id: mission.id, text: mission.text, done: !mission.done };
+      target = { id: mission.id, text: mission.text, done: !mission.done };
+      return target;
     });
+    if (!target) return;
+
+    /* 미션은 체크하면 오늘 해낸 일로 기록하고 목록에서는 바로 지웁니다(달성 기록에 남습니다). */
+    if (target.done) {
+      addQuestLogTitles(kstDateKey(), 'mission', [String(target.text).slice(0, 120)]);
+      recordTodayQuest('mission', false);
+      clearCheckedMission(target.id);
+      return;
+    }
+
     recordTodayQuest('mission', true);
     saveMissions();
     renderMissions();
+  }
+
+  /* 체크해서 목록에서 지울 미션 한 개 (기록은 이미 남긴 뒤에 부릅니다) */
+  function clearCheckedMission(id) {
+    var before = state.missions.length;
+    state.missions = state.missions.filter(function (mission) {
+      return String(mission.id) !== String(id);
+    });
+    if (state.missions.length === before) return false;
+    saveMissions();
+    renderMissions();
+    return true;
   }
 
   function removeMission(id) {
@@ -5063,11 +5512,18 @@
     var days = questDaysOf(prefix);
     var streak = questStreak(prefix);
     var totalDays = days.length;
-    var tier = Math.floor(streak.count / 3);
+    var week = weekDays(prefix);
+    var weekCount = week.length;
+    var weeklyDone = weekCount >= 7;            /* 월~일 7일 모두 = 주간 진화 완성 */
+    var tier = weeklyDone ? 1 : 0;
 
-    /* 오늘 채운 정도(stage) + 지금까지 달성한 날수(dayStage) 중 더 자란 모습 */
-    var dayStage = totalDays >= 3 ? 3 : (totalDays >= 1 ? 2 : 1);
-    var stage = Math.max(q.stage, dayStage);
+    /* 오늘 몫을 해내 목록이 비었어도, 오늘 달성 기록이 있으면 달성으로 보여 줍니다. */
+    var doneList = q.total === 0 && streak.today;
+    var cleared = q.cleared || doneList;
+    var pct = cleared ? 100 : q.pct;
+
+    /* 이번 주 달성 일수로 진화: 0일 Lv.1 · 1~2일 Lv.2 · 3일 이상 Lv.3 · 7일이면 주간 완성 */
+    var stage = weekCount >= 3 ? 3 : (weekCount >= 1 ? 2 : 1);
 
     var fill = document.getElementById('questFill-' + prefix);
     var count = document.getElementById('questCount-' + prefix);
@@ -5077,11 +5533,15 @@
     var dots = document.getElementById('dayDots-' + prefix);
     var burst = document.getElementById('questBurst-' + prefix);
 
-    if (fill) fill.style.width = q.pct + '%';
-    if (count) count.textContent = '완료 ' + q.done + ' / 전체 ' + q.total;
+    if (fill) fill.style.width = pct + '%';
+    if (count) {
+      count.textContent = doneList
+        ? '오늘 달성 완료'
+        : '완료 ' + q.done + ' / 전체 ' + q.total;
+    }
 
     if (badge) {
-      if (q.cleared) {
+      if (cleared) {
         badge.textContent = '🎉 퀘스트 클리어!';
       } else if (q.total === 0) {
         badge.textContent = '🌱 퀘스트 시작 전';
@@ -5091,30 +5551,41 @@
     }
 
     card.setAttribute('data-stage', String(stage));
-    card.setAttribute('data-super', tier > 0 ? '1' : '0');
+    card.setAttribute('data-super', weeklyDone ? '1' : '0');
     card.setAttribute('data-streak', String(streak.count));
     card.setAttribute('data-days', String(totalDays));
-    if (q.cleared) card.classList.add('is-cleared');
+    card.setAttribute('data-week', String(weekCount));    if (cleared) card.classList.add('is-cleared');
     else card.classList.remove('is-cleared');
 
-    if (label) label.textContent = STAGE_LABEL[stage];
+    if (label) {
+      label.textContent = weeklyDone ? 'Lv.3 주간 완성!' : STAGE_LABEL[stage];
+      label.setAttribute('title', '이번 주 ' + weekCount + '일 달성 · ' +
+        (weeklyDone ? '주간 진화 완성!' : '3일 이상이면 Lv.3, 5일이면 주간 완성'));
+    }
 
-    /* 🔥 연속 달성 배지 */
+    /* 🔥 이번 주 · 연속 달성 배지 */
     if (chip) {
-      if (streak.count > 0) {
+      var weekText = weeklyDone ? '👑 주간 완성' : (weekCount > 0 ? '이번 주 ' + weekCount + '일' : '');
+      if (weeklyDone) {
         chip.hidden = false;
-        chip.textContent = (tier > 0 ? '👑 ' : '🔥 ') + streak.count + '일';
-        chip.setAttribute('data-tier', String(Math.min(tier, 3)));
-        chip.setAttribute('title', '지금까지 ' + totalDays + '일 달성 · 연속 ' + streak.count + '일' +
+        chip.textContent = '👑 이번 주 완성!';
+        chip.setAttribute('data-tier', '1');
+        chip.setAttribute('title', '이번 주 5일 모두 달성 · 지금까지 ' + totalDays + '일 달성');
+        chip.classList.add('is-super');
+        chip.classList.remove('is-pending');
+      } else if (streak.count > 0) {
+        chip.hidden = false;
+        chip.textContent = '🔥 ' + streak.count + '일 연속' + (weekText ? ' · ' + weekText : '');
+        chip.setAttribute('data-tier', '0');
+        chip.setAttribute('title', '이번 주 ' + weekCount + '일 달성 · 연속 ' + streak.count + '일' +
           (streak.today ? ' (오늘 달성!)' : ' (오늘 채우면 ' + (streak.count + 1) + '일째)'));
-        if (tier > 0) chip.classList.add('is-super');
-        else chip.classList.remove('is-super');
+        chip.classList.remove('is-super');
         if (streak.today) chip.classList.remove('is-pending');
         else chip.classList.add('is-pending');
       } else if (totalDays > 0) {
         /* 연속은 끊겼지만 쌓아 온 날은 보여 줍니다. */
         chip.hidden = false;
-        chip.textContent = '누적 ' + totalDays + '일';
+        chip.textContent = '누적 ' + totalDays + '일' + (weekText ? ' · ' + weekText : '');
         chip.setAttribute('data-tier', '0');
         chip.setAttribute('title', '지금까지 ' + totalDays + '일 달성 · 오늘 채우면 다시 1일째!');
         chip.classList.remove('is-super');
@@ -5125,36 +5596,39 @@
       }
     }
 
-    /* 최근 7일 달성 점 */
+    /* 이번 주 월~일 7칸 달성 점 — 캐릭터 파츠와 1:1로 맞춥니다 */
     if (dots) {
       dots.textContent = '';
-      dots.hidden = totalDays === 0;
-      if (totalDays > 0) {
-        var todayKey = kstDateKey();
-        for (var i = 6; i >= 0; i--) {
-          var key = shiftDateKey(todayKey, -i);
-          var dot = document.createElement('i');
-          dot.className = 'day-dot' + (days.indexOf(key) >= 0 ? ' is-done' : '') + (i === 0 ? ' is-today' : '');
-          dot.setAttribute('title', key);
-          dots.appendChild(dot);
-        }
+      dots.hidden = false;
+      var weekKeys = weekKeysOfThisWeek();
+      var todayKey = kstDateKey();
+      for (var wi = 0; wi < weekKeys.length; wi++) {
+        var wk = weekKeys[wi];
+        var key = wk.key;
+        var done = days.indexOf(key) >= 0;
+        var dot = document.createElement('i');
+        dot.className = 'day-dot' + (done ? ' is-done' : '') +
+          (key === todayKey ? ' is-today' : '') + (key > todayKey ? ' is-future' : '');
+        if (!done) dot.textContent = wk.label;      /* 월~일 글자 */
+        dot.setAttribute('title', key + (done ? ' · 달성' : ' · 아직'));
+        dots.appendChild(dot);
       }
     }
 
-    /* 오늘 새로 달성했을 때: 반짝 레벨업 + 3일마다 슈퍼 업그레이드 축하 */
+    /* 이번 주를 다 채웠을 때: 반짝 + 주간 진화 완성 축하 */
     var seen = questSeen[prefix];
-    questSeen[prefix] = { days: totalDays, streak: streak.count, today: streak.today, tier: tier };
+    questSeen[prefix] = { days: totalDays, streak: streak.count, today: streak.today, week: weekCount, superDone: weeklyDone };
     if (seen) {
-      if (totalDays > seen.days) {
+      if (weekCount > (seen.week || 0) || totalDays > seen.days) {
         card.classList.add('just-leveled');
         if (levelTimers[prefix]) clearTimeout(levelTimers[prefix]);
         levelTimers[prefix] = setTimeout(function () {
           card.classList.remove('just-leveled');
         }, 1300);
       }
-      if (streak.today && tier > 0 && (!seen.today || tier > seen.tier)) {
-        showQuestBurst(prefix, burst, streak, tier);
-      } else if (burst && !burst.hidden && tier === 0) {
+      if (weeklyDone && !seen.superDone) {
+        showQuestBurst(prefix, burst, streak, weekCount);
+      } else if (burst && !burst.hidden && !weeklyDone) {
         burst.hidden = true;
       }
     }
@@ -5163,11 +5637,10 @@
     if (prefix === 'mission') renderPiggyBank();
   }
 
-  /* 3일·6일·9일 … 연속 보너스 축하 배너 */
-  function showQuestBurst(prefix, el, streak, tier) {
+  /* 이번 주 진화 완성(월~금 5일) 축하 배너 */
+  function showQuestBurst(prefix, el, streak, weekCount) {
     if (!el) return;
-    var name = SUPER_TIER_NAME[Math.min(tier, 3)] || SUPER_TIER_NAME[3];
-    el.textContent = '🔥 ' + streak.count + '일 연속 ' + name + ' 업그레이드!';
+    el.textContent = '🏆 이번 주 ' + weekCount + '일 완성! 진화 완성!';
     el.hidden = false;
     if (burstTimers[prefix]) clearTimeout(burstTimers[prefix]);
     burstTimers[prefix] = setTimeout(function () {
@@ -5267,10 +5740,11 @@
   }
 
   function renderQuestSummary() {
-    var stars = questOf(state.missions).done * MISSION_STARS;
+    var stars = Math.max(questOf(state.missions).done, todayMissionTitles().length) * MISSION_STARS;
     var cleared = 0;
     QUEST_PREFIXES.forEach(function (prefix) {
-      if (questOf(questItems(prefix)).cleared) cleared++;
+      var q = questOf(questItems(prefix));
+      if (q.cleared || (q.total === 0 && questStreak(prefix).today)) cleared++;
     });
 
     var starsEl = document.getElementById('questStars');
@@ -5414,6 +5888,10 @@
 
   render();
 
+  /* 어제까지 완료된 항목은 비우고, 주중이면 오늘의 타자연습 미션을 채웁니다 (기록은 그대로). */
+  cleanupDoneItems();
+  ensureWeekdayMission();
+
   /* 이 기기에 저장해 둔 날씨 동네로 바로 그리고, 실제 값을 받아 옵니다 */
   loadWeather();
   renderWeather();
@@ -5439,7 +5917,8 @@
       document.getElementById('offdayDate').min = key;
       render();
     }
-  }, 30000);
+    syncDailyMission();      /* 날짜가 바뀌면 새 날의 타자연습을 채웁니다 */
+  }, 60000);
 
   /* 진행 중/지난 일정 표시를 주기적으로 갱신 (입력 중에는 건드리지 않음) */
   setInterval(function () {
@@ -5449,8 +5928,19 @@
   }, 60000);
 
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) render();
+    if (!document.hidden) {
+      syncDailyMission();
+      render();
+    }
   });
+
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('focus', function () {
+      syncDailyMission();
+    });
+    /* 창을 닫거나 앱을 나기기 직전: 아직 못 올린 칸을 keepalive 로 마저 보냅니다 */
+    window.addEventListener('pagehide', flushDirtyNow);
+  }
 </script>
 </body>
 </html>
