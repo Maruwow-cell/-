@@ -217,7 +217,7 @@
     font-size:15.5px; font-weight:800;
   }
 
-  /* ── 오늘의 케어 체크 ───────────────────── */
+  /* ── 체크 ──────────────────────────────── */
   .care-list{ list-style:none; padding:0; display:flex; flex-direction:column; }
   .care-item{ display:flex; align-items:center; gap:6px; border-bottom:2px solid #F2E8D8; }
   .care-item:last-child{ border-bottom:0; }
@@ -469,7 +469,7 @@
         </div>
         <div class="pins-wrap" id="pinsWrap"></div>
         <div class="quick-add" id="quickAdd">
-          <button type="button" data-title="복용 중인 약">+ 복용 약</button>
+          <button type="button" data-title="">+ 메모 추가</button>
           <button type="button" data-title="주의할 점">+ 주의할 점</button>
           <button type="button" data-title="병원 · 연락처">+ 병원</button>
         </div>
@@ -477,7 +477,7 @@
 
       <section class="card care-card">
         <div class="card-head">
-          <h2>☀️ 오늘의 케어 체크</h2>
+          <h2>☀️ 체크</h2>
           <span class="card-sub" id="careDate"></span>
         </div>
         <ul class="care-list" id="careList"></ul>
@@ -543,7 +543,7 @@
   /* ═══════════════════════════════════════════════════════
      엄마 간병 보드
      · 달력 + 날짜별 간병 기록
-     · 꼭 기억할 메모(핀), 오늘의 케어 체크
+     · 꼭 기억할 메모(핀), 체크
      · Firebase 실시간 동기화 (REST + SSE, 바깥 라이브러리 없음)
        https://yongwoo-board-default-rtdb.firebaseio.com/mom-care-v1
        — 가족 대시보드(yongwoo-family-board-v1)와 완전히 다른 칸을 씁니다.
@@ -1127,14 +1127,14 @@
     }
     pendingPinsRender = false;
     if (!state.pins.length) {
-      wrap.innerHTML = '<p class="empty">복용 중인 약, 주의할 점, 병원 연락처처럼<br>늘 기억해야 할 것을 여기에 적어 두세요.</p>';
+      wrap.innerHTML = '<p class="empty">늘 기억해야 할 내용을<br>여기에 적어 두세요.</p>';
       return;
     }
     var html = '';
     state.pins.forEach(function (p) {
       html += '<article class="pin" data-id="' + esc(p.id) + '">'
         + '<div class="pin-head">'
-        + '<input class="pin-title" type="text" value="' + esc(p.title) + '" placeholder="제목 (예: 복용 중인 약)" aria-label="메모 제목" maxlength="40">'
+        + '<input class="pin-title" type="text" value="' + esc(p.title) + '" placeholder="제목" aria-label="메모 제목" maxlength="40">'
         + '<button class="pin-del" type="button" data-act="del-pin" aria-label="이 메모 지우기">✕</button>'
         + '</div>'
         + '<textarea class="pin-text" rows="1" placeholder="내용을 적어 두세요" aria-label="메모 내용" maxlength="600">' + esc(p.text) + '</textarea>'
@@ -1187,7 +1187,7 @@
     });
   }
 
-  /* ═══ 오늘의 케어 체크 ═════════════════════ */
+  /* ═══ 체크 ════════════════════════════════ */
   var renderedCareDay = '';
 
   function renderCare() {
@@ -1536,7 +1536,7 @@
       addPin(b.getAttribute('data-title'));
     });
 
-    /* 케어 체크 */
+    /* 체크 */
     $('careList').addEventListener('click', function (e) {
       var del = e.target.closest ? e.target.closest('[data-del]') : null;
       if (del) { deleteCareItem(del.getAttribute('data-del')); return; }
