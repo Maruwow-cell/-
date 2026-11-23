@@ -3262,7 +3262,8 @@
     dadStatus: 'familyBoard.dadStatus.v1',
     offDays: 'familyBoard.offDays.v1',
     questDays: 'familyBoard.questDays.v1',
-    questLog: 'familyBoard.questLog.v1'
+    questLog: 'familyBoard.questLog.v1',
+    momAuto: 'familyBoard.momAuto.v1'
   };
 
   var PEOPLE = [
@@ -3345,7 +3346,7 @@
   var SYNC_QUEST_UNITS = ['questDays/mission', 'questDays/yongwoo', 'questDays/mom', 'questDays/dad'];
   var SYNC_LIST_UNITS = ['missions', 'offDays', 'events'];
   var SYNC_UNITS = SYNC_TODO_UNITS.concat(SYNC_LIST_UNITS).concat(SYNC_QUEST_UNITS)
-    .concat(['dadStatus', 'questLog']);
+    .concat(['dadStatus', 'questLog', 'momAuto']);
   var SYNC_STORE_UNITS = {};
   SYNC_STORE_UNITS[STORE_KEYS.todos] = SYNC_TODO_UNITS;
   SYNC_STORE_UNITS[STORE_KEYS.missions] = ['missions'];
@@ -3354,6 +3355,7 @@
   SYNC_STORE_UNITS[STORE_KEYS.events] = ['events'];
   SYNC_STORE_UNITS[STORE_KEYS.questDays] = SYNC_QUEST_UNITS;
   SYNC_STORE_UNITS[STORE_KEYS.questLog] = ['questLog'];
+  SYNC_STORE_UNITS[STORE_KEYS.momAuto] = ['momAuto'];
 
   /* 파일(file://)로 열어 본 미리보기나 아주 옛날 브라우저에서는 켜지 않습니다. */
   var SYNC_ENABLED = typeof fetch === 'function'
@@ -3454,6 +3456,7 @@
     if (unit === 'offDays') return listPayload(state.offDays);
     if (unit === 'events') return listPayload(state.customEvents);
     if (unit === 'dadStatus') return { value: state.dadStatus.value, at: state.dadStatus.at };
+    if (unit === 'momAuto') return { value: state.momAuto.month, at: state.momAuto.at };
     if (unit === 'questLog') return { days: state.questLog, at: Date.now() };
     return null;
   }
@@ -3468,6 +3471,7 @@
     if (unit === 'offDays') return JSON.stringify(state.offDays);
     if (unit === 'events') return JSON.stringify(state.customEvents);
     if (unit === 'dadStatus') return JSON.stringify([state.dadStatus.value, state.dadStatus.at]);
+    if (unit === 'momAuto') return JSON.stringify([state.momAuto.month, state.momAuto.at]);
     if (unit === 'questLog') return JSON.stringify(state.questLog);
     return '';
   }
@@ -3502,6 +3506,7 @@
 
   function hasContent(unit) {
     if (unit === 'dadStatus') return isValidStatus(state.dadStatus.value);
+    if (unit === 'momAuto') return isMonthKey(state.momAuto.month);
     if (unit === 'questLog') return questLogDates(state.questLog).length > 0;
     var value = unitValue(unit);
     return !!value && listItems(value).length > 0;
@@ -3627,7 +3632,7 @@
       return questWho('questDays/' + parts[1]) ? 'questDays/' + parts[1] : null;
     }
     if (parts.length !== 1) return null;
-    if (SYNC_LIST_UNITS.indexOf(parts[0]) >= 0 || parts[0] === 'dadStatus') return parts[0];
+    if (SYNC_LIST_UNITS.indexOf(parts[0]) >= 0 || parts[0] === 'dadStatus' || parts[0] === 'momAuto') return parts[0];
     if (parts[0] === 'questLog') return 'questLog';
     return null;
   }
@@ -3697,12 +3702,32 @@
       writeJSON(STORE_KEYS.dadStatus, state.dadStatus);
       return true;
     }
+    if (unit === 'momAuto') {
+      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false;
+      var month = String(payload.value || '');
+      if (!isMonthKey(month)) return false;
+      var monthAt = typeof payload.at === 'number' ? payload.at : null;
+      /* 지난 달 표시가 뒤늦게 와도 이번 달 표시를 되돌리지 않습니다. */
+      if (month <= state.momAuto.month) {
+        if (month < state.momAuto.month) markChanged('momAuto');
+        return false;
+      }
+      state.momAuto = { month: month, at: monthAt };
+      writeJSON(STORE_KEYS.momAuto, { month: state.momAuto.month, at: state.momAuto.at });
+      return true;
+    }
     return false;
   }
 
   /* 끊긴 사이 이 기기에서 바꾼 칸: 원격 목록과 합칩니다(지우지 않게). */
   function mergeDirtyUnit(unit, remoteValue) {
     if (unit === 'dadStatus') return null;      /* 상태는 이 기기 값이 우선 */
+    if (unit === 'momAuto') {
+      /* 이번 달 표시는 둘 중 더 나중 달을 남깁니다. */
+      var remoteMonth = remoteValue && typeof remoteValue === 'object' ? String(remoteValue.value || '') : '';
+      if (isMonthKey(remoteMonth) && remoteMonth > state.momAuto.month) return { value: remoteMonth, at: Date.now() };
+      return null;
+    }
     if (unit === 'questLog') {
       var remoteDays = remoteValue && typeof remoteValue === 'object' ? remoteValue.days : null;
       return { days: mergeQuestLog(remoteDays, state.questLog), at: Date.now() };
@@ -3894,6 +3919,29 @@
       writeJSON(STORE_KEYS.todos, blank);
     }
     return blank;
+  }
+
+  /* 'YYYY-MM' 모양인지 (매월 자동 추가를 한 달에 한 번만 하기 위한 표시) */
+  function isMonthKey(value) {
+    return /^\d{4}-\d{2}$/.test(String(value || ''));
+  }
+
+  function loadMomAuto() {
+    var stored = readJSON(STORE_KEYS.momAuto, null);
+    var month = '';
+    var at = null;
+    if (stored && typeof stored === 'object' && !Array.isArray(stored)) {
+      month = String(stored.month || '');
+      at = typeof stored.at === 'number' ? stored.at : null;
+    } else if (typeof stored === 'string') {
+      month = stored;
+    }
+    if (!isMonthKey(month)) month = '';
+    return { month: month, at: at };
+  }
+
+  function saveMomAuto() {
+    writeJSON(STORE_KEYS.momAuto, { month: state.momAuto.month, at: state.momAuto.at });
   }
 
   function loadDadStatus() {
@@ -4103,6 +4151,7 @@
     questDays: loadQuestDays(),
     questLog: loadQuestLog(),
     dadStatus: loadDadStatus(),
+    momAuto: loadMomAuto(),
     offDays: loadOffDays(),
     calYear: new Date().getFullYear(),
     calMonth: new Date().getMonth(),
@@ -4252,6 +4301,47 @@
     if (hasMissionText(WEEKDAY_MISSION_TEXT)) return false;
     state.missions.unshift({ id: newId('ms'), text: WEEKDAY_MISSION_TEXT, done: false });
     saveMissions();
+    renderMissions();       /* 넣은 것이 바로 보이도록 */
+    return true;
+  }
+
+  /* 매월 17일에는 엄마 할 일에 '학원 교육비 결제하기'를 한 번 넣어 둡니다.
+     같은 달에는 한 번만 넣습니다 — 체크하거나 지워도 그 달에는 다시 생기지 않습니다. */
+  var MONTHLY_MOM_TODO_DAY = 17;
+  var MONTHLY_MOM_TODO_TEXT = '학원 교육비 결제하기';
+
+  function hasMomTodoText(text) {
+    var list = todosOf('mom');
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i].text).trim() === text) return true;
+    }
+    return false;
+  }
+
+  /* 이번 달은 이미 채웠다는 표시를 남깁니다 (다른 기기와도 나눠 갖습니다). */
+  function markMomAutoMonth(month) {
+    if (state.momAuto.month === month) return false;
+    state.momAuto = { month: month, at: Date.now() };
+    saveMomAuto();
+    return true;
+  }
+
+  function ensureMonthlyMomTodo(nowMs) {
+    if (!readyForDaily()) return false;
+    var today = kstDateKey(nowMs);
+    if (Number(today.slice(8, 10)) !== MONTHLY_MOM_TODO_DAY) return false;
+    var month = today.slice(0, 7);
+    if (state.momAuto.month === month) return false;      /* 이번 달은 이미 넣었음 */
+    /* 다른 기기가 먼저 넣었으면 또 넣지 않고 이번 달 표시만 남깁니다. */
+    if (hasMomTodoText(MONTHLY_MOM_TODO_TEXT)) {
+      markMomAutoMonth(month);
+      return false;
+    }
+    todosOf('mom').unshift({ id: newId('td'), text: MONTHLY_MOM_TODO_TEXT, done: false });
+    markMomAutoMonth(month);
+    recordTodayQuest('mom', false);
+    saveTodos();
+    renderTodos();
     return true;
   }
 
@@ -4286,6 +4376,7 @@
       if (cleanupDoneItems(true)) changed = true;
     }
     if (ensureWeekdayMission(nowMs)) changed = true;
+    if (ensureMonthlyMomTodo(nowMs)) changed = true;
     if (changed) render();
     return { rolled: rolled, changed: changed };
   }
@@ -5888,9 +5979,11 @@
 
   render();
 
-  /* 어제까지 완료된 항목은 비우고, 주중이면 오늘의 타자연습 미션을 채웁니다 (기록은 그대로). */
+  /* 어제까지 완료된 항목은 비우고, 주중이면 오늘의 타자연습 미션을 채웁니다 (기록은 그대로).
+     17일이면 엄마 할 일에 이달의 교육비 결제도 넣어 둡니다. */
   cleanupDoneItems();
   ensureWeekdayMission();
+  ensureMonthlyMomTodo();
 
   /* 이 기기에 저장해 둔 날씨 동네로 바로 그리고, 실제 값을 받아 옵니다 */
   loadWeather();
