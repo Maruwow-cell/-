@@ -4305,9 +4305,12 @@
     return true;
   }
 
-  /* 매월 17일에는 엄마 할 일에 '학원 교육비 결제하기'를 한 번 넣어 둡니다.
+  /* 매월 17일(그 달 17일~말일 중 처음 보드를 여는 날)에 엄마 할 일에
+     '학원 교육비 결제하기'를 한 번 넣어 둡니다.
+     17일 당일에 보드를 못 열어도 그달 안에만 열면 올라오고,
      같은 달에는 한 번만 넣습니다 — 체크하거나 지워도 그 달에는 다시 생기지 않습니다. */
   var MONTHLY_MOM_TODO_DAY = 17;
+  var MONTHLY_MOM_TODO_FROM = '2026-12';   /* 이 달부터 적용 (이미 지난 2026-11 이하는 소급하지 않음) */
   var MONTHLY_MOM_TODO_TEXT = '학원 교육비 결제하기';
 
   function hasMomTodoText(text, onlyUndone) {
@@ -4330,8 +4333,10 @@
   function ensureMonthlyMomTodo(nowMs) {
     if (!readyForDaily()) return false;
     var today = kstDateKey(nowMs);
-    if (Number(today.slice(8, 10)) !== MONTHLY_MOM_TODO_DAY) return false;
     var month = today.slice(0, 7);
+    if (month < MONTHLY_MOM_TODO_FROM) return false;      /* 2026-11 이하는 지난 일이라 지금 소급해 넣지 않습니다 */
+    /* 17일 전에는 아직 결제일이 아니므로 넣지 않고, 17일~말일 사이에 이 달 처음 열 때 넣습니다. */
+    if (Number(today.slice(8, 10)) < MONTHLY_MOM_TODO_DAY) return false;
     if (state.momAuto.month === month) return false;      /* 이번 달은 이미 넣었음 */
     /* 다른 기기가 먼저 넣었으면 또 넣지 않고 이번 달 표시만 남깁니다.
        (지난달 것에 체크만 해 둔 채 남아 있으면 이번 달 것은 새로 넣습니다) */
@@ -5982,7 +5987,7 @@
   render();
 
   /* 어제까지 완료된 항목은 비우고, 주중이면 오늘의 타자연습 미션을 채웁니다 (기록은 그대로).
-     17일이면 엄마 할 일에 이달의 교육비 결제도 넣어 둡니다. */
+     17일 이후 그달에 처음 열었으면 엄마 할 일에 이달의 교육비 결제도 넣어 둡니다. */
   cleanupDoneItems();
   ensureWeekdayMission();
   ensureMonthlyMomTodo();
