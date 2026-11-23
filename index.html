@@ -4310,9 +4310,10 @@
   var MONTHLY_MOM_TODO_DAY = 17;
   var MONTHLY_MOM_TODO_TEXT = '학원 교육비 결제하기';
 
-  function hasMomTodoText(text) {
+  function hasMomTodoText(text, onlyUndone) {
     var list = todosOf('mom');
     for (var i = 0; i < list.length; i++) {
+      if (onlyUndone && list[i].done) continue;     /* 지난달에 체크해 둔 것은 이번 달 결제를 막지 않습니다 */
       if (String(list[i].text).trim() === text) return true;
     }
     return false;
@@ -4332,8 +4333,9 @@
     if (Number(today.slice(8, 10)) !== MONTHLY_MOM_TODO_DAY) return false;
     var month = today.slice(0, 7);
     if (state.momAuto.month === month) return false;      /* 이번 달은 이미 넣었음 */
-    /* 다른 기기가 먼저 넣었으면 또 넣지 않고 이번 달 표시만 남깁니다. */
-    if (hasMomTodoText(MONTHLY_MOM_TODO_TEXT)) {
+    /* 다른 기기가 먼저 넣었으면 또 넣지 않고 이번 달 표시만 남깁니다.
+       (지난달 것에 체크만 해 둔 채 남아 있으면 이번 달 것은 새로 넣습니다) */
+    if (hasMomTodoText(MONTHLY_MOM_TODO_TEXT, true)) {
       markMomAutoMonth(month);
       return false;
     }
